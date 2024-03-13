@@ -14,8 +14,7 @@ class RecivedItemModel {
     this.callshipper,
     this.editorder,
     this.revoke,
-    this.sixtySix,
-    this.id,
+    this.sixtySix
   }) {
     id = id ?? Rx("ID");
     widget = widget ?? Rx("33589549623491-001");
@@ -56,6 +55,4 @@ class RecivedItemModel {
   Rx<String>? revoke;
 
   Rx<String>? sixtySix;
-
-  Rx<String>? id;
 }

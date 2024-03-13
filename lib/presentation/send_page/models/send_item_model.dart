@@ -15,7 +15,6 @@ class SendItemModel {
     this.editorder,
     this.revoke,
     this.fiftySeven,
-    this.id,
   }) {
     id = id ?? Rx("ID");
     widget = widget ?? Rx("33589549623491-001");
@@ -56,6 +55,4 @@ class SendItemModel {
   Rx<String>? revoke;
 
   Rx<String>? fiftySeven;
-
-  Rx<String>? id;
 }

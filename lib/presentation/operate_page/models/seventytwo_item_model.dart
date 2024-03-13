@@ -10,8 +10,7 @@ class SeventytwoItemModel {
     this.hangOnWashing,
     this.price,
     this.day,
-    this.startat,
-    this.id,
+    this.startat
   }) {
     id = id ?? Rx("ID");
     widget = widget ?? Rx("33589549623491-001");
@@ -40,6 +39,4 @@ class SeventytwoItemModel {
   Rx<String>? day;
 
   Rx<String>? startat;
-
-  Rx<String>? id;
 }
