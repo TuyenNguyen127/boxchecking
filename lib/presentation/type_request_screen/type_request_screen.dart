@@ -13,26 +13,30 @@ class TypeRequestScreen extends GetWidget<TypeRequestController> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            appBar: _buildAppBar(),
+            appBar: _buildAppBarRequestPage(context),
+            // appBar: _buildAppBar(context),
             body: Container(
                 width: 392.h,
                 padding: EdgeInsets.symmetric(horizontal: 10.h, vertical: 8.v),
                 child: Column(children: [
                   CustomOutlinedButton(
-                      text: "lbl_oder_new_box".tr,
-                      buttonStyle: CustomButtonStyles.outlineBlack,
-                      onPressed: () {
-                        onTapOderNewBox();
-                      }),
+                    text: "lbl_oder_new_box".tr,
+                    buttonStyle: CustomButtonStyles.outlineBlack,
+                    onPressed: () => onTapOderNewBox(),
+                  ),
                   SizedBox(height: 6.v),
-                  _buildButton2(),
+                  // _buildButton2(),
+                  CustomOutlinedButton(
+                    text: "Send box to warehouse",
+                    buttonStyle: CustomButtonStyles.outlineBlack,
+                    onPressed: () => onTapSendBoxToWarehouse(),
+                  ),
                   SizedBox(height: 6.v),
                   CustomOutlinedButton(
-                      text: "lbl_get_back_box".tr,
-                      buttonStyle: CustomButtonStyles.outlineBlack,
-                      onPressed: () {
-                        onTapGetBackBox();
-                      }),
+                    text: "lbl_get_back_box".tr,
+                    buttonStyle: CustomButtonStyles.outlineBlack,
+                    onPressed: () => onTapGetBackBox(),
+                  ),
                   SizedBox(height: 6.v),
                   CustomOutlinedButton(
                       text: "lbl_help".tr,
@@ -42,7 +46,7 @@ class TypeRequestScreen extends GetWidget<TypeRequestController> {
   }
 
   /// Section Widget
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return CustomAppBar(
         height: 66.v,
         leadingWidth: 38.h,
@@ -50,18 +54,43 @@ class TypeRequestScreen extends GetWidget<TypeRequestController> {
             imagePath: ImageConstant.imgVectorPrimary,
             margin: EdgeInsets.only(left: 26.h, top: 24.v, bottom: 21.v),
             onTap: () {
-              onTapVector();
+              onTapVector(context);
             }),
         centerTitle: true,
         title: AppbarTitle(text: "lbl_request".tr),
         styleType: Style.bgFill);
   }
 
+  // app bar
+  PreferredSizeWidget _buildAppBarRequestPage(BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      elevation: 0,
+      backgroundColor: appTheme.redA200,
+      leadingWidth: 60.h,
+      leading: AppbarLeadingImage(
+        imagePath: ImageConstant.imgVectorPrimary,
+        margin: EdgeInsets.only(left: 22.h, top: 4.v, right: 22.h),
+        onTap: () {
+          onTapVector(context);
+        },
+      ),
+      title: Text(
+        'Request',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
   /// Section Widget
   Widget _buildButton2() {
     return GestureDetector(
         onTap: () {
-          onTapButton2();
+          onTapSendBoxToWarehouse();
         },
         child: Container(
             width: 371.h,
@@ -80,10 +109,14 @@ class TypeRequestScreen extends GetWidget<TypeRequestController> {
   }
 
   /// Navigates to the homeContainerScreen when the action is triggered.
-  onTapVector() {
-    Get.toNamed(
-      AppRoutes.homeContainerScreen,
-    );
+  onTapVector(context) {
+    // Get.toNamed(
+    //   AppRoutes.homeContainerScreen,
+    // );
+
+    // Get.offNamed(AppRoutes.typeRequestScreen);
+
+    Navigator.pop(context);
   }
 
   /// Navigates to the onbOderboxScreen when the action is triggered.
@@ -94,7 +127,7 @@ class TypeRequestScreen extends GetWidget<TypeRequestController> {
   }
 
   /// Navigates to the sendBoxChooseBoxScreen when the action is triggered.
-  onTapButton2() {
+  onTapSendBoxToWarehouse() {
     Get.toNamed(
       AppRoutes.sendBoxChooseBoxScreen,
     );

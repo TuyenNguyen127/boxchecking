@@ -21,7 +21,7 @@ class SendItemWidget extends StatelessWidget {
     return Container(
       decoration: AppDecoration.fillPrimary,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 11.v),
           Padding(
@@ -29,7 +29,7 @@ class SendItemWidget extends StatelessWidget {
             child: Row(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: 3.v),
+                  padding: EdgeInsets.only(top: 6.v),
                   child: Obx(
                     () => Text(
                       sendItemModelObj.id!.value,
@@ -59,26 +59,24 @@ class SendItemWidget extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  width: 66.h,
+                  width: 60.h,
                   margin: EdgeInsets.only(left: 11.h),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 13.h,
-                    vertical: 1.v,
-                  ),
                   decoration: AppDecoration.fillAmber1001.copyWith(
                     borderRadius: BorderRadiusStyle.roundedBorder10,
                   ),
                   child: Obx(
-                    () => Text(
-                      sendItemModelObj.status!.value,
-                      style: CustomTextStyles.labelMediumBlack900,
+                    () => Center(
+                      child: Text(
+                        sendItemModelObj.status!.value,
+                        style: CustomTextStyles.labelMediumBlack900,
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
           ),
-          SizedBox(height: 26.v),
+          SizedBox(height: 15.v),
           Padding(
             padding: EdgeInsets.only(left: 14.h),
             child: Row(
@@ -101,7 +99,7 @@ class SendItemWidget extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 7.v),
+          SizedBox(height: 6.v),
           Padding(
             padding: EdgeInsets.only(
               left: 14.h,
@@ -127,7 +125,7 @@ class SendItemWidget extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 8.v),
+          SizedBox(height: 6.v),
           Padding(
             padding: EdgeInsets.only(left: 14.h),
             child: Row(
@@ -177,7 +175,7 @@ class SendItemWidget extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 8.v),
+          SizedBox(height: 6.v),
           Padding(
             padding: EdgeInsets.only(left: 14.h),
             child: Row(
@@ -200,62 +198,58 @@ class SendItemWidget extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 14.v),
+          SizedBox(height: 6.v),
           Row(
             children: [
               Container(
                 width: 143.h,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 30.h,
-                  vertical: 8.v,
-                ),
+                padding: EdgeInsets.symmetric(vertical: 8.v),
                 decoration: AppDecoration.outlineGray,
                 child: Obx(
-                  () => Text(
-                    sendItemModelObj.callshipper!.value,
-                    style: CustomTextStyles.labelLargePrimaryContainer,
+                  () => Center(
+                    child: Text(
+                      sendItemModelObj.callshipper!.value,
+                      style: CustomTextStyles.labelLargePrimaryContainer,
+                    ),
                   ),
                 ),
               ),
               Container(
                 width: 104.h,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 22.h,
-                  vertical: 9.v,
-                ),
+                padding: EdgeInsets.symmetric(vertical: 9.v),
                 decoration: AppDecoration.outlineGray,
                 child: Obx(
-                  () => Text(
-                    sendItemModelObj.editorder!.value,
-                    style: CustomTextStyles.labelLargePrimaryContainer,
+                  () => Center(
+                    child: Text(
+                      sendItemModelObj.editorder!.value,
+                      style: CustomTextStyles.labelLargePrimaryContainer,
+                    ),
                   ),
                 ),
               ),
               Container(
-                width: 104.h,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 30.h,
-                  vertical: 9.v,
-                ),
+                width: 94.h,
+                padding: EdgeInsets.symmetric(vertical: 9.v),
                 decoration: AppDecoration.outlineGray,
                 child: Obx(
-                  () => Text(
-                    sendItemModelObj.revoke!.value,
-                    style: CustomTextStyles.labelLargePrimaryContainer,
+                  () => Center(
+                    child: Text(
+                      sendItemModelObj.revoke!.value,
+                      style: CustomTextStyles.labelLargePrimaryContainer,
+                    ),
                   ),
                 ),
               ),
               Container(
                 width: 44.h,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.h,
-                  vertical: 9.v,
-                ),
+                padding: EdgeInsets.symmetric(vertical: 9.v),
                 decoration: AppDecoration.outlineGray,
                 child: Obx(
-                  () => Text(
-                    sendItemModelObj.fiftySeven!.value,
-                    style: theme.textTheme.labelLarge,
+                  () => Center(
+                    child: Text(
+                      sendItemModelObj.fiftySeven!.value,
+                      style: theme.textTheme.labelLarge,
+                    ),
                   ),
                 ),
               ),

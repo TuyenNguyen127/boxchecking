@@ -30,7 +30,7 @@ class GetBackAddressScreen extends GetWidget<GetBackAddressController> {
                 child: SizedBox(
                     width: 392.h,
                     child: Column(children: [
-                      _buildSeven(),
+                      // _buildSeven(),
                       Expanded(
                           child: SingleChildScrollView(
                               child: Container(

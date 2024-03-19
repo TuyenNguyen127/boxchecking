@@ -16,8 +16,9 @@ class SettingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: _buildAppBarSettingPage(),
         body: Container(
-          width: 391.h,
+          width: SizeUtils.width,
           decoration: AppDecoration.fillGray,
           child: SingleChildScrollView(
             child: Padding(
@@ -38,11 +39,29 @@ class SettingPage extends StatelessWidget {
     );
   }
 
+  /// appbar
+  PreferredSizeWidget _buildAppBarSettingPage() {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: appTheme.redA200,
+      automaticallyImplyLeading: false,
+      title: Center(
+        child: Text(
+          'Setting',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+
   /// Section Widget
   Widget _buildView() {
     return SizedBox(
-      height: 252.v,
-      width: 391.h,
+      height: 230.v,
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
@@ -50,7 +69,6 @@ class SettingPage extends StatelessWidget {
             alignment: Alignment.topCenter,
             child: Container(
               height: 68.v,
-              width: 390.h,
               decoration: BoxDecoration(
                 color: appTheme.redA200,
               ),
@@ -60,7 +78,7 @@ class SettingPage extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: SizedBox(
               height: 224.v,
-              width: 391.h,
+              width: SizeUtils.width - 10.v,
               child: Stack(
                 alignment: Alignment.topCenter,
                 children: [
@@ -129,6 +147,7 @@ class SettingPage extends StatelessWidget {
   Widget _buildManagement() {
     return Container(
       width: 391.h,
+      height: 160.h,
       padding: EdgeInsets.all(11.h),
       decoration: AppDecoration.fillPrimary,
       child: Column(
@@ -176,6 +195,7 @@ class SettingPage extends StatelessWidget {
   Widget _buildSetting() {
     return Container(
       width: 391.h,
+      height: 250.h,
       padding: EdgeInsets.symmetric(
         horizontal: 19.h,
         vertical: 15.v,

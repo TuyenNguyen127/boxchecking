@@ -21,26 +21,18 @@ class SendPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         body: SizedBox(
           width: SizeUtils.width,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(top: 143.v),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 1.h),
-                    child: Column(
-                      children: [
-                        _buildStatus(),
-                        SizedBox(height: 15.v),
-                        _buildTotal(),
-                        SizedBox(height: 5.v),
-                        _buildSend(),
-                      ],
-                    ),
-                  ),
-                ],
+          child: Column(
+            children: [
+              _buildStatus(),
+              SizedBox(height: 8.v),
+              _buildTotal(),
+              SizedBox(height: 8.v),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: _buildSend(),
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -49,84 +41,84 @@ class SendPage extends StatelessWidget {
 
   /// Section Widget
   Widget _buildStatus() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: 1.v),
-          child: CustomDropDown(
-            width: 95.h,
-            hintText: "lbl_14_days_ago".tr,
-            items: controller.sendModelObj.value.dropdownItemList!.value,
-            onChanged: (value) {
-              controller.onSelected(value);
-            },
+    return Container(
+      decoration: BoxDecoration(color: theme.colorScheme.primary),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 8.v, bottom: 8.v),
+            child: CustomDropDown(
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 6.h,
+                vertical: 4.v,
+              ),
+              width: 95.h,
+              hintText: "lbl_14_days_ago".tr,
+              items: controller.sendModelObj.value.dropdownItemList!.value,
+              onChanged: (value) {
+                controller.onSelected(value);
+              },
+            ),
           ),
-        ),
-        Container(
-          width: 57.h,
-          margin: EdgeInsets.only(
-            left: 10.h,
-            top: 1.v,
+          Container(
+            width: 57.h,
+            margin: EdgeInsets.only(left: 5.h),
+            padding: EdgeInsets.symmetric(vertical: 8.v),
+            decoration: AppDecoration.outlineBlueGray.copyWith(
+              borderRadius: BorderRadiusStyle.circleBorder15,
+            ),
+            child: Center(
+              child: Text(
+                "lbl_all".tr,
+                style: CustomTextStyles.bodySmallPrimary,
+              ),
+            ),
           ),
-          padding: EdgeInsets.symmetric(
-            horizontal: 21.h,
-            vertical: 7.v,
+          Container(
+            width: 61.h,
+            margin: EdgeInsets.only(left: 5.h),
+            padding: EdgeInsets.symmetric(vertical: 8.v),
+            decoration: AppDecoration.outlineBluegray50.copyWith(
+              borderRadius: BorderRadiusStyle.circleBorder15,
+            ),
+            child: Center(
+              child: Text(
+                "lbl_pending".tr,
+                style: theme.textTheme.bodySmall,
+              ),
+            ),
           ),
-          decoration: AppDecoration.outlineBlueGray.copyWith(
-            borderRadius: BorderRadiusStyle.circleBorder15,
+          Container(
+            width: 67.h,
+            margin: EdgeInsets.only(left: 5.h),
+            padding: EdgeInsets.symmetric(vertical: 8.v),
+            decoration: AppDecoration.outlineBluegray50.copyWith(
+              borderRadius: BorderRadiusStyle.circleBorder15,
+            ),
+            child: Center(
+              child: Text(
+                "lbl_waiting".tr,
+                style: theme.textTheme.bodySmall,
+              ),
+            ),
           ),
-          child: Text(
-            "lbl_all".tr,
-            style: CustomTextStyles.bodySmallPrimary,
+          Container(
+            width: 69.h,
+            margin: EdgeInsets.only(left: 5.h),
+            padding: EdgeInsets.symmetric(vertical: 8.v),
+            decoration: AppDecoration.outlineBluegray50.copyWith(
+              borderRadius: BorderRadiusStyle.circleBorder15,
+            ),
+            child: Center(
+              child: Text(
+                "lbl_delivering".tr,
+                style: theme.textTheme.bodySmall,
+              ),
+            ),
           ),
-        ),
-        Container(
-          width: 61.h,
-          margin: EdgeInsets.only(
-            left: 10.h,
-            top: 1.v,
-          ),
-          padding: EdgeInsets.all(6.h),
-          decoration: AppDecoration.outlineBluegray50.copyWith(
-            borderRadius: BorderRadiusStyle.circleBorder15,
-          ),
-          child: Text(
-            "lbl_pending".tr,
-            style: theme.textTheme.bodySmall,
-          ),
-        ),
-        Container(
-          width: 67.h,
-          margin: EdgeInsets.only(left: 10.h),
-          padding: EdgeInsets.symmetric(
-            horizontal: 12.h,
-            vertical: 6.v,
-          ),
-          decoration: AppDecoration.outlineBluegray50.copyWith(
-            borderRadius: BorderRadiusStyle.circleBorder15,
-          ),
-          child: Text(
-            "lbl_waiting".tr,
-            style: theme.textTheme.bodySmall,
-          ),
-        ),
-        Container(
-          width: 69.h,
-          margin: EdgeInsets.only(left: 10.h),
-          padding: EdgeInsets.symmetric(
-            horizontal: 2.h,
-            vertical: 6.v,
-          ),
-          decoration: AppDecoration.outlineBluegray50.copyWith(
-            borderRadius: BorderRadiusStyle.circleBorder15,
-          ),
-          child: Text(
-            "lbl_delivering".tr,
-            style: theme.textTheme.bodySmall,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -142,7 +134,7 @@ class SendPage extends StatelessWidget {
         children: [
           Text(
             "lbl_20_orders".tr,
-            style: CustomTextStyles.labelLargeBluegray300,
+            style: CustomTextStyles.labelLargeGray80002,
           ),
           Text(
             "lbl_choose_order".tr,
@@ -155,26 +147,28 @@ class SendPage extends StatelessWidget {
 
   /// Section Widget
   Widget _buildSend() {
-    return Obx(
-      () => ListView.separated(
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        separatorBuilder: (
-          context,
-          index,
-        ) {
-          return SizedBox(
-            height: 9.v,
-          );
-        },
-        itemCount: controller.sendModelObj.value.sendItemList.value.length,
-        itemBuilder: (context, index) {
-          SendItemModel model =
-              controller.sendModelObj.value.sendItemList.value[index];
-          return SendItemWidget(
-            model,
-          );
-        },
+    return Container(
+      // margin: EdgeInsets.only(bottom: 5.h),
+      // decoration: AppDecoration.fillPrimary,
+      child: Obx(
+        () => ListView.separated(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          separatorBuilder: (
+            context,
+            index,
+          ) {
+            return SizedBox(height: 5.v);
+          },
+          itemCount: controller.sendModelObj.value.sendItemList.value.length,
+          itemBuilder: (context, index) {
+            SendItemModel model =
+                controller.sendModelObj.value.sendItemList.value[index];
+            return SendItemWidget(
+              model,
+            );
+          },
+        ),
       ),
     );
   }

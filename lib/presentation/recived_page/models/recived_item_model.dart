@@ -2,20 +2,19 @@ import '../../../core/app_export.dart';
 
 /// This class is used in the [recived_item_widget] screen.
 class RecivedItemModel {
-  RecivedItemModel({
-    this.id,
-    this.widget,
-    this.status,
-    this.xuanThuyCau,
-    this.xQuanJeanxAo,
-    this.nguyNVNTuyN,
-    this.mobileNo,
-    this.nothing,
-    this.callshipper,
-    this.editorder,
-    this.revoke,
-    this.sixtySix
-  }) {
+  RecivedItemModel(
+      {this.id,
+      this.widget,
+      this.status,
+      this.xuanThuyCau,
+      this.xQuanJeanxAo,
+      this.nguyNVNTuyN,
+      this.mobileNo,
+      this.nothing,
+      this.callshipper,
+      this.editorder,
+      this.revoke,
+      this.sixtySix}) {
     id = id ?? Rx("ID");
     widget = widget ?? Rx("33589549623491-001");
     status = status ?? Rx("Pending");

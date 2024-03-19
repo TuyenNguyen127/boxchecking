@@ -56,6 +56,24 @@ class OperateModel {
         hangOnWashing: "Hang On, Washing".obs,
         price: "Bag | 50x150 | 20kg".obs,
         day: "10000đ / day ".obs,
-        startat: "Start at: 20/12/2023".obs)
+        startat: "Start at: 20/12/2023".obs),
+    SeventytwoItemModel(
+        id: "ID".obs,
+        widget: "33589549623491-004".obs,
+        status: "Saving".obs,
+        xQuanJeanxAo: "10xQuan Jean; 10xAo so mi; 10xThat lung da".obs,
+        hangOnWashing: "Hang On, Washing".obs,
+        price: "Box | 50x50x100 | 20kg".obs,
+        day: "10000đ / day ".obs,
+        startat: "Start at: 20/12/2023".obs),
+    SeventytwoItemModel(
+        id: "ID".obs,
+        widget: "33589549623491-005".obs,
+        status: "Saving".obs,
+        xQuanJeanxAo: "10xQuan Jean; 10xAo so mi; 10xThat lung da".obs,
+        hangOnWashing: "Hang On, Washing".obs,
+        price: "Box | 50x50x100 | 20kg".obs,
+        day: "10000đ / day ".obs,
+        startat: "Start at: 20/12/2023".obs),
   ]);
 }

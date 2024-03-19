@@ -9,205 +9,318 @@ import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'controller/onb_oderbox_controller.dart';
+import 'widgets/custom_stepper_bar.dart';
 
 class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
-  const OnbOderboxScreen({Key? key}) : super(key: key);
+  OnbOderboxScreen({Key? key}) : super(key: key);
+
+  // int _currentIndex = 0;
+
+  List<String> boxTypes = <String>['One', 'Two', 'Three', 'Four'];
+
+  List<DropdownMenuItem<String>> get dropdownItems {
+    List<DropdownMenuItem<String>> boxTypes = [
+      DropdownMenuItem(child: Text("One"), value: "One"),
+      DropdownMenuItem(child: Text("Two"), value: "Two"),
+      DropdownMenuItem(child: Text("Three"), value: "Three"),
+      DropdownMenuItem(child: Text("four"), value: "four"),
+    ];
+    return boxTypes;
+  }
+
+  String valueBoxType = "One";
+  String? dropdownValue = "One";
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-            body: SizedBox(
-                width: 392.h,
-                child: Column(children: [
-                  _buildAdd(),
-                  SizedBox(height: 10.v),
-                  _buildListOder()
-                ]))));
+      child: Scaffold(
+        appBar: _buildAppBarPageOrderbox(),
+        body: Container(
+          decoration: BoxDecoration(color: Colors.grey[200]),
+          width: SizeUtils.width,
+
+          // child: CustomStepperBar(),
+
+          child: Stack(
+            children: [
+              //
+              _buildSectionTrackProgress(),
+              //
+              // SizedBox(height: 20.v),
+              _buildFormSection(),
+              //
+              // SizedBox(height: 20.v),
+              _buildListOder(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // app bar
+  PreferredSizeWidget _buildAppBarPageOrderbox() {
+    return AppBar(
+      centerTitle: true,
+      elevation: 0,
+      backgroundColor: appTheme.redA200,
+      leadingWidth: 60.h,
+      leading: AppbarLeadingImage(
+        imagePath: ImageConstant.imgVectorPrimary,
+        margin: EdgeInsets.only(left: 22.h, top: 4.v, right: 22.h),
+        onTap: () {
+          onTapVector();
+        },
+      ),
+      title: Text(
+        'Order new box',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionTrackProgress() {
+    return Container(
+      height: 150.v,
+      padding: EdgeInsets.only(left: 60.v, right: 60.v, top: 10.v),
+      decoration: BoxDecoration(color: appTheme.redA200),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              //
+              Container(
+                width: 40.v,
+                height: 40.v,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary,
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: Colors.black54),
+                ),
+                child: Center(
+                  child: Text(
+                    '1',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: appTheme.redA200,
+                    ),
+                  ),
+                ),
+              ),
+
+              Expanded(
+                child: Divider(
+                  color: Colors.black38,
+                ),
+              ),
+
+              //
+              Container(
+                width: 40.v,
+                height: 40.v,
+                decoration: BoxDecoration(
+                  color: appTheme.redA200,
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: Colors.black54),
+                ),
+                child: Center(
+                  child: Text(
+                    '2',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
+
+              Expanded(
+                child: Divider(
+                  color: Colors.black38,
+                ),
+              ),
+
+              //
+              Container(
+                width: 40.v,
+                height: 40.v,
+                decoration: BoxDecoration(
+                  color: appTheme.redA200,
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: Colors.black54),
+                ),
+                child: Center(
+                  child: Text(
+                    '3',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 10),
+
+          //
+          Center(
+            child: Text(
+              'Order box',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   /// Section Widget
-  Widget _buildAdd() {
-    return SizedBox(
-        height: 392.adaptSize,
-        width: 392.adaptSize,
-        child: Stack(alignment: Alignment.bottomCenter, children: [
-          Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 1.h),
-                  padding: EdgeInsets.symmetric(vertical: 19.v),
-                  decoration: AppDecoration.fillRedA,
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    CustomAppBar(
-                        leadingWidth: 38.h,
-                        leading: AppbarLeadingImage(
-                            imagePath: ImageConstant.imgVectorPrimary,
-                            margin: EdgeInsets.only(left: 26.h, top: 4.v),
-                            onTap: () {
-                              onTapVector();
-                            }),
-                        centerTitle: true,
-                        title: AppbarTitle(text: "lbl_order_new_box".tr)),
-                    SizedBox(height: 17.v),
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                            height: 57.v,
-                            width: 333.h,
-                            margin: EdgeInsets.only(right: 7.h),
-                            child: Stack(
-                                alignment: Alignment.bottomRight,
-                                children: [
-                                  AnotherStepper(
-                                      iconHeight: 55,
-                                      iconWidth: 53,
-                                      stepperDirection: Axis.horizontal,
-                                      activeIndex: 0,
-                                      barThickness: 1,
-                                      inverted: true,
-                                      stepperList: [
-                                        StepperData(
-                                            iconWidget: Column(children: [
-                                          Container(
-                                              width: 35.adaptSize,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 13.h,
-                                                  vertical: 7.v),
-                                              decoration: AppDecoration
-                                                  .outlineGray800
-                                                  .copyWith(
-                                                      borderRadius:
-                                                          BorderRadiusStyle
-                                                              .circleBorder15),
-                                              child: Text("lbl_1".tr,
-                                                  style: CustomTextStyles
-                                                      .titleMediumRedA200)),
-                                          Padding(
-                                              padding:
-                                                  EdgeInsets.only(top: 5.v),
-                                              child: Text("lbl_oder_box".tr,
-                                                  style: CustomTextStyles
-                                                      .bodySmallPrimary))
-                                        ])),
-                                        StepperData(
-                                            iconWidget: Column(children: [
-                                          Container(
-                                              width: 35.adaptSize,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 12.h,
-                                                  vertical: 7.v),
-                                              decoration: AppDecoration
-                                                  .outlineGray8001
-                                                  .copyWith(
-                                                      borderRadius:
-                                                          BorderRadiusStyle
-                                                              .circleBorder15),
-                                              child: Text("lbl_2".tr,
-                                                  style: theme
-                                                      .textTheme.titleMedium)),
-                                          Padding(
-                                              padding:
-                                                  EdgeInsets.only(top: 5.v),
-                                              child: Text("lbl_address".tr,
-                                                  style: CustomTextStyles
-                                                      .labelLargePrimary))
-                                        ])),
-                                        StepperData()
-                                      ]),
-                                  Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Text("msg_checking_and_payment".tr,
-                                          style: CustomTextStyles
-                                              .labelLargePrimary13))
-                                ]))),
-                    SizedBox(height: 32.v)
-                  ]))),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 19.h, vertical: 14.v),
-                  decoration: AppDecoration.fillPrimary.copyWith(
-                      borderRadius: BorderRadiusStyle.customBorderTL20),
-                  child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(height: 6.v),
-                        Padding(
-                            padding: EdgeInsets.only(right: 2.h),
-                            child: CustomDropDown(
-                                icon: Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                        30.h, 19.v, 21.h, 19.v),
-                                    child: CustomImageView(
-                                        imagePath: ImageConstant.imgSave,
-                                        height: 12.v,
-                                        width: 19.h)),
-                                hintText: "lbl_type_box".tr,
-                                hintStyle: CustomTextStyles.bodyLargeBlack900,
-                                items: controller.onbOderboxModelObj.value
-                                    .dropdownItemList!.value,
-                                contentPadding: EdgeInsets.only(
-                                    left: 18.h, top: 15.v, bottom: 15.v),
-                                onChanged: (value) {
-                                  controller.onSelected(value);
-                                })),
-                        SizedBox(height: 10.v),
-                        Padding(
-                            padding: EdgeInsets.only(right: 2.h),
-                            child: CustomDropDown(
-                                icon: Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                        30.h, 19.v, 20.h, 19.v),
-                                    child: CustomImageView(
-                                        imagePath: ImageConstant.imgSave,
-                                        height: 12.v,
-                                        width: 19.h)),
-                                hintText: "lbl_model_box".tr,
-                                hintStyle: CustomTextStyles.bodyLargeBlack900,
-                                items: controller.onbOderboxModelObj.value
-                                    .dropdownItemList1!.value,
-                                contentPadding: EdgeInsets.only(
-                                    left: 19.h, top: 15.v, bottom: 15.v),
-                                onChanged: (value) {
-                                  controller.onSelected1(value);
-                                })),
-                        SizedBox(height: 10.v),
-                        Padding(
-                            padding: EdgeInsets.only(right: 2.h),
-                            child: CustomDropDown(
-                                icon: Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                        30.h, 19.v, 20.h, 19.v),
-                                    child: CustomImageView(
-                                        imagePath: ImageConstant.imgSave,
-                                        height: 12.v,
-                                        width: 19.h)),
-                                hintText: "lbl_service".tr,
-                                items: controller.onbOderboxModelObj.value
-                                    .dropdownItemList2!.value,
-                                contentPadding: EdgeInsets.only(
-                                    left: 19.h, top: 15.v, bottom: 15.v),
-                                onChanged: (value) {
-                                  controller.onSelected2(value);
-                                })),
-                        SizedBox(height: 20.v),
-                        CustomElevatedButton(
-                            width: 100.h,
-                            text: "lbl_add".tr,
-                            margin: EdgeInsets.only(right: 2.h),
-                            buttonStyle: CustomButtonStyles.fillRedA)
-                      ])))
-        ]));
+  Widget _buildFormSection() {
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: const Offset(
+              5.0,
+              5.0,
+            ),
+            blurRadius: 10.0,
+            spreadRadius: 1.0,
+          ), //BoxShadow
+          BoxShadow(
+            color: Colors.white,
+            offset: const Offset(0.0, 0.0),
+            blurRadius: 0.0,
+            spreadRadius: 0.0,
+          ), //BoxShadow
+        ],
+        color: theme.colorScheme.primary,
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(30),
+          topLeft: Radius.circular(30),
+        ),
+      ),
+      height: 300.adaptSize,
+      width: SizeUtils.width,
+      margin: EdgeInsets.only(top: 90.h),
+      padding: EdgeInsets.symmetric(horizontal: 20.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          //
+          SizedBox(height: 30.v),
+          Padding(
+            padding: EdgeInsets.only(right: 2.h),
+            child: CustomDropDown(
+              icon: Container(
+                margin: EdgeInsets.fromLTRB(30.h, 19.v, 21.h, 19.v),
+                child: CustomImageView(
+                  imagePath: ImageConstant.imgSave,
+                  height: 12.v,
+                  width: 19.h,
+                ),
+              ),
+              hintText: "lbl_type_box".tr,
+              hintStyle: CustomTextStyles.bodyLargeBlack900,
+              items:
+                  controller.onbOderboxModelObj.value.dropdownItemList!.value,
+              contentPadding:
+                  EdgeInsets.only(left: 18.h, top: 15.v, bottom: 15.v),
+              onChanged: (value) {
+                controller.onSelected(value);
+              },
+            ),
+          ),
+
+          //
+          SizedBox(height: 10.v),
+          Padding(
+            padding: EdgeInsets.only(right: 2.h),
+            child: CustomDropDown(
+              icon: Container(
+                margin: EdgeInsets.fromLTRB(30.h, 19.v, 20.h, 19.v),
+                child: CustomImageView(
+                  imagePath: ImageConstant.imgSave,
+                  height: 12.v,
+                  width: 19.h,
+                ),
+              ),
+              hintText: "lbl_model_box".tr,
+              hintStyle: CustomTextStyles.bodyLargeBlack900,
+              items:
+                  controller.onbOderboxModelObj.value.dropdownItemList1!.value,
+              contentPadding:
+                  EdgeInsets.only(left: 19.h, top: 15.v, bottom: 15.v),
+              onChanged: (value) {
+                controller.onSelected1(value);
+              },
+            ),
+          ),
+
+          //
+          SizedBox(height: 10.v),
+          Padding(
+            padding: EdgeInsets.only(right: 2.h),
+            child: CustomDropDown(
+              icon: Container(
+                margin: EdgeInsets.fromLTRB(30.h, 19.v, 20.h, 19.v),
+                child: CustomImageView(
+                  imagePath: ImageConstant.imgSave,
+                  height: 12.v,
+                  width: 19.h,
+                ),
+              ),
+              hintText: "lbl_service".tr,
+              hintStyle: CustomTextStyles.bodyLargeBlack900,
+              items:
+                  controller.onbOderboxModelObj.value.dropdownItemList2!.value,
+              contentPadding:
+                  EdgeInsets.only(left: 19.h, top: 15.v, bottom: 15.v),
+              onChanged: (value) {
+                controller.onSelected2(value);
+              },
+            ),
+          ),
+          SizedBox(height: 20.v),
+
+          //
+          CustomElevatedButton(
+            width: 90.h,
+            text: "lbl_add".tr,
+            buttonStyle: CustomButtonStyles.fillRedA,
+          ),
+        ],
+      ),
+    );
   }
 
   /// Section Widget
   Widget _buildListOder() {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 8.v),
-        decoration: AppDecoration.fillPrimary,
+        margin: EdgeInsets.only(top: 380.h),
+        padding: EdgeInsets.symmetric(horizontal: 30.h, vertical: 20.v),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.primary,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(30),
+            topLeft: Radius.circular(30),
+          ),
+        ),
         child: Column(children: [
           Align(
               alignment: Alignment.centerLeft,
@@ -230,8 +343,8 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
                 Spacer(),
                 CustomImageView(
                     imagePath: ImageConstant.imgEditBlack90015x15,
-                    height: 15.adaptSize,
-                    width: 15.adaptSize,
+                    height: 20.adaptSize,
+                    width: 20.adaptSize,
                     margin: EdgeInsets.symmetric(vertical: 2.v))
               ])),
           SizedBox(height: 9.v),
@@ -250,43 +363,81 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
               ])),
           SizedBox(height: 9.v),
           Padding(
-              padding: EdgeInsets.only(right: 2.h),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomImageView(
-                        imagePath: ImageConstant.imgThumbsUp,
-                        height: 9.v,
-                        width: 11.h,
-                        margin: EdgeInsets.only(top: 4.v, bottom: 6.v)),
-                    Padding(
-                        padding: EdgeInsets.only(left: 12.h),
-                        child: Text("msg_hang_on_washing".tr,
-                            style: theme.textTheme.bodyMedium)),
-                    Spacer(),
-                    Padding(
-                        padding: EdgeInsets.only(bottom: 3.v),
-                        child: CustomIconButton(
-                            height: 15.adaptSize,
-                            width: 15.adaptSize,
-                            child: CustomImageView())),
-                    Container(
-                        width: 38.h,
-                        margin: EdgeInsets.only(left: 5.h, bottom: 2.v),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16.h, vertical: 1.v),
-                        decoration: AppDecoration.outlineBluegray3002.copyWith(
-                            borderRadius: BorderRadiusStyle.roundedBorder5),
-                        child: Text("lbl_1".tr,
-                            style: theme.textTheme.labelLarge)),
-                    Padding(
-                        padding: EdgeInsets.only(left: 5.h, bottom: 3.v),
-                        child: CustomIconButton(
-                            height: 15.adaptSize,
-                            width: 15.adaptSize,
-                            child: CustomImageView()))
-                  ])),
+            padding: EdgeInsets.only(right: 2.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomImageView(
+                    imagePath: ImageConstant.imgThumbsUp,
+                    height: 9.v,
+                    width: 11.h,
+                    margin: EdgeInsets.only(top: 4.v, bottom: 6.v)),
+                Padding(
+                    padding: EdgeInsets.only(left: 12.h),
+                    child: Text("msg_hang_on_washing".tr,
+                        style: theme.textTheme.bodyMedium)),
+                Spacer(),
+
+                //
+                Container(
+                  decoration: BoxDecoration(
+                    color: appTheme.redA200,
+                    borderRadius: BorderRadius.circular(30.h),
+                  ),
+                  height: 15.adaptSize,
+                  width: 15.adaptSize,
+                  child: Center(
+                    child: Text(
+                      '-',
+                      style: TextStyle(
+                        color: theme.colorScheme.primary,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                    width: 38.h,
+                    margin: EdgeInsets.only(left: 5.h, bottom: 2.v),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.h, vertical: 1.v),
+                    decoration: AppDecoration.outlineBluegray3002.copyWith(
+                        borderRadius: BorderRadiusStyle.roundedBorder5),
+                    child: Text("lbl_1".tr, style: theme.textTheme.labelLarge)),
+
+                //
+                Container(
+                  decoration: BoxDecoration(
+                    color: appTheme.teal900,
+                    borderRadius: BorderRadius.circular(30.h),
+                  ),
+                  margin: EdgeInsets.only(left: 5.v),
+                  height: 15.adaptSize,
+                  width: 15.adaptSize,
+                  child: Center(
+                    child: Text(
+                      '+',
+                      style: TextStyle(
+                        color: theme.colorScheme.primary,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+                ),
+
+                //
+                // Padding(
+                //   padding: EdgeInsets.only(left: 5.h, bottom: 3.v),
+                //   child: CustomIconButton(
+                //     height: 15.adaptSize,
+                //     width: 15.adaptSize,
+                //     child: CustomImageView(),
+                //   ),
+                // ),
+              ],
+            ),
+          ),
           SizedBox(height: 20.v),
           Padding(
               padding: EdgeInsets.only(right: 2.h),
@@ -306,8 +457,8 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
                     ]),
                     CustomImageView(
                         imagePath: ImageConstant.imgEditBlack90015x15,
-                        height: 15.adaptSize,
-                        width: 15.adaptSize,
+                        height: 20.adaptSize,
+                        width: 20.adaptSize,
                         margin: EdgeInsets.symmetric(vertical: 2.v))
                   ])),
           SizedBox(height: 9.v),
@@ -326,52 +477,71 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
               ])),
           SizedBox(height: 9.v),
           Padding(
-              padding: EdgeInsets.only(right: 2.h),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                        width: 80.h,
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomImageView(
-                                  imagePath: ImageConstant.imgThumbsUp,
-                                  height: 9.v,
-                                  width: 11.h,
-                                  margin:
-                                      EdgeInsets.only(top: 2.v, bottom: 6.v)),
-                              Padding(
-                                  padding: EdgeInsets.only(left: 12.h),
-                                  child: Text("lbl_nothing".tr,
-                                      style: theme.textTheme.bodyMedium))
-                            ])),
-                    Spacer(),
-                    Padding(
-                        padding: EdgeInsets.only(bottom: 3.v),
-                        child: CustomIconButton(
-                            height: 15.adaptSize,
-                            width: 15.adaptSize,
-                            child: CustomImageView())),
-                    Container(
-                        width: 38.h,
-                        margin: EdgeInsets.only(left: 5.h, bottom: 2.v),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16.h, vertical: 1.v),
-                        decoration: AppDecoration.outlineBluegray3002.copyWith(
-                            borderRadius: BorderRadiusStyle.roundedBorder5),
-                        child: Text("lbl_1".tr,
-                            style: theme.textTheme.labelLarge)),
-                    Padding(
-                        padding: EdgeInsets.only(left: 5.h, bottom: 3.v),
-                        child: CustomIconButton(
-                            height: 15.adaptSize,
-                            width: 15.adaptSize,
-                            child: CustomImageView()))
-                  ])),
-          SizedBox(height: 77.v),
+            padding: EdgeInsets.only(right: 2.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomImageView(
+                    imagePath: ImageConstant.imgThumbsUp,
+                    height: 9.v,
+                    width: 11.h,
+                    margin: EdgeInsets.only(top: 4.v, bottom: 6.v)),
+                Padding(
+                    padding: EdgeInsets.only(left: 12.h),
+                    child: Text("lbl_nothing".tr,
+                        style: theme.textTheme.bodyMedium)),
+                Spacer(),
+
+                //
+                Container(
+                  decoration: BoxDecoration(
+                    color: appTheme.redA200,
+                    borderRadius: BorderRadius.circular(30.h),
+                  ),
+                  height: 15.adaptSize,
+                  width: 15.adaptSize,
+                  child: Center(
+                    child: Text(
+                      '-',
+                      style: TextStyle(
+                        color: theme.colorScheme.primary,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                    width: 38.h,
+                    margin: EdgeInsets.only(left: 5.h, bottom: 2.v),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.h, vertical: 1.v),
+                    decoration: AppDecoration.outlineBluegray3002.copyWith(
+                        borderRadius: BorderRadiusStyle.roundedBorder5),
+                    child: Text("lbl_1".tr, style: theme.textTheme.labelLarge)),
+
+                Container(
+                  decoration: BoxDecoration(
+                    color: appTheme.teal900,
+                    borderRadius: BorderRadius.circular(30.h),
+                  ),
+                  margin: EdgeInsets.only(left: 5.v),
+                  height: 15.adaptSize,
+                  width: 15.adaptSize,
+                  child: Center(
+                    child: Text(
+                      '+',
+                      style: TextStyle(
+                        color: theme.colorScheme.primary,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 20.v),
           Padding(
               padding: EdgeInsets.only(right: 12.h),
               child: CustomIconButton(
@@ -384,9 +554,6 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
                   },
                   child:
                       CustomImageView(imagePath: ImageConstant.imgArrowRight))),
-          SizedBox(height: 20.v),
-          SizedBox(width: 130.h, child: Divider(color: appTheme.gray80001)),
-          SizedBox(height: 5.v)
         ]));
   }
 
@@ -399,8 +566,8 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
 
   /// Navigates to the onbAddressScreen when the action is triggered.
   onTapBtnArrowRight() {
-    Get.toNamed(
-      AppRoutes.onbAddressScreen,
-    );
+    // Get.toNamed(
+    //   AppRoutes.onbAddressScreen,
+    // );
   }
 }

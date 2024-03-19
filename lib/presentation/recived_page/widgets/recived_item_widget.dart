@@ -150,7 +150,7 @@ class RecivedItemWidget extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 7.v),
+          SizedBox(height: 6.v),
           Padding(
             padding: EdgeInsets.only(left: 14.h),
             child: Row(
@@ -173,7 +173,7 @@ class RecivedItemWidget extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 9.v),
+          SizedBox(height: 8.v),
           Padding(
             padding: EdgeInsets.only(left: 14.h),
             child: Row(
@@ -201,57 +201,53 @@ class RecivedItemWidget extends StatelessWidget {
             children: [
               Container(
                 width: 143.h,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 30.h,
-                  vertical: 8.v,
-                ),
+                padding: EdgeInsets.symmetric(vertical: 9.v),
                 decoration: AppDecoration.outlineGray,
                 child: Obx(
-                  () => Text(
-                    recivedItemModelObj.callshipper!.value,
-                    style: CustomTextStyles.labelLargePrimaryContainer,
+                  () => Center(
+                    child: Text(
+                      recivedItemModelObj.callshipper!.value,
+                      style: CustomTextStyles.labelLargePrimaryContainer,
+                    ),
                   ),
                 ),
               ),
               Container(
                 width: 104.h,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 22.h,
-                  vertical: 9.v,
-                ),
+                padding: EdgeInsets.symmetric(vertical: 9.v),
                 decoration: AppDecoration.outlineGray,
                 child: Obx(
-                  () => Text(
-                    recivedItemModelObj.editorder!.value,
-                    style: CustomTextStyles.labelLargePrimaryContainer,
+                  () => Center(
+                    child: Text(
+                      recivedItemModelObj.editorder!.value,
+                      style: CustomTextStyles.labelLargePrimaryContainer,
+                    ),
                   ),
                 ),
               ),
               Container(
-                width: 104.h,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 30.h,
-                  vertical: 9.v,
-                ),
+                width: 94.h,
+                padding: EdgeInsets.symmetric(vertical: 9.v),
                 decoration: AppDecoration.outlineGray,
                 child: Obx(
-                  () => Text(
-                    recivedItemModelObj.revoke!.value,
-                    style: CustomTextStyles.labelLargePrimaryContainer,
+                  () => Center(
+                    child: Text(
+                      recivedItemModelObj.revoke!.value,
+                      style: CustomTextStyles.labelLargePrimaryContainer,
+                    ),
                   ),
                 ),
               ),
               Container(
                 width: 43.h,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 15.h,
-                  vertical: 9.v,
-                ),
+                padding: EdgeInsets.symmetric(vertical: 9.v),
                 decoration: AppDecoration.outlineGray,
                 child: Obx(
-                  () => Text(
-                    recivedItemModelObj.sixtySix!.value,
-                    style: theme.textTheme.labelLarge,
+                  () => Center(
+                    child: Text(
+                      recivedItemModelObj.sixtySix!.value,
+                      style: theme.textTheme.labelLarge,
+                    ),
                   ),
                 ),
               ),

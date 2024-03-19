@@ -19,30 +19,52 @@ class RecivedTabContainerPage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.transparent,
+        appBar: _buildAppBarShipPage(),
         body: SizedBox(
-          width: 391.h,
-          child: SingleChildScrollView(
-            child: SizedBox(
-              height: 820.v,
-              width: 391.h,
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  _buildFiftyThree(),
-                  Container(
-                    margin: EdgeInsets.only(top: 143.v),
-                    height: 676.v,
-                    child: TabBarView(
-                      controller: controller.tabviewController,
-                      children: [
-                        SendPage(),
-                        RecivedPage(),
-                      ],
-                    ),
+          child: Column(
+            children: [
+              _buildFiftyThree(),
+              SingleChildScrollView(
+                child: SizedBox(
+                  height: 650.v,
+                  width: 391.h,
+                  child: Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 0.v),
+                        child: TabBarView(
+                          controller: controller.tabviewController,
+                          children: [
+                            SendPage(),
+                            RecivedPage(),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // app bar
+  PreferredSizeWidget _buildAppBarShipPage() {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: appTheme.redA200,
+      automaticallyImplyLeading: false,
+      title: Center(
+        child: Text(
+          'Ship',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
@@ -53,66 +75,48 @@ class RecivedTabContainerPage extends StatelessWidget {
   Widget _buildFiftyThree() {
     return Align(
       alignment: Alignment.topCenter,
-      child: Container(
-        margin: EdgeInsets.only(left: 1.h),
-        decoration: AppDecoration.fillGray,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 173.h,
-                vertical: 7.v,
-              ),
-              decoration: AppDecoration.fillRedA,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 4.v),
-                  Text(
-                    "lbl_ship".tr,
-                    style: theme.textTheme.titleLarge,
-                  ),
-                ],
-              ),
+      child: DefaultTabController(
+        length: 2,
+        child: Container(
+          decoration: AppDecoration.fillPrimary,
+          child: Container(
+            height: 50.v,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary,
             ),
-            Container(
-              height: 100.v,
-              width: 390.h,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
+            child: TabBar(
+              controller: controller.tabviewController,
+              isScrollable: false,
+              labelColor: appTheme.redA200,
+              labelStyle: TextStyle(
+                fontSize: 18.fSize,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w500,
               ),
-              child: TabBar(
-                controller: controller.tabviewController,
-                isScrollable: true,
-                labelColor: appTheme.redA200,
-                labelStyle: TextStyle(
-                  fontSize: 18.fSize,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
-                ),
-                unselectedLabelColor: appTheme.blueGray300,
-                unselectedLabelStyle: TextStyle(
-                  fontSize: 18.fSize,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
-                ),
-                indicatorColor: appTheme.redA200,
-                tabs: [
-                  Tab(
-                    child: Text(
-                      "lbl_send".tr,
-                    ),
-                  ),
-                  Tab(
-                    child: Text(
-                      "lbl_received".tr,
-                    ),
-                  ),
-                ],
+              unselectedLabelColor: appTheme.blueGray300,
+              unselectedLabelStyle: TextStyle(
+                fontSize: 18.fSize,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w500,
               ),
+              indicatorColor: appTheme.redA200,
+              labelPadding: EdgeInsets.symmetric(
+                horizontal: 10.v,
+              ),
+              tabs: [
+                Tab(
+                  child: Text(
+                    "lbl_send".tr,
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    "lbl_received".tr,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

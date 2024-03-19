@@ -68,6 +68,13 @@ class AppRoutes {
 
   static List<GetPage> pages = [
     GetPage(
+      name: initialRoute,
+      page: () => HomeContainerScreen(),
+      bindings: [
+        HomeContainerBinding(),
+      ],
+    ),
+    GetPage(
       name: homeContainerScreen,
       page: () => HomeContainerScreen(),
       bindings: [
@@ -149,13 +156,6 @@ class AppRoutes {
       page: () => AppNavigationScreen(),
       bindings: [
         AppNavigationBinding(),
-      ],
-    ),
-    GetPage(
-      name: initialRoute,
-      page: () => HomeContainerScreen(),
-      bindings: [
-        HomeContainerBinding(),
       ],
     )
   ];
