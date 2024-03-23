@@ -23,138 +23,331 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            body: Form(
-                key: _formKey,
-                child: SizedBox(
-                    width: 392.h,
-                    child: Column(children: [
-                      _buildNineteen(),
-                      Expanded(
-                          child: SingleChildScrollView(
-                              child: Container(
-                                  height: 812.v,
-                                  width: 392.h,
-                                  margin: EdgeInsets.only(bottom: 5.v),
-                                  child: Stack(
-                                      alignment: Alignment.bottomCenter,
-                                      children: [
-                                        Align(
-                                            alignment: Alignment.center,
-                                            child: SizedBox(
-                                                height: 806.v, width: 392.h)),
-                                        Align(
-                                            alignment: Alignment.bottomCenter,
-                                            child: Container(
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal: 20.h),
-                                                decoration: AppDecoration
-                                                    .fillPrimary
-                                                    .copyWith(
-                                                        borderRadius:
-                                                            BorderRadiusStyle
-                                                                .customBorderTL20),
-                                                child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      _buildPhoneNumber(),
-                                                      SizedBox(height: 18.v),
-                                                      _buildFullName(),
-                                                      SizedBox(height: 18.v),
-                                                      _buildTime(),
-                                                      SizedBox(height: 18.v),
-                                                      _buildAddress(),
-                                                      SizedBox(height: 21.v),
-                                                      _buildCity1(),
-                                                      SizedBox(height: 18.v),
-                                                      _buildNinetySix(),
-                                                      SizedBox(height: 20.v),
-                                                      _buildImageTen()
-                                                    ])))
-                                      ]))))
-                    ]))),
-            bottomNavigationBar: _buildArrowRight()));
+      child: Scaffold(
+        //
+        // resizeToAvoidBottomInset: false,
+        appBar: _buildAppBarPageAddress(),
+        //
+        body: Container(
+          decoration: AppDecoration.fillGray,
+          width: SizeUtils.width,
+          height: SizeUtils.height,
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              //
+              Positioned.fill(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: _buildSectionTrackProgress(),
+                ),
+              ),
+              //
+              Positioned(
+                top: 100.v,
+                child: _buildFormPageAddress(),
+              ),
+              //
+              _buildArrowRightLeft(),
+            ],
+          ),
+        ),
+
+        //
+        // body: Form(
+        //   key: _formKey,
+        //   child: SizedBox(
+        //     width: 392.h,
+        //     child: Column(
+        //       children: [
+        //         //
+        //         // _buildNineteen(),
+        //         //
+        //         Expanded(
+        //           child: SingleChildScrollView(
+        //             child: Container(
+        //               height: 812.v,
+        //               width: 392.h,
+        //               margin: EdgeInsets.only(bottom: 5.v),
+        //               child: Stack(
+        //                 alignment: Alignment.bottomCenter,
+        //                 children: [
+        //                   Align(
+        //                       alignment: Alignment.center,
+        //                       child: SizedBox(height: 806.v, width: 392.h)),
+        //                   Align(
+        //                     alignment: Alignment.bottomCenter,
+        //                     child: Container(
+        //                       margin: EdgeInsets.symmetric(horizontal: 20.h),
+        //                       decoration: AppDecoration.fillPrimary.copyWith(
+        //                           borderRadius:
+        //                               BorderRadiusStyle.customBorderTL20),
+        //                       child: Column(
+        //                         mainAxisSize: MainAxisSize.min,
+        //                         children: [
+        //                           // _buildPhoneNumber(),
+        //                           // SizedBox(height: 18.v),
+        //                           // _buildFullName(),
+        //                           // SizedBox(height: 18.v),
+        //                           // _buildTime(),
+        //                           // SizedBox(height: 18.v),
+        //                           // _buildAddress(),
+        //                           // SizedBox(height: 21.v),
+        //                           // _buildCity1(),
+        //                           // SizedBox(height: 18.v),
+        //                           // _buildNinetySix(),
+        //                           // SizedBox(height: 20.v),
+        //                           // _buildImageTen(),
+        //                         ],
+        //                       ),
+        //                     ),
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+
+        //
+        // bottomNavigationBar: _buildArrowRight(),
+      ),
+    );
   }
 
-  /// Section Widget
-  Widget _buildNineteen() {
+  // app bar
+  PreferredSizeWidget _buildAppBarPageAddress() {
+    return AppBar(
+      centerTitle: true,
+      elevation: 0,
+      backgroundColor: appTheme.redA200,
+      leadingWidth: 60.h,
+      leading: AppbarLeadingImage(
+        imagePath: ImageConstant.imgVectorPrimary,
+        margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
+        onTap: () => onTapVector(),
+      ),
+      title: Text(
+        'Order new box',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionTrackProgress() {
     return Container(
-        margin: EdgeInsets.symmetric(horizontal: 1.h),
-        padding: EdgeInsets.symmetric(vertical: 19.v),
-        decoration: AppDecoration.fillRedA,
-        child: Column(children: [
-          CustomAppBar(
-              leadingWidth: 38.h,
-              leading: AppbarLeadingImage(
-                  imagePath: ImageConstant.imgVectorPrimary,
-                  margin: EdgeInsets.only(left: 26.h, top: 4.v),
-                  onTap: () {
-                    onTapVector();
-                  }),
-              centerTitle: true,
-              title: AppbarTitle(text: "lbl_order_new_box".tr)),
-          SizedBox(height: 17.v),
-          Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                  height: 57.v,
-                  width: 333.h,
-                  margin: EdgeInsets.only(right: 7.h),
-                  child: Stack(alignment: Alignment.bottomRight, children: [
-                    AnotherStepper(
-                        iconHeight: 55,
-                        iconWidth: 53,
-                        stepperDirection: Axis.horizontal,
-                        activeIndex: 0,
-                        barThickness: 1,
-                        inverted: true,
-                        stepperList: [
-                          StepperData(
-                              iconWidget: Column(children: [
-                            Container(
-                                width: 35.adaptSize,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 13.h, vertical: 7.v),
-                                decoration: AppDecoration.outlineGray8001
-                                    .copyWith(
-                                        borderRadius:
-                                            BorderRadiusStyle.circleBorder15),
-                                child: Text("lbl_1".tr,
-                                    style: theme.textTheme.titleMedium)),
-                            Padding(
-                                padding: EdgeInsets.only(top: 5.v),
-                                child: Text("lbl_oder_box".tr,
-                                    style: CustomTextStyles.bodySmallPrimary))
-                          ])),
-                          StepperData(
-                              iconWidget: Column(children: [
-                            Container(
-                                width: 35.adaptSize,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12.h, vertical: 7.v),
-                                decoration: AppDecoration.outlineGray800
-                                    .copyWith(
-                                        borderRadius:
-                                            BorderRadiusStyle.circleBorder15),
-                                child: Text("lbl_2".tr,
-                                    style:
-                                        CustomTextStyles.titleMediumRedA200)),
-                            Padding(
-                                padding: EdgeInsets.only(top: 5.v),
-                                child: Text("lbl_address".tr,
-                                    style: CustomTextStyles.labelLargePrimary))
-                          ])),
-                          StepperData()
-                        ]),
-                    Align(
-                        alignment: Alignment.bottomRight,
-                        child: Text("msg_checking_and_payment".tr,
-                            style: CustomTextStyles.labelLargePrimary13))
-                  ]))),
-          SizedBox(height: 32.v)
-        ]));
+      height: 160.v,
+      padding: EdgeInsets.only(left: 60.v, right: 60.v, top: 10.v),
+      decoration: BoxDecoration(color: appTheme.redA200),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              //
+              Container(
+                width: 40.v,
+                height: 40.v,
+                decoration: BoxDecoration(
+                  color: appTheme.redA200,
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: Colors.black54),
+                ),
+                child: Center(
+                  child: Text(
+                    '1',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
+
+              Expanded(
+                child: Divider(
+                  color: Colors.black38,
+                ),
+              ),
+
+              //
+              Container(
+                width: 40.v,
+                height: 40.v,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary,
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: Colors.black54),
+                ),
+                child: Center(
+                  child: Text(
+                    '2',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: appTheme.redA200,
+                    ),
+                  ),
+                ),
+              ),
+
+              Expanded(
+                child: Divider(
+                  color: Colors.black38,
+                ),
+              ),
+
+              //
+              Container(
+                width: 40.v,
+                height: 40.v,
+                decoration: BoxDecoration(
+                  color: appTheme.redA200,
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: Colors.black54),
+                ),
+                child: Center(
+                  child: Text(
+                    '3',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 10),
+
+          //
+          Center(
+            child: Text(
+              'Address',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFormPageAddress() {
+    return SingleChildScrollView(
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              offset: const Offset(
+                0.5,
+                0.5,
+              ),
+              blurRadius: 1.0,
+              spreadRadius: 0.5,
+            ), //BoxShadow
+            BoxShadow(
+              color: Colors.white,
+              offset: const Offset(0.0, 0.0),
+              blurRadius: 0.0,
+              spreadRadius: 0.0,
+            ), //BoxShadow
+          ],
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(30),
+            topLeft: Radius.circular(30),
+          ),
+          color: theme.colorScheme.primary,
+        ),
+        height: SizeUtils.height,
+        width: SizeUtils.width,
+        padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 30.v),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            //
+            _buildPhoneNumber(),
+            SizedBox(height: 18.v),
+            //
+            _buildFullName(),
+            SizedBox(height: 18.v),
+            //
+            _buildTime(),
+            SizedBox(height: 18.v),
+            //
+            _buildAddress(),
+            SizedBox(height: 21.v),
+            //
+            _buildCity1(),
+            SizedBox(height: 18.v),
+            //
+            _buildNinetySix(),
+            SizedBox(height: 20.v),
+            //
+            _buildImageTen(),
+          ],
+        ),
+      ),
+    );
+
+    // return Expanded(
+    //   child: SingleChildScrollView(
+    //     child: Container(
+    //       height: 812.v,
+    //       width: 392.h,
+    //       margin: EdgeInsets.only(bottom: 5.v),
+    //       child: Stack(
+    //         alignment: Alignment.bottomCenter,
+    //         children: [
+    //           Align(
+    //               alignment: Alignment.center,
+    //               child: SizedBox(height: 806.v, width: 392.h)),
+    //           Align(
+    //             alignment: Alignment.bottomCenter,
+    //             child: Container(
+    //               margin: EdgeInsets.symmetric(horizontal: 20.h),
+    //               decoration: AppDecoration.fillPrimary.copyWith(
+    //                   borderRadius: BorderRadiusStyle.customBorderTL20),
+    //               child: Column(
+    //                 mainAxisSize: MainAxisSize.min,
+    //                 children: [
+    //                   _buildPhoneNumber(),
+    //                   SizedBox(height: 18.v),
+    //                   _buildFullName(),
+    //                   SizedBox(height: 18.v),
+    //                   _buildTime(),
+    //                   SizedBox(height: 18.v),
+    //                   _buildAddress(),
+    //                   SizedBox(height: 21.v),
+    //                   _buildCity1(),
+    //                   SizedBox(height: 18.v),
+    //                   _buildNinetySix(),
+    //                   SizedBox(height: 20.v),
+    //                   _buildImageTen(),
+    //                 ],
+    //               ),
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   /// Section Widget
@@ -187,25 +380,28 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
   /// Section Widget
   Widget _buildTime() {
     return GestureDetector(
-        onTap: () {
-          onTapTime();
-        },
-        child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 17.h, vertical: 13.v),
-            decoration: AppDecoration.outlineGray200
-                .copyWith(borderRadius: BorderRadiusStyle.roundedBorder10),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Obx(() => Text(controller.onbAddressModelObj.value.date.value,
-                      style: theme.textTheme.bodyLarge)),
-                  CustomImageView(
-                      imagePath: ImageConstant.imgCalendarBlack900,
-                      height: 15.v,
-                      width: 13.h,
-                      margin:
-                          EdgeInsets.only(top: 3.v, right: 6.h, bottom: 2.v))
-                ])));
+      onTap: () {
+        onTapTime();
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 15.v),
+        decoration: AppDecoration.outlineGray500
+            .copyWith(borderRadius: BorderRadiusStyle.roundedBorder10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Obx(() => Text(controller.onbAddressModelObj.value.date.value,
+                style: theme.textTheme.bodyLarge)),
+            CustomImageView(
+              imagePath: ImageConstant.imgCalendarBlack900,
+              height: 15.v,
+              width: 13.h,
+              margin: EdgeInsets.only(top: 3.v, right: 6.h, bottom: 2.v),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   /// Section Widget
@@ -281,54 +477,54 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
   /// Section Widget
   Widget _buildImageTen() {
     return SizedBox(
-        height: 219.v,
-        width: 350.h,
-        child: GoogleMap(
-            mapType: MapType.normal,
-            initialCameraPosition: CameraPosition(
-                target: LatLng(37.43296265331129, -122.08832357078792),
-                zoom: 14.4746),
-            onMapCreated: (GoogleMapController controller) {
-              googleMapController.complete(controller);
-            },
-            zoomControlsEnabled: false,
-            zoomGesturesEnabled: false,
-            myLocationButtonEnabled: false,
-            myLocationEnabled: false));
+      height: 219.v,
+      width: 350.h,
+      child: GoogleMap(
+        mapType: MapType.normal,
+        initialCameraPosition: CameraPosition(
+          target: LatLng(37.43296265331129, -122.08832357078792),
+          zoom: 14.4746,
+        ),
+        onMapCreated: (GoogleMapController controller) {
+          googleMapController.complete(controller);
+        },
+        zoomControlsEnabled: false,
+        zoomGesturesEnabled: false,
+        myLocationButtonEnabled: false,
+        myLocationEnabled: false,
+      ),
+    );
   }
 
   /// Section Widget
-  Widget _buildArrowRight() {
+  Widget _buildArrowRightLeft() {
     return Padding(
-        padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 44.v),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Padding(
-              padding: EdgeInsets.only(bottom: 1.v),
-              child: CustomIconButton(
-                  height: 60.adaptSize,
-                  width: 60.adaptSize,
-                  padding: EdgeInsets.all(15.h),
-                  onTap: () {
-                    onTapBtnArrowRight();
-                  },
-                  child: CustomImageView(
-                      imagePath: ImageConstant.imgArrowRightOnerrorcontainer))),
+      padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 45.v),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
           CustomIconButton(
-              height: 60.adaptSize,
-              width: 60.adaptSize,
-              padding: EdgeInsets.all(15.h),
-              onTap: () {
-                onTapBtnArrowRight1();
-              },
-              child: CustomImageView(imagePath: ImageConstant.imgArrowRight))
-        ]));
-  }
-
-  /// Navigates to the typeRequestScreen when the action is triggered.
-  onTapVector() {
-    Get.toNamed(
-      AppRoutes.typeRequestScreen,
+            height: 60.adaptSize,
+            width: 60.adaptSize,
+            padding: EdgeInsets.all(15.h),
+            onTap: () {
+              onTapBtnArrowLeft();
+            },
+            child: CustomImageView(
+              imagePath: ImageConstant.imgArrowRightOnerrorcontainer,
+            ),
+          ),
+          CustomIconButton(
+            height: 60.adaptSize,
+            width: 60.adaptSize,
+            padding: EdgeInsets.all(15.h),
+            onTap: () {
+              onTapBtnArrowRight();
+            },
+            child: CustomImageView(imagePath: ImageConstant.imgArrowRight),
+          ),
+        ],
+      ),
     );
   }
 
@@ -339,11 +535,16 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
   /// This function returns a `Future` that completes with `void`.
   Future<void> onTapTime() async {
     DateTime? dateTime = await showDatePicker(
-        context: Get.context!,
-        initialDate: controller.onbAddressModelObj.value.selectedDate!.value,
-        firstDate: DateTime(1970),
-        lastDate: DateTime(
-            DateTime.now().year, DateTime.now().month, DateTime.now().day));
+      context: Get.context!,
+      initialDate: controller.onbAddressModelObj.value.selectedDate!.value,
+      firstDate: DateTime(1970),
+      lastDate: DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+      ),
+    );
+
     if (dateTime != null) {
       controller.onbAddressModelObj.value.selectedDate!.value = dateTime;
       controller.onbAddressModelObj.value.date.value =
@@ -351,15 +552,30 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
     }
   }
 
+  /// Navigates to the typeRequestScreen when the action is triggered.
+  onTapVector() {
+    Get.toNamed(
+      AppRoutes.typeRequestScreen,
+    );
+
+    // print('run here');
+
+    // Navigator.pop(context);
+  }
+
   /// Navigates to the onbOderboxScreen when the action is triggered.
-  onTapBtnArrowRight() {
+  onTapBtnArrowLeft() {
+    // print('left');
+
     Get.toNamed(
       AppRoutes.onbOderboxScreen,
     );
   }
 
   /// Navigates to the onbCheckingAndPaymentScreen when the action is triggered.
-  onTapBtnArrowRight1() {
+  onTapBtnArrowRight() {
+    // print('right');
+
     Get.toNamed(
       AppRoutes.onbCheckingAndPaymentScreen,
     );

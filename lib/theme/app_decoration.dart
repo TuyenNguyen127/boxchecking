@@ -116,6 +116,13 @@ class AppDecoration {
           width: 1.h,
         ),
       );
+  static BoxDecoration get outlineGray500 => BoxDecoration(
+        color: theme.colorScheme.primary,
+        border: Border.all(
+          color: appTheme.gray500,
+          width: 1.h,
+        ),
+      );
   static BoxDecoration get outlineGray800 => BoxDecoration(
         color: theme.colorScheme.primary,
         border: Border.all(

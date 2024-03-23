@@ -15,425 +15,466 @@ class GetBackChooseBoxScreen extends GetWidget<GetBackChooseBoxController> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-            body: SizedBox(
-                width: 392.h,
-                child: Container(
-                    height: 806.v,
-                    width: 392.h,
-                    decoration: AppDecoration.fillGray,
-                    child: Stack(alignment: Alignment.bottomCenter, children: [
-                      _buildTwentyNine(),
-                      Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 20.v),
-                              decoration: AppDecoration.fillPrimary.copyWith(
-                                  borderRadius:
-                                      BorderRadiusStyle.customBorderTL20),
-                              child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 19.h, right: 21.h),
-                                        child: CustomDropDown(
-                                            icon: Container(
-                                                margin: EdgeInsets.fromLTRB(
-                                                    30.h, 19.v, 21.h, 19.v),
-                                                child: CustomImageView(
-                                                    imagePath:
-                                                        ImageConstant.imgSave,
-                                                    height: 12.v,
-                                                    width: 19.h)),
-                                            hintText: "lbl_search_by_id".tr,
-                                            items: controller
-                                                .getBackChooseBoxModelObj
-                                                .value
-                                                .dropdownItemList!
-                                                .value,
-                                            contentPadding: EdgeInsets.only(
-                                                left: 18.h,
-                                                top: 15.v,
-                                                bottom: 15.v),
-                                            onChanged: (value) {
-                                              controller.onSelected(value);
-                                            })),
-                                    SizedBox(height: 10.v),
-                                    _buildListOrder(),
-                                    SizedBox(height: 90.v),
-                                    Padding(
-                                        padding: EdgeInsets.only(right: 32.h),
-                                        child: CustomIconButton(
-                                            height: 60.adaptSize,
-                                            width: 60.adaptSize,
-                                            padding: EdgeInsets.all(15.h),
-                                            alignment: Alignment.centerRight,
-                                            onTap: () {
-                                              onTapBtnArrowRight();
-                                            },
-                                            child: CustomImageView(
-                                                imagePath: ImageConstant
-                                                    .imgArrowRight))),
-                                    SizedBox(height: 20.v),
-                                    SizedBox(
-                                        width: 130.h,
-                                        child:
-                                            Divider(color: appTheme.gray80001))
-                                  ])))
-                    ])))));
-  }
-
-  /// Section Widget
-  Widget _buildTwentyNine() {
-    return Align(
-        alignment: Alignment.topCenter,
-        child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 1.h),
-            padding: EdgeInsets.symmetric(vertical: 21.v),
-            decoration: AppDecoration.fillRedA,
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              CustomAppBar(
-                  leadingWidth: 38.h,
-                  leading: AppbarLeadingImage(
-                      imagePath: ImageConstant.imgVectorPrimary,
-                      margin:
-                          EdgeInsets.only(left: 26.h, top: 2.v, bottom: 2.v),
-                      onTap: () {
-                        onTapVector();
-                      }),
-                  centerTitle: true,
-                  title: AppbarTitle(text: "lbl_get_back".tr)),
-              SizedBox(height: 15.v),
-              Align(
+      child: Scaffold(
+        appBar: _buildAppBarPageSendChooseBox(),
+        body: Container(
+          height: SizeUtils.height,
+          width: SizeUtils.width,
+          decoration: AppDecoration.fillGray,
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              //
+              Positioned.fill(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: _buildSectionTrackProgress(),
+                ),
+              ),
+              //
+              Positioned(
+                top: 100.v,
+                child: _buildBodySection(),
+              ),
+              //
+              Positioned(
+                bottom: 45.v,
+                right: 35.v,
+                child: CustomIconButton(
+                  height: 60.adaptSize,
+                  width: 60.adaptSize,
+                  padding: EdgeInsets.all(15.h),
                   alignment: Alignment.centerRight,
-                  child: Container(
-                      height: 57.v,
-                      width: 333.h,
-                      margin: EdgeInsets.only(right: 7.h),
-                      child: Stack(alignment: Alignment.bottomRight, children: [
-                        AnotherStepper(
-                            iconHeight: 55,
-                            iconWidth: 53,
-                            stepperDirection: Axis.horizontal,
-                            activeIndex: 0,
-                            barThickness: 1,
-                            inverted: true,
-                            stepperList: [
-                              StepperData(
-                                  iconWidget: Column(children: [
-                                Container(
-                                    width: 35.adaptSize,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 13.h, vertical: 7.v),
-                                    decoration: AppDecoration.outlineGray800
-                                        .copyWith(
-                                            borderRadius: BorderRadiusStyle
-                                                .circleBorder15),
-                                    child: Text("lbl_1".tr,
-                                        style: CustomTextStyles
-                                            .titleMediumRedA200)),
-                                Padding(
-                                    padding: EdgeInsets.only(top: 5.v),
-                                    child: Text("lbl_oder_box".tr,
-                                        style:
-                                            CustomTextStyles.bodySmallPrimary))
-                              ])),
-                              StepperData(
-                                  iconWidget: Column(children: [
-                                Container(
-                                    width: 35.adaptSize,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 12.h, vertical: 7.v),
-                                    decoration: AppDecoration.outlineGray8001
-                                        .copyWith(
-                                            borderRadius: BorderRadiusStyle
-                                                .circleBorder15),
-                                    child: Text("lbl_2".tr,
-                                        style: theme.textTheme.titleMedium)),
-                                Padding(
-                                    padding: EdgeInsets.only(top: 5.v),
-                                    child: Text("lbl_address".tr,
-                                        style:
-                                            CustomTextStyles.labelLargePrimary))
-                              ])),
-                              StepperData()
-                            ]),
-                        Align(
-                            alignment: Alignment.bottomRight,
-                            child: Text("msg_checking_and_payment".tr,
-                                style: CustomTextStyles.labelLargePrimary13))
-                      ]))),
-              SizedBox(height: 30.v)
-            ])));
+                  onTap: () {
+                    onTapBtnArrowRight();
+                  },
+                  child: CustomImageView(
+                    imagePath: ImageConstant.imgArrowRight,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // app bar
+  PreferredSizeWidget _buildAppBarPageSendChooseBox() {
+    return AppBar(
+      centerTitle: true,
+      elevation: 0,
+      backgroundColor: appTheme.redA200,
+      leadingWidth: 60.h,
+      leading: AppbarLeadingImage(
+        imagePath: ImageConstant.imgVectorPrimary,
+        margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
+        onTap: () {
+          onTapVector();
+        },
+      ),
+      title: Text(
+        'Get back',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionTrackProgress() {
+    return Container(
+      height: 160.v,
+      padding: EdgeInsets.only(left: 60.v, right: 60.v, top: 10.v),
+      decoration: BoxDecoration(color: appTheme.redA200),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              //
+              Container(
+                width: 40.v,
+                height: 40.v,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary,
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: Colors.black54),
+                ),
+                child: Center(
+                  child: Text(
+                    '1',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: appTheme.redA200,
+                    ),
+                  ),
+                ),
+              ),
+
+              Expanded(
+                child: Divider(
+                  color: Colors.black38,
+                ),
+              ),
+
+              //
+              Container(
+                width: 40.v,
+                height: 40.v,
+                decoration: BoxDecoration(
+                  color: appTheme.redA200,
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: Colors.black54),
+                ),
+                child: Center(
+                  child: Text(
+                    '2',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
+
+              Expanded(
+                child: Divider(
+                  color: Colors.black38,
+                ),
+              ),
+
+              //
+              Container(
+                width: 40.v,
+                height: 40.v,
+                decoration: BoxDecoration(
+                  color: appTheme.redA200,
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: Colors.black54),
+                ),
+                child: Center(
+                  child: Text(
+                    '3',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 10),
+
+          //
+          Center(
+            child: Text(
+              'Order box',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   /// Section Widget
-  Widget _buildListOrder() {
-    return SizedBox(
-        height: 400.v,
-        width: 392.h,
-        child: Stack(alignment: Alignment.bottomCenter, children: [
-          Align(
-              alignment: Alignment.center,
-              child: Container(
-                  margin: EdgeInsets.only(right: 1.h),
-                  padding: EdgeInsets.symmetric(vertical: 38.v),
-                  decoration: AppDecoration.fillPrimary,
-                  child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                            padding: EdgeInsets.only(left: 18.h),
-                            child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                      height: 20.adaptSize,
-                                      width: 20.adaptSize,
-                                      decoration: BoxDecoration(
-                                          color: theme.colorScheme.primary,
-                                          border: Border.all(
-                                              color: appTheme.black900,
-                                              width: 2.h))),
-                                  Padding(
-                                      padding: EdgeInsets.only(left: 12.h),
-                                      child: Text("lbl_id".tr,
-                                          style: CustomTextStyles
-                                              .titleSmallBlack900Medium)),
-                                  Padding(
-                                      padding: EdgeInsets.only(left: 5.h),
-                                      child: Text("lbl_33589549623491".tr,
-                                          style: CustomTextStyles
-                                              .titleSmallBlack900Medium)),
-                                  CustomImageView(
-                                      imagePath: ImageConstant.imgBookmark,
-                                      height: 13.v,
-                                      width: 11.h,
-                                      margin: EdgeInsets.only(
-                                          left: 6.h, top: 3.v, bottom: 3.v))
-                                ])),
-                        SizedBox(height: 12.v),
-                        Container(
-                            padding: EdgeInsets.fromLTRB(12.h, 1.v, 12.h, 2.v),
-                            decoration: AppDecoration.outlineBluegray300,
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                      height: 20.adaptSize,
-                                      width: 20.adaptSize,
-                                      margin: EdgeInsets.only(
-                                          top: 40.v, bottom: 89.v),
-                                      decoration: BoxDecoration(
-                                          color: theme.colorScheme.primary,
-                                          border: Border.all(
-                                              color: appTheme.black900,
-                                              width: 2.h))),
-                                  CustomImageView(
-                                      imagePath: ImageConstant.imgImage11,
-                                      height: 40.v,
-                                      width: 47.h,
-                                      margin: EdgeInsets.only(
-                                          left: 6.h, top: 30.v, bottom: 79.v)),
-                                  Expanded(
-                                      child: Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 9.h, top: 7.v),
-                                          child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                _buildId(
-                                                    iD: "lbl_id".tr,
-                                                    widget:
-                                                        "msg_33589549623491_001"
-                                                            .tr),
-                                                SizedBox(height: 9.v),
-                                                Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 1.h),
-                                                    child: _buildItemsInOrder(
-                                                        xQuanJeanxAo:
-                                                            "msg_10xquan_jean_10xao"
-                                                                .tr)),
-                                                SizedBox(height: 10.v),
-                                                Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 1.h),
-                                                    child: _buildService(
-                                                        hangOnWashing:
-                                                            "msg_hang_on_washing"
-                                                                .tr)),
-                                                SizedBox(height: 8.v),
-                                                Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 1.h),
-                                                    child: Row(children: [
-                                                      CustomImageView(
-                                                          imagePath: ImageConstant
-                                                              .imgThumbsUpBlueGray300,
-                                                          height: 12.v,
-                                                          width: 11.h,
-                                                          margin: EdgeInsets
-                                                              .symmetric(
-                                                                  vertical:
-                                                                      1.v)),
-                                                      Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 9.h),
-                                                          child: Text(
-                                                              "msg_box_50x50x100"
-                                                                  .tr,
-                                                              style: CustomTextStyles
-                                                                  .labelLargeOrangeA700))
-                                                    ])),
-                                                SizedBox(height: 10.v),
-                                                Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 1.h),
-                                                    child: Text(
-                                                        "msg_start_at_20_12_2023"
-                                                            .tr,
-                                                        style: CustomTextStyles
-                                                            .labelLargeBluegray300)),
-                                                SizedBox(height: 9.v),
-                                                Align(
-                                                    alignment:
-                                                        Alignment.centerRight,
-                                                    child: Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                right: 3.h),
-                                                        child: RichText(
-                                                            text: TextSpan(
-                                                                children: [
-                                                                  TextSpan(
-                                                                      text: "lbl_total"
-                                                                          .tr,
-                                                                      style: theme
-                                                                          .textTheme
-                                                                          .titleSmall),
-                                                                  TextSpan(
-                                                                      text: "lbl_200000"
-                                                                          .tr,
-                                                                      style: theme
-                                                                          .textTheme
-                                                                          .titleSmall)
-                                                                ]),
-                                                            textAlign: TextAlign
-                                                                .left)))
-                                              ])))
-                                ])),
-                        SizedBox(height: 12.v)
-                      ]))),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                  margin: EdgeInsets.only(left: 2.h, top: 245.v),
-                  padding: EdgeInsets.fromLTRB(12.h, 1.v, 12.h, 2.v),
-                  decoration: AppDecoration.outlineBluegray300,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                            height: 20.adaptSize,
-                            width: 20.adaptSize,
-                            margin: EdgeInsets.only(top: 40.v, bottom: 89.v),
-                            decoration: BoxDecoration(
-                                color: theme.colorScheme.primary,
-                                border: Border.all(
-                                    color: appTheme.black900, width: 2.h))),
-                        CustomImageView(
-                            imagePath: ImageConstant.imgImage11,
-                            height: 40.v,
-                            width: 47.h,
-                            margin: EdgeInsets.only(
-                                left: 6.h, top: 30.v, bottom: 79.v)),
-                        Expanded(
-                            child: Padding(
-                                padding: EdgeInsets.only(left: 9.h, top: 7.v),
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      _buildId(
-                                          iD: "lbl_id".tr,
-                                          widget: "msg_33589549623491_002".tr),
-                                      SizedBox(height: 9.v),
-                                      Padding(
-                                          padding: EdgeInsets.only(left: 1.h),
-                                          child: _buildItemsInOrder(
-                                              xQuanJeanxAo:
-                                                  "msg_10xquan_jean_10xao".tr)),
-                                      SizedBox(height: 10.v),
-                                      Padding(
-                                          padding: EdgeInsets.only(left: 1.h),
-                                          child: _buildService(
-                                              hangOnWashing:
-                                                  "msg_hang_on_washing".tr)),
-                                      SizedBox(height: 8.v),
-                                      Padding(
-                                          padding: EdgeInsets.only(left: 1.h),
-                                          child: Row(children: [
-                                            CustomImageView(
-                                                imagePath: ImageConstant
-                                                    .imgThumbsUpBlueGray300,
-                                                height: 12.v,
-                                                width: 11.h,
-                                                margin: EdgeInsets.symmetric(
-                                                    vertical: 1.v)),
-                                            Padding(
-                                                padding:
-                                                    EdgeInsets.only(left: 9.h),
-                                                child: Text(
-                                                    "msg_box_50x100x1003".tr,
-                                                    style: CustomTextStyles
-                                                        .labelLargeOrangeA700))
-                                          ])),
-                                      SizedBox(height: 10.v),
-                                      Padding(
-                                          padding: EdgeInsets.only(left: 1.h),
-                                          child: Text(
-                                              "msg_start_at_20_12_2023".tr,
-                                              style: CustomTextStyles
-                                                  .labelLargeBluegray300)),
-                                      SizedBox(height: 9.v),
-                                      Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Padding(
-                                              padding:
-                                                  EdgeInsets.only(right: 3.h),
-                                              child: RichText(
-                                                  text: TextSpan(children: [
-                                                    TextSpan(
-                                                        text: "lbl_total".tr,
-                                                        style: theme.textTheme
-                                                            .titleSmall),
-                                                    TextSpan(
-                                                        text: "lbl_200000".tr,
-                                                        style: theme.textTheme
-                                                            .titleSmall)
-                                                  ]),
-                                                  textAlign: TextAlign.left)))
-                                    ])))
-                      ]))),
+  Widget _buildBodySection() {
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            offset: const Offset(
+              0.5,
+              0.5,
+            ),
+            blurRadius: 1.0,
+            spreadRadius: 0.5,
+          ), //BoxShadow
+          BoxShadow(
+            color: Colors.white,
+            offset: const Offset(0.0, 0.0),
+            blurRadius: 0.0,
+            spreadRadius: 0.0,
+          ), //BoxShadow
+        ],
+        color: theme.colorScheme.primary,
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(30),
+          topLeft: Radius.circular(30),
+        ),
+      ),
+      height: SizeUtils.height,
+      width: SizeUtils.width,
+      padding: EdgeInsets.symmetric(horizontal: 20.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //
+          _buildBoxSearch(),
+          SizedBox(height: 15.v),
+          //
           Padding(
-              padding: EdgeInsets.only(left: 17.h),
-              child: CustomDropDown(
-                  width: 95.h,
-                  hintText: "lbl_14_days_ago".tr,
-                  alignment: Alignment.topLeft,
-                  items: controller
-                      .getBackChooseBoxModelObj.value.dropdownItemList1!.value,
-                  onChanged: (value) {
-                    controller.onSelected1(value);
-                  }))
-        ]));
+            padding: EdgeInsets.only(left: 0.h),
+            child: CustomDropDown(
+              width: 95.h,
+              hintText: "lbl_14_days_ago".tr,
+              items: controller
+                  .getBackChooseBoxModelObj.value.dropdownItemList1!.value,
+              onChanged: (value) {
+                controller.onSelected1(value);
+              },
+            ),
+          ),
+          SizedBox(height: 25.v),
+          //
+          _buildItemByID(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBoxSearch() {
+    return Padding(
+      padding: EdgeInsets.only(left: 0.h, right: 0.h, top: 20.h),
+      child: CustomDropDown(
+        icon: Container(
+          margin: EdgeInsets.fromLTRB(30.h, 19.v, 21.h, 19.v),
+          child: CustomImageView(
+            imagePath: ImageConstant.imgSave,
+            height: 12.v,
+            width: 19.h,
+          ),
+        ),
+        hintStyle: TextStyle(),
+        hintText: "lbl_search_by_id".tr,
+        alignment: Alignment.center,
+        items:
+            controller.getBackChooseBoxModelObj.value.dropdownItemList!.value,
+        contentPadding: EdgeInsets.only(left: 20.h, top: 15.v, bottom: 15.v),
+        onChanged: (value) {
+          controller.onSelected(value);
+        },
+      ),
+    );
+  }
+
+  Widget _buildItemByID() {
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 20.adaptSize,
+              width: 20.adaptSize,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                border: Border.all(color: appTheme.black900, width: 2.h),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 12.h),
+              child: Text("lbl_id".tr,
+                  style: CustomTextStyles.titleSmallBlack900Medium),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 5.h),
+              child: Text("lbl_33589549623491".tr,
+                  style: CustomTextStyles.titleSmallBlack900Medium),
+            ),
+            CustomImageView(
+              imagePath: ImageConstant.imgBookmark,
+              height: 13.v,
+              width: 11.h,
+              margin: EdgeInsets.only(left: 6.h, top: 3.v, bottom: 3.v),
+            ),
+          ],
+        ),
+        SizedBox(height: 12.v),
+
+        //
+        Container(
+          height: 500.v,
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                _buildItem(
+                    "msg_33589549623491_001".tr,
+                    "10x Quan jeans; 10x Ao so mi; 10x That lung da",
+                    "msg_hang_on_washing".tr,
+                    "lbl_box_50x50x100".tr,
+                    "20/12/2023",
+                    200000),
+                _buildItem(
+                    "msg_33589549623491_002".tr,
+                    "10x Quan jeans; 10x Ao so mi; 10x That lung da",
+                    "msg_hang_on_washing".tr,
+                    "msg_box_50x100x100".tr,
+                    "20/12/2023",
+                    200000),
+                _buildItem(
+                    "msg_33589549623491_002".tr,
+                    "10x Quan jeans; 10x Ao so mi; 10x That lung da",
+                    "msg_hang_on_washing".tr,
+                    "msg_box_50x100x100".tr,
+                    "20/12/2023",
+                    200000),
+                _buildItem(
+                    "msg_33589549623491_002".tr,
+                    "10x Quan jeans; 10x Ao so mi; 10x That lung da",
+                    "msg_hang_on_washing".tr,
+                    "msg_box_50x100x100".tr,
+                    "20/12/2023",
+                    200000),
+                _buildItem(
+                    "msg_33589549623491_002".tr,
+                    "10x Quan jeans; 10x Ao so mi; 10x That lung da",
+                    "msg_hang_on_washing".tr,
+                    "msg_box_50x100x100".tr,
+                    "20/12/2023",
+                    200000),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Section Widget
+  Widget _buildItem(
+    id_item,
+    textItem,
+    textService,
+    amountItem,
+    startDate,
+    total,
+  ) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(5.h, 10.v, 10.h, 10.v),
+      decoration: AppDecoration.outlineBluegray300,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 20.adaptSize,
+            width: 20.adaptSize,
+            margin: EdgeInsets.only(top: 30.v, bottom: 40.v),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary,
+              border: Border.all(color: appTheme.black900, width: 2.h),
+            ),
+          ),
+          //
+          Expanded(
+            child: Container(
+              width: SizeUtils.width - 20.h - 50.adaptSize - 20.adaptSize,
+              child: Padding(
+                padding: EdgeInsets.only(left: 9.h, bottom: 1.v),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildId(
+                      iD: "lbl_id".tr,
+                      widget: id_item,
+                    ),
+                    SizedBox(height: 10.v),
+                    //
+                    Padding(
+                      padding: EdgeInsets.only(left: 1.h),
+                      child: _buildContentItem(
+                        imageService: ImageConstant.imgThumbsUp,
+                        text: textItem,
+                        textStyleService: CustomTextStyles.labelLargeGray80002
+                            .copyWith(color: appTheme.gray80002),
+                      ),
+                    ),
+                    SizedBox(height: 10.v),
+                    //
+                    Padding(
+                      padding: EdgeInsets.only(left: 1.h),
+                      child: _buildContentItem(
+                        imageService: ImageConstant.imgThumbsUp,
+                        text: textService,
+                        textStyleService: CustomTextStyles
+                            .labelLargeLightblue800
+                            .copyWith(color: appTheme.lightBlue800),
+                      ),
+                    ),
+                    SizedBox(height: 10.v),
+                    //
+                    Padding(
+                      padding: EdgeInsets.only(left: 1.h),
+                      child: _buildContentItem(
+                        imageService: ImageConstant.imgThumbsUpBlueGray300,
+                        text: amountItem,
+                        textStyleService: CustomTextStyles.labelLargeOrangeA700,
+                      ),
+                    ),
+                    SizedBox(height: 10.v),
+                    //
+                    Padding(
+                      padding: EdgeInsets.only(left: 1.h),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Start at: ",
+                            style: CustomTextStyles.labelLargeBluegray300,
+                          ),
+                          Text(
+                            startDate,
+                            style: CustomTextStyles.labelLargeBluegray300,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10.v),
+                    //
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 3.h),
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Total: ",
+                                style: theme.textTheme.titleSmall,
+                              ),
+                              TextSpan(
+                                text: total.toString(),
+                                style: theme.textTheme.titleSmall,
+                              ),
+                            ],
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   /// Common widget
@@ -441,53 +482,63 @@ class GetBackChooseBoxScreen extends GetWidget<GetBackChooseBoxController> {
     required String iD,
     required String widget,
   }) {
-    return Row(children: [
-      Text(iD,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          iD,
           style: CustomTextStyles.labelLargeBluegray300
-              .copyWith(color: appTheme.blueGray300)),
-      Padding(
+              .copyWith(color: appTheme.blueGray300),
+        ),
+        Padding(
           padding: EdgeInsets.only(left: 8.h),
-          child: Text(widget,
-              style: theme.textTheme.labelLarge!
-                  .copyWith(color: appTheme.black900))),
-      CustomImageView(
+          child: Text(
+            widget,
+            style:
+                theme.textTheme.labelLarge!.copyWith(color: appTheme.black900),
+          ),
+        ),
+        CustomImageView(
           imagePath: ImageConstant.imgComputer,
           height: 13.v,
           width: 11.h,
-          margin: EdgeInsets.only(left: 4.h))
-    ]);
+          margin: EdgeInsets.only(left: 4.h),
+        ),
+      ],
+    );
   }
 
   /// Common widget
-  Widget _buildItemsInOrder({required String xQuanJeanxAo}) {
-    return Row(children: [
-      CustomImageView(
-          imagePath: ImageConstant.imgGrid,
-          height: 12.v,
-          width: 11.h,
-          margin: EdgeInsets.only(bottom: 4.v)),
-      Padding(
-          padding: EdgeInsets.only(left: 9.h),
-          child: Text(xQuanJeanxAo,
-              style: CustomTextStyles.labelLargeGray80002
-                  .copyWith(color: appTheme.gray80002)))
-    ]);
-  }
-
-  /// Common widget
-  Widget _buildService({required String hangOnWashing}) {
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      CustomImageView(
-          imagePath: ImageConstant.imgThumbsUp,
-          height: 9.v,
-          width: 11.h,
-          margin: EdgeInsets.only(top: 1.v, bottom: 3.v)),
-      Padding(
-          padding: EdgeInsets.only(left: 9.h),
-          child: Text(hangOnWashing,
-              style: CustomTextStyles.labelLargeLightblue800
-                  .copyWith(color: appTheme.lightBlue800)))
-    ]);
+  Widget _buildContentItem({
+    required String imageService,
+    required String text,
+    required TextStyle textStyleService,
+  }) {
+    return Container(
+      width: 400.adaptSize,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomImageView(
+            imagePath: imageService,
+            height: 10.v,
+            width: 10.h,
+            margin: EdgeInsets.only(top: 2.v, bottom: 2.v),
+          ),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.only(left: 10.h),
+              child: Text(
+                text,
+                overflow: TextOverflow.clip,
+                style: textStyleService,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   /// Navigates to the typeRequestScreen when the action is triggered.

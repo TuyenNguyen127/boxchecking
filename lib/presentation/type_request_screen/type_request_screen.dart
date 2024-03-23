@@ -116,6 +116,8 @@ class TypeRequestScreen extends GetWidget<TypeRequestController> {
 
     // Get.offNamed(AppRoutes.typeRequestScreen);
 
+    // lỗi globalkey sau khi click vào checking box và thoát ra để quay về homescreen
+
     Navigator.pop(context);
   }
 

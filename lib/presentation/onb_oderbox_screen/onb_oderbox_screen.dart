@@ -37,21 +37,43 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
       child: Scaffold(
         appBar: _buildAppBarPageOrderbox(),
         body: Container(
-          decoration: BoxDecoration(color: Colors.grey[200]),
           width: SizeUtils.width,
-
-          // child: CustomStepperBar(),
-
+          height: SizeUtils.height,
+          decoration: AppDecoration.fillGray,
           child: Stack(
+            alignment: Alignment.bottomCenter,
             children: [
               //
-              _buildSectionTrackProgress(),
+              Positioned.fill(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: _buildSectionTrackProgress(),
+                ),
+              ),
               //
-              // SizedBox(height: 20.v),
-              _buildFormSection(),
+              Positioned(
+                top: 100.v,
+                child: _buildFormSection(),
+              ),
               //
-              // SizedBox(height: 20.v),
               _buildListOder(),
+              //
+              Container(
+                padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 45.v),
+                child: CustomIconButton(
+                  height: 60.adaptSize,
+                  width: 60.adaptSize,
+                  padding: EdgeInsets.all(15.h),
+                  alignment: Alignment.bottomRight,
+                  onTap: () {
+                    onTapBtnArrowRight();
+                  },
+                  child: CustomImageView(
+                    imagePath: ImageConstant.imgArrowRight,
+                  ),
+                ),
+              ),
+              // ),
             ],
           ),
         ),
@@ -68,7 +90,7 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
       leadingWidth: 60.h,
       leading: AppbarLeadingImage(
         imagePath: ImageConstant.imgVectorPrimary,
-        margin: EdgeInsets.only(left: 22.h, top: 4.v, right: 22.h),
+        margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
         onTap: () {
           onTapVector();
         },
@@ -86,10 +108,11 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
 
   Widget _buildSectionTrackProgress() {
     return Container(
-      height: 150.v,
+      height: 160.v,
       padding: EdgeInsets.only(left: 60.v, right: 60.v, top: 10.v),
       decoration: BoxDecoration(color: appTheme.redA200),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -194,13 +217,13 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.grey,
+            color: Colors.black26,
             offset: const Offset(
-              5.0,
-              5.0,
+              0.5,
+              0.5,
             ),
-            blurRadius: 10.0,
-            spreadRadius: 1.0,
+            blurRadius: 1.0,
+            spreadRadius: 0.5,
           ), //BoxShadow
           BoxShadow(
             color: Colors.white,
@@ -217,7 +240,7 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
       ),
       height: 300.adaptSize,
       width: SizeUtils.width,
-      margin: EdgeInsets.only(top: 90.h),
+      // margin: EdgeInsets.only(top: 90.h),
       padding: EdgeInsets.symmetric(horizontal: 20.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -227,14 +250,14 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           Padding(
             padding: EdgeInsets.only(right: 2.h),
             child: CustomDropDown(
-              icon: Container(
-                margin: EdgeInsets.fromLTRB(30.h, 19.v, 21.h, 19.v),
-                child: CustomImageView(
-                  imagePath: ImageConstant.imgSave,
-                  height: 12.v,
-                  width: 19.h,
-                ),
-              ),
+              // icon: Container(
+              //   margin: EdgeInsets.fromLTRB(30.h, 19.v, 21.h, 19.v),
+              //   child: CustomImageView(
+              //     imagePath: ImageConstant.imgSave,
+              //     height: 12.v,
+              //     width: 19.h,
+              //   ),
+              // ),
               hintText: "lbl_type_box".tr,
               hintStyle: CustomTextStyles.bodyLargeBlack900,
               items:
@@ -252,14 +275,14 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           Padding(
             padding: EdgeInsets.only(right: 2.h),
             child: CustomDropDown(
-              icon: Container(
-                margin: EdgeInsets.fromLTRB(30.h, 19.v, 20.h, 19.v),
-                child: CustomImageView(
-                  imagePath: ImageConstant.imgSave,
-                  height: 12.v,
-                  width: 19.h,
-                ),
-              ),
+              // icon: Container(
+              //   margin: EdgeInsets.fromLTRB(30.h, 19.v, 20.h, 19.v),
+              //   child: CustomImageView(
+              //     imagePath: ImageConstant.imgSave,
+              //     height: 12.v,
+              //     width: 19.h,
+              //   ),
+              // ),
               hintText: "lbl_model_box".tr,
               hintStyle: CustomTextStyles.bodyLargeBlack900,
               items:
@@ -277,14 +300,14 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           Padding(
             padding: EdgeInsets.only(right: 2.h),
             child: CustomDropDown(
-              icon: Container(
-                margin: EdgeInsets.fromLTRB(30.h, 19.v, 20.h, 19.v),
-                child: CustomImageView(
-                  imagePath: ImageConstant.imgSave,
-                  height: 12.v,
-                  width: 19.h,
-                ),
-              ),
+              // icon: Container(
+              //   margin: EdgeInsets.fromLTRB(30.h, 19.v, 20.h, 19.v),
+              //   child: CustomImageView(
+              //     imagePath: ImageConstant.imgSave,
+              //     height: 12.v,
+              //     width: 19.h,
+              //   ),
+              // ),
               hintText: "lbl_service".tr,
               hintStyle: CustomTextStyles.bodyLargeBlack900,
               items:
@@ -312,16 +335,18 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
   /// Section Widget
   Widget _buildListOder() {
     return Container(
-        margin: EdgeInsets.only(top: 380.h),
-        padding: EdgeInsets.symmetric(horizontal: 30.h, vertical: 20.v),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.primary,
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(30),
-            topLeft: Radius.circular(30),
-          ),
+      height: 350.v,
+      // margin: EdgeInsets.only(top: 380.h),
+      padding: EdgeInsets.symmetric(horizontal: 30.h, vertical: 20.v),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary,
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(30),
+          topLeft: Radius.circular(30),
         ),
-        child: Column(children: [
+      ),
+      child: Column(
+        children: [
           Align(
               alignment: Alignment.centerLeft,
               child: Text("lbl_list_order_box".tr,
@@ -541,20 +566,23 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
               ],
             ),
           ),
-          SizedBox(height: 20.v),
-          Padding(
-              padding: EdgeInsets.only(right: 12.h),
-              child: CustomIconButton(
-                  height: 60.adaptSize,
-                  width: 60.adaptSize,
-                  padding: EdgeInsets.all(15.h),
-                  alignment: Alignment.centerRight,
-                  onTap: () {
-                    onTapBtnArrowRight();
-                  },
-                  child:
-                      CustomImageView(imagePath: ImageConstant.imgArrowRight))),
-        ]));
+          // SizedBox(height: 20.v),
+          // Padding(
+          //   padding: EdgeInsets.only(right: 12.h),
+          //   child: CustomIconButton(
+          //     height: 60.adaptSize,
+          //     width: 60.adaptSize,
+          //     padding: EdgeInsets.all(15.h),
+          //     alignment: Alignment.centerRight,
+          //     onTap: () {
+          //       onTapBtnArrowRight();
+          //     },
+          //     child: CustomImageView(imagePath: ImageConstant.imgArrowRight),
+          //   ),
+          // ),
+        ],
+      ),
+    );
   }
 
   /// Navigates to the typeRequestScreen when the action is triggered.
@@ -566,8 +594,8 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
 
   /// Navigates to the onbAddressScreen when the action is triggered.
   onTapBtnArrowRight() {
-    // Get.toNamed(
-    //   AppRoutes.onbAddressScreen,
-    // );
+    Get.toNamed(
+      AppRoutes.onbAddressScreen,
+    );
   }
 }
