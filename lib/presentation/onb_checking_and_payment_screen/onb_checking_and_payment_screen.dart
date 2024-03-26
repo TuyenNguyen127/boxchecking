@@ -12,9 +12,11 @@ import 'controller/onb_checking_and_payment_controller.dart';
 class OnbCheckingAndPaymentScreen
     extends GetWidget<OnbCheckingAndPaymentController> {
   const OnbCheckingAndPaymentScreen({Key? key}) : super(key: key);
+  static late bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Scaffold(
         //
@@ -37,13 +39,18 @@ class OnbCheckingAndPaymentScreen
               //
               Positioned(
                 top: 100.v,
-                child: _buildContentPageCheckingAndPayment(),
+                child: _buildFakeBackground(),
               ),
               //
               Positioned(
-                bottom: 120.v,
-                child: _buildAgreethetermsofuse(),
+                top: 100.v,
+                child: _buildContentPageCheckingAndPayment(),
               ),
+              //
+              // Positioned(
+              //   bottom: 120.v,
+              //   child: _buildAgreethetermsofuse(),
+              // ),
               //
               _buildArrowRightLeft(),
             ],
@@ -181,7 +188,8 @@ class OnbCheckingAndPaymentScreen
     );
   }
 
-  Widget _buildContentPageCheckingAndPayment() {
+  Widget _buildFakeBackground() {
+    
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 20.v),
@@ -189,26 +197,65 @@ class OnbCheckingAndPaymentScreen
             .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
         height: SizeUtils.height,
         width: SizeUtils.width,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            //
-            Text("Request Data", style: CustomTextStyles.titleLargeGray800),
-            //
-            SizedBox(height: 10.v),
-            Divider(),
-            SizedBox(height: 10.v),
-            //
-            _buildPackageRequirementsSection(),
-            //
-            SizedBox(height: 10.v),
-            Divider(),
-            SizedBox(height: 10.v),
-            //
-            _buildAddress(),
-          ],
-        ),
       ),
+    );
+  }
+  
+
+  Widget _buildContentPageCheckingAndPayment() {
+    return 
+    // SingleChildScrollView(
+    //   child: 
+      Container(
+        padding: EdgeInsets.symmetric(horizontal: 20.v, vertical: 10.v),
+        decoration: AppDecoration.fillPrimary
+            .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
+        height: SizeUtils.height - 250.v,
+        width: SizeUtils.width,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              //
+              Text("Request Data", style: CustomTextStyles.titleLargeGray800),
+              //
+              SizedBox(height: 10.v),
+              Divider(),
+              SizedBox(height: 10.v),
+              //
+              Container(
+                height: SizeUtils.height - 350.v,
+                decoration: AppDecoration.fillPrimary
+                    .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      //
+                      _buildPackageRequirementsSection(),
+                      //
+                      SizedBox(height: 10.v),
+                      Divider(),
+                      SizedBox(height: 10.v),
+                      //
+                      _buildAddress(),
+                      // 
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildAgreethetermsofuse(),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      // ),
     );
   }
 
@@ -239,7 +286,8 @@ class OnbCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.h),
+          // padding: EdgeInsets.only(left: 10.h, right: 40.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -276,7 +324,8 @@ class OnbCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.h),
+          // padding: EdgeInsets.only(left: 10.h, right: 40.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -295,16 +344,15 @@ class OnbCheckingAndPaymentScreen
             ],
           ),
         ),
-        SizedBox(height: 30.v),
       ],
     );
   }
 
   Widget _buildPackageRequirementsSection() {
     return Container(
-      height: 320.v,
+      //height: 320.v,
       // height: 200.v,
-      padding: EdgeInsets.only(left: 25.h),
+      // padding: EdgeInsets.only(left: 25.h),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -320,12 +368,31 @@ class OnbCheckingAndPaymentScreen
             //
             _buildPackageRequirementsItem(
                 1, "Carton box", 50, 50, 50, "Washing, Keeping the hotels"),
+            SizedBox(height: 13.v),
             //
             _buildPackageRequirementsItem(
                 1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+            SizedBox(height: 30.v),
+
             //
             _buildPackageRequirementsItem(
                 1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+            SizedBox(height: 30.v),
+
+            //
+            _buildPackageRequirementsItem(
+                1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+            SizedBox(height: 30.v),
+
+            //
+            _buildPackageRequirementsItem(
+                1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+            SizedBox(height: 30.v),
+
+            //
+            _buildPackageRequirementsItem(
+                1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+            SizedBox(height: 10.v),
             //
             // Align(
             //   alignment: Alignment.centerLeft,
@@ -362,7 +429,8 @@ class OnbCheckingAndPaymentScreen
       children: [
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.h),
+          // padding: EdgeInsets.only(left: 10.h, right: 40.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -385,7 +453,8 @@ class OnbCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.h),
+          // padding: EdgeInsets.only(left: 10.h, right: 40.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -408,7 +477,8 @@ class OnbCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.h),
+          // padding: EdgeInsets.only(left: 10.h, right: 40.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -434,9 +504,9 @@ class OnbCheckingAndPaymentScreen
 
   Widget _buildAddress() {
     return Container(
-      height: 100.v,
+      //height: 100.v,
       // height: 200.v,
-      padding: EdgeInsets.only(left: 25.h),
+      // padding: EdgeInsets.only(left: 25.h),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -453,11 +523,6 @@ class OnbCheckingAndPaymentScreen
             _buildAddressItem("Long Do", "0123456789",
                 "Tay Mo, Nam Tu Liem, Ha Noi, Vietnam"),
             //
-            _buildAddressItem("Long Do", "0123456789",
-                "Tay Mo, Nam Tu Liem, Ha Noi, Vietnam"),
-            //
-            _buildAddressItem("Long Do", "0123456789",
-                "Tay Mo, Nam Tu Liem, Ha Noi, Vietnam"),
           ],
         ),
       ),
@@ -532,6 +597,7 @@ class OnbCheckingAndPaymentScreen
         value: controller.agreethetermsofuse.value,
         onChange: (value) {
           controller.agreethetermsofuse.value = value;
+          isChecked = controller.agreethetermsofuse.value;
         },
       ),
     );
@@ -544,6 +610,7 @@ class OnbCheckingAndPaymentScreen
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // 
           CustomIconButton(
             height: 60.adaptSize,
             width: 60.adaptSize,
@@ -555,12 +622,15 @@ class OnbCheckingAndPaymentScreen
               imagePath: ImageConstant.imgArrowRightOnerrorcontainer,
             ),
           ),
+          // 
           CustomIconButton(
             height: 60.adaptSize,
             width: 60.adaptSize,
             padding: EdgeInsets.all(15.h),
             onTap: () {
-              onTapBtnArrowRight();
+              if (isChecked) {
+                onTapBtnArrowRight();
+              }
             },
             child: CustomImageView(
               imagePath: ImageConstant.imgArrowRight,

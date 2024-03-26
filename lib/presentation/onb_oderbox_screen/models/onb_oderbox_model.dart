@@ -7,48 +7,40 @@ class OnbOderboxModel {
   Rx<List<SelectionPopupModel>> dropdownItemList = Rx([
     SelectionPopupModel(
       id: 1,
-      title: "Item One",
+      title: "Bag",
       isSelected: true,
     ),
     SelectionPopupModel(
       id: 2,
-      title: "Item Two",
-    ),
-    SelectionPopupModel(
-      id: 3,
-      title: "Item Three",
+      title: "Box",
     )
   ]);
 
   Rx<List<SelectionPopupModel>> dropdownItemList1 = Rx([
     SelectionPopupModel(
       id: 1,
-      title: "Item One",
+      title: "50 x 50 x 50",
       isSelected: true,
     ),
     SelectionPopupModel(
       id: 2,
-      title: "Item Two",
+      title: "100 x 50 x 50",
     ),
     SelectionPopupModel(
       id: 3,
-      title: "Item Three",
+      title: "100 x 100 x 50",
     )
   ]);
 
   Rx<List<SelectionPopupModel>> dropdownItemList2 = Rx([
     SelectionPopupModel(
       id: 1,
-      title: "Item One",
+      title: "Hang On",
       isSelected: true,
     ),
     SelectionPopupModel(
       id: 2,
-      title: "Item Two",
-    ),
-    SelectionPopupModel(
-      id: 3,
-      title: "Item Three",
+      title: "Washing",
     )
   ]);
 }

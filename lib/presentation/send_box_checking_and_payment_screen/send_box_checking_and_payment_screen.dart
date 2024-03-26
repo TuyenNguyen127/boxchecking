@@ -611,6 +611,7 @@ class SendBoxCheckingAndPaymentScreen
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // 
           CustomIconButton(
             height: 60.adaptSize,
             width: 60.adaptSize,
@@ -622,6 +623,28 @@ class SendBoxCheckingAndPaymentScreen
               imagePath: ImageConstant.imgArrowRightOnerrorcontainer,
             ),
           ),
+          // 
+          // Obx( () =>
+          //     CustomIconButton(
+          //     height: 60.adaptSize,
+          //     width: 60.adaptSize,
+          //     onTap: () {
+          //       print(controller.agreethetermsofuse.value);
+                
+          //       // if (controller.agreethetermsofuse.value) {
+          //       //   onTapBtnArrowRight();
+          //       // }
+          //       // else {
+          //       //   print('dit ba');
+          //       // }
+          //     },
+          //     padding: EdgeInsets.all(15.h),
+          //     child: CustomImageView(
+          //       imagePath: ImageConstant.imgArrowRight,
+          //     ),
+          //   ),
+          // ),
+          // 
           CustomIconButton(
             height: 60.adaptSize,
             width: 60.adaptSize,

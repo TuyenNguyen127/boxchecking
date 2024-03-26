@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/app_export.dart';
 
@@ -10,7 +11,11 @@ void main() {
     DeviceOrientation.portraitUp,
   ]).then((value) {
     Logger.init(kReleaseMode ? LogMode.live : LogMode.debug);
-    runApp(MyApp());
+    runApp(
+      ProviderScope(
+        child: MyApp(),
+      ),
+    );
   });
 }
 
@@ -33,3 +38,19 @@ class MyApp extends StatelessWidget {
     });
   }
 }
+
+class NewBoxOrder {
+  String orderId;
+  String productName;
+  int quantity;
+
+  NewBoxOrder(
+      {required this.orderId,
+      required this.productName,
+      required this.quantity});
+}
+
+final newBoxOrderProvider = Provider<NewBoxOrder>((ref) {
+  // Thay thế dữ liệu mẫu bằng thông tin thực tế của đơn hàng new box
+  return NewBoxOrder(orderId: '123', productName: 'Product Name', quantity: 1);
+});

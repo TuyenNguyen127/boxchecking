@@ -87,6 +87,8 @@ class CustomTextFormField extends StatelessWidget {
   Widget get textFormFieldWidget => SizedBox(
         width: width ?? double.maxFinite,
         child: TextFormField(
+          cursorColor: Colors.black,
+          showCursor: true,
           scrollPadding: EdgeInsets.only(
               bottom: MediaQuery.of(Get.context!).viewInsets.bottom),
           controller: controller,

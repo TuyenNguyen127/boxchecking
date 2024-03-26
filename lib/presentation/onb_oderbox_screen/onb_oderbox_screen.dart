@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/app_bar/appbar_title.dart';
@@ -10,6 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'controller/onb_oderbox_controller.dart';
 import 'widgets/custom_stepper_bar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
+import '../../main.dart';
+import 'package:flutter/material.dart' as flutter;
 
 class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
   OnbOderboxScreen({Key? key}) : super(key: key);
@@ -33,51 +38,61 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: _buildAppBarPageOrderbox(),
-        body: Container(
-          width: SizeUtils.width,
-          height: SizeUtils.height,
-          decoration: AppDecoration.fillGray,
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              //
-              Positioned.fill(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: _buildSectionTrackProgress(),
-                ),
-              ),
-              //
-              Positioned(
-                top: 100.v,
-                child: _buildFormSection(),
-              ),
-              //
-              _buildListOder(),
-              //
-              Container(
-                padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 45.v),
-                child: CustomIconButton(
-                  height: 60.adaptSize,
-                  width: 60.adaptSize,
-                  padding: EdgeInsets.all(15.h),
-                  alignment: Alignment.bottomRight,
-                  onTap: () {
-                    onTapBtnArrowRight();
-                  },
-                  child: CustomImageView(
-                    imagePath: ImageConstant.imgArrowRight,
+    return Consumer(
+      builder: (context, ref, _) {
+        final newBoxOrder = ref.watch(newBoxOrderProvider);
+        print("newBoxOrder1");
+        print("Order ID: ${newBoxOrder.orderId}");
+        print("Product Name: ${newBoxOrder.productName}");
+        print("Quantity: ${newBoxOrder.quantity}");
+        print("newBoxOrder2");
+        return flutter.SafeArea(
+          child: Scaffold(
+            appBar: _buildAppBarPageOrderbox(),
+            body: Consumer(
+              builder: (context, newBoxOrder, _) {
+                return Container(
+                  width: SizeUtils.width,
+                  height: SizeUtils.height,
+                  decoration: AppDecoration.fillGray,
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: _buildSectionTrackProgress(),
+                        ),
+                      ),
+                      Positioned(
+                        top: 100.v,
+                        child: _buildFormSection(),
+                      ),
+                      _buildListOder(),
+                      Container(
+                        padding: EdgeInsets.only(
+                            left: 35.h, right: 35.h, bottom: 45.v),
+                        child: CustomIconButton(
+                          height: 60.adaptSize,
+                          width: 60.adaptSize,
+                          padding: EdgeInsets.all(15.h),
+                          alignment: Alignment.bottomRight,
+                          onTap: () {
+                            onTapBtnArrowRight();
+                          },
+                          child: CustomImageView(
+                            imagePath: ImageConstant.imgArrowRight,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              // ),
-            ],
+                );
+              },
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

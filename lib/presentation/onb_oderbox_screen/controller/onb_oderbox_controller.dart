@@ -1,5 +1,6 @@
 import '../../../core/app_export.dart';
 import '../models/onb_oderbox_model.dart';
+import '../../../model/onb.dart';
 
 /// A controller class for the OnbOderboxScreen.
 ///
@@ -7,6 +8,8 @@ import '../models/onb_oderbox_model.dart';
 /// current onbOderboxModelObj
 class OnbOderboxController extends GetxController {
   Rx<OnbOderboxModel> onbOderboxModelObj = OnbOderboxModel().obs;
+
+  Rx<NewOrderBoxModel> listOrders = NewOrderBoxModel().obs;
 
   SelectionPopupModel? selectedDropDownValue;
 
@@ -42,5 +45,16 @@ class OnbOderboxController extends GetxController {
       }
     }
     onbOderboxModelObj.value.dropdownItemList2.refresh();
+  }
+
+  refreshDropDown() {
+    onSelected(null);
+    onSelected1(null);
+    onSelected2(null);
+  }
+
+  onAdd() {
+    refreshDropDown();
+    //listOrders.
   }
 }

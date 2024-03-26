@@ -180,6 +180,8 @@ class TextThemes {
 
 /// Class containing the supported color schemes.
 class ColorSchemes {
+  
+
   static final primaryColorScheme = ColorScheme.light(
     // Primary colors
     primary: Color(0XFFFFFFFF),
