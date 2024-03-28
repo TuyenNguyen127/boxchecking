@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:js';
+import 'package:flutter/widgets.dart';
 import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/app_bar/appbar_title.dart';
@@ -15,26 +17,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import '../../main.dart';
 import 'package:flutter/material.dart' as flutter;
+import './models/muti_select.dart';
+import './widgets/multiselect_dropdown.dart';
 
 class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
   OnbOderboxScreen({Key? key}) : super(key: key);
 
   // int _currentIndex = 0;
-
-  List<String> boxTypes = <String>['One', 'Two', 'Three', 'Four'];
-
-  List<DropdownMenuItem<String>> get dropdownItems {
-    List<DropdownMenuItem<String>> boxTypes = [
-      DropdownMenuItem(child: Text("One"), value: "One"),
-      DropdownMenuItem(child: Text("Two"), value: "Two"),
-      DropdownMenuItem(child: Text("Three"), value: "Three"),
-      DropdownMenuItem(child: Text("four"), value: "four"),
-    ];
-    return boxTypes;
-  }
-
-  String valueBoxType = "One";
-  String? dropdownValue = "One";
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +55,7 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
                       ),
                       Positioned(
                         top: 100.v,
-                        child: _buildFormSection(),
+                        child: _buildFormSection(context),
                       ),
                       _buildListOder(),
                       Container(
@@ -227,7 +216,7 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
   }
 
   /// Section Widget
-  Widget _buildFormSection() {
+  Widget _buildFormSection(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
@@ -314,25 +303,7 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           SizedBox(height: 10.v),
           Padding(
             padding: EdgeInsets.only(right: 2.h),
-            child: CustomDropDown(
-              // icon: Container(
-              //   margin: EdgeInsets.fromLTRB(30.h, 19.v, 20.h, 19.v),
-              //   child: CustomImageView(
-              //     imagePath: ImageConstant.imgSave,
-              //     height: 12.v,
-              //     width: 19.h,
-              //   ),
-              // ),
-              hintText: "lbl_service".tr,
-              hintStyle: CustomTextStyles.bodyLargeBlack900,
-              items:
-                  controller.onbOderboxModelObj.value.dropdownItemList2!.value,
-              contentPadding:
-                  EdgeInsets.only(left: 19.h, top: 15.v, bottom: 15.v),
-              onChanged: (value) {
-                controller.onSelected2(value);
-              },
-            ),
+            child: MultiSelectDropDownScreen(),
           ),
           SizedBox(height: 20.v),
 
