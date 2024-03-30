@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:js';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lastapp/main.dart';
 import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/app_bar/appbar_title.dart';
@@ -15,26 +17,23 @@ import 'controller/onb_oderbox_controller.dart';
 import 'widgets/custom_stepper_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
-import '../../main.dart';
 import 'package:flutter/material.dart' as flutter;
-import './models/muti_select.dart';
-import './widgets/multiselect_dropdown.dart';
+import './models/new_box.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 
 class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
   OnbOderboxScreen({Key? key}) : super(key: key);
 
-  // int _currentIndex = 0;
+  late List<NewOrderBox> _currentList = [];
+  late String typeBox = "";
+  late String modelBox = "";
+  late String service = ""; 
 
+   
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, _) {
-        final newBoxOrder = ref.watch(newBoxOrderProvider);
-        print("newBoxOrder1");
-        print("Order ID: ${newBoxOrder.orderId}");
-        print("Product Name: ${newBoxOrder.productName}");
-        print("Quantity: ${newBoxOrder.quantity}");
-        print("newBoxOrder2");
         return flutter.SafeArea(
           child: Scaffold(
             appBar: _buildAppBarPageOrderbox(),
@@ -55,9 +54,21 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
                       ),
                       Positioned(
                         top: 100.v,
-                        child: _buildFormSection(context),
+                        child: Container(
+                          height: SizeUtils.height - 160.v,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  _buildFormSection(context),
+
+                                  SizedBox(height: 10.v),
+                                  // _buildListOder(),
+                                  _orderBoxItem(),
+                                ],
+                            ),
+                          ),
+                        ),
                       ),
-                      _buildListOder(),
                       Container(
                         padding: EdgeInsets.only(
                             left: 35.h, right: 35.h, bottom: 45.v),
@@ -67,7 +78,13 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
                           padding: EdgeInsets.all(15.h),
                           alignment: Alignment.bottomRight,
                           onTap: () {
-                            onTapBtnArrowRight();
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.onbAddressScreen,
+                              arguments: {
+                                'boxs': _currentList,
+                              },
+                            );
                           },
                           child: CustomImageView(
                             imagePath: ImageConstant.imgArrowRight,
@@ -242,10 +259,10 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           topLeft: Radius.circular(30),
         ),
       ),
-      height: 300.adaptSize,
+      // height: 360.v,
       width: SizeUtils.width,
       // margin: EdgeInsets.only(top: 90.h),
-      padding: EdgeInsets.symmetric(horizontal: 20.h),
+      padding: EdgeInsets.only(left: 20.h, right: 20.h, bottom: 10.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -266,10 +283,11 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
               hintStyle: CustomTextStyles.bodyLargeBlack900,
               items:
                   controller.onbOderboxModelObj.value.dropdownItemList!.value,
-              contentPadding:
-                  EdgeInsets.only(left: 18.h, top: 15.v, bottom: 15.v),
+              // contentPadding:
+              //     EdgeInsets.only(left: 18.h, top: 15.v, bottom: 15.v),
               onChanged: (value) {
                 controller.onSelected(value);
+                typeBox = value.title;
               },
             ),
           ),
@@ -279,22 +297,15 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           Padding(
             padding: EdgeInsets.only(right: 2.h),
             child: CustomDropDown(
-              // icon: Container(
-              //   margin: EdgeInsets.fromLTRB(30.h, 19.v, 20.h, 19.v),
-              //   child: CustomImageView(
-              //     imagePath: ImageConstant.imgSave,
-              //     height: 12.v,
-              //     width: 19.h,
-              //   ),
-              // ),
               hintText: "lbl_model_box".tr,
               hintStyle: CustomTextStyles.bodyLargeBlack900,
               items:
                   controller.onbOderboxModelObj.value.dropdownItemList1!.value,
-              contentPadding:
-                  EdgeInsets.only(left: 19.h, top: 15.v, bottom: 15.v),
+              // contentPadding:
+              //     EdgeInsets.only(left: 19.h, top: 15.v, bottom: 15.v),
               onChanged: (value) {
                 controller.onSelected1(value);
+                modelBox = value.title;
               },
             ),
           ),
@@ -303,19 +314,88 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           SizedBox(height: 10.v),
           Padding(
             padding: EdgeInsets.only(right: 2.h),
-            child: MultiSelectDropDownScreen(),
+            // child: MultiSelectDropDownScreen(service: service,),
+            child: tempMulti(),
           ),
-          SizedBox(height: 20.v),
+          SizedBox(height: 10.v),
 
-          //
           CustomElevatedButton(
             width: 90.h,
             text: "lbl_add".tr,
             buttonStyle: CustomButtonStyles.fillRedA,
+            onPressed: () async {
+              final _new = NewOrderBox(typeBox: typeBox, modelBox: modelBox, services: service.length > 0 ? service : "Nothing");
+              print(_new.modelBox + " " + _new.typeBox + " " + _new.services );
+              _currentList.add(_new);
+            },
           ),
         ],
       ),
     );
+  }
+
+  Widget tempMulti () {
+    final AppDataController controller = Get.put(AppDataController());
+    late bool isPicked = false;
+
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      controller.getSubjectData();
+    });
+
+    return Container(
+      height: isPicked ? 100.h : null,
+      // height: 70.h,
+      child: Column(
+        children: [
+          GetBuilder<AppDataController>(builder: (controller) {
+            return Padding(
+              padding: const EdgeInsets.all(0.0),
+              child: MultiSelectDialogField(
+                dialogHeight: 200,
+                items: controller.dropDownData,
+                title: const Text(
+                  "Select Subject",
+                  style: TextStyle(color: Colors.black),
+                ),
+                selectedColor: Colors.black,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.all(Radius.circular(15)),
+                  border: Border.all(
+                    color: appTheme.gray500,
+                    width: 1,
+                  ),
+                ),
+                buttonIcon: const Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.blue,
+                ),
+                buttonText: const Text(
+                  "Select Service",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                  ),
+                ),
+                onConfirm: (results) {
+                  if (results.length > 0) {
+                    isPicked = true;
+                  }
+                  for (var i = 0; i < results.length; i++) {
+                    SubjectModel data = results[i] as SubjectModel;
+                    service += data.subjectName;
+                    if (i < results.length - 1) {
+                      service += ", ";
+                    }
+                  }
+                },
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+
   }
 
   /// Section Widget
@@ -341,7 +421,9 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           Padding(
               padding: EdgeInsets.only(right: 2.h),
               child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center, 
+                    children: [
                 CustomImageView(
                     imagePath: ImageConstant.imgThumbsUpBlueGray300,
                     height: 12.v,
@@ -571,6 +653,90 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
     );
   }
 
+  Widget _orderBoxItem() {
+    return Container(
+      // height: SizeUtils.height - 360.v - 160.v - 25.v,
+      //height: 460.v,
+      width: SizeUtils.width,
+      // margin: EdgeInsets.only(top: 380.h),
+      padding: EdgeInsets.symmetric(horizontal: 30.h, vertical: 20.v),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary,
+      ),
+      child: Padding(
+        padding: EdgeInsets.zero,
+        // child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Text('dfasdf'),
+            
+            _itemsOder(NewOrderBox( typeBox: 'SD', modelBox: '1', services: '1')),
+            _itemsOder(NewOrderBox( typeBox: 'SD', modelBox: '1', services: '1')),
+            _itemsOder(NewOrderBox( typeBox: 'SD', modelBox: '1', services: '1')),
+            _itemsOder(NewOrderBox( typeBox: 'SD', modelBox: '1', services: '1')),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _itemsOder(NewOrderBox _new) {
+    return Container(
+      height: 130.v,
+      child: Column(
+        // crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              CustomImageView(
+                imagePath: ImageConstant.imgThumbsUpBlueGray300,
+                height: 12.v,
+                width: 11.h,
+                margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
+              Spacer(),
+              Text(_new.typeBox,
+                style: CustomTextStyles.titleMediumGreen80002),
+              Spacer(),
+              Text('Carton Box',
+                style: CustomTextStyles.titleMediumGreen80002),
+            ],
+          ),
+          Row(
+            children: [
+              CustomImageView(
+                imagePath: ImageConstant.imgThumbsUpBlueGray300,
+                height: 12.v,
+                width: 11.h,
+                margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
+              Spacer(),
+              Text(_new.modelBox,
+                style: CustomTextStyles.titleMediumGreen80002),
+              Spacer(),
+              Text('Carton Box',
+                style: CustomTextStyles.titleMediumGreen80002),
+            ],
+          ),
+          Row(
+            children: [
+              CustomImageView(
+                imagePath: ImageConstant.imgThumbsUpBlueGray300,
+                height: 12.v,
+                width: 11.h,
+                margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
+              Spacer(),
+              Text(_new.services,
+                style: CustomTextStyles.titleMediumGreen80002),
+              Spacer(),
+              Text('Carton Box',
+                style: CustomTextStyles.titleMediumGreen80002),
+            ],
+          ),              
+        ],
+      ),
+    );
+  }
+
   /// Navigates to the typeRequestScreen when the action is triggered.
   onTapVector() {
     Get.toNamed(
@@ -580,8 +746,9 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
 
   /// Navigates to the onbAddressScreen when the action is triggered.
   onTapBtnArrowRight() {
-    Get.toNamed(
-      AppRoutes.onbAddressScreen,
-    );
+    // Get.toNamed(
+    //   AppRoutes.onbAddressScreen,
+    // );
+    //Navigator.pushNamed(context, '/newScreen', _currentList);
   }
 }

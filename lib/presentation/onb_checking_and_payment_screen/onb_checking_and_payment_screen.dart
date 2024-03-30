@@ -52,7 +52,7 @@ class OnbCheckingAndPaymentScreen
               //   child: _buildAgreethetermsofuse(),
               // ),
               //
-              _buildArrowRightLeft(),
+              _buildArrowRightLeft(context),
             ],
           ),
         ),
@@ -604,7 +604,7 @@ class OnbCheckingAndPaymentScreen
   }
 
   /// Section Widget
-  Widget _buildArrowRightLeft() {
+  Widget _buildArrowRightLeft(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 44.v),
       child: Row(
@@ -616,7 +616,8 @@ class OnbCheckingAndPaymentScreen
             width: 60.adaptSize,
             padding: EdgeInsets.all(15.h),
             onTap: () {
-              onTapBtnArrowLeft();
+              //onTapBtnArrowLeft();
+              Navigator.pop(context);
             },
             child: CustomImageView(
               imagePath: ImageConstant.imgArrowRightOnerrorcontainer,
@@ -653,6 +654,7 @@ class OnbCheckingAndPaymentScreen
     Get.toNamed(
       AppRoutes.onbAddressScreen,
     );
+    
   }
 
   /// Navigates to the homeContainerScreen when the action is triggered.

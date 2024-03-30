@@ -4,10 +4,21 @@ import 'package:lastapp/core/app_export.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import '../controller/onb_oderbox_controller.dart';
 
-class MultiSelectDropDownScreen extends StatelessWidget {
-  MultiSelectDropDownScreen({Key? key}) : super(key: key);
+class MultiSelectDropDownScreen extends StatefulWidget {
+  MultiSelectDropDownScreen({Key? key,
+    required this.service
+  }) : super(key: key);
 
+  late String service;
+
+  @override
+  State<MultiSelectDropDownScreen> createState() => _MultiSelectDropDownScreenState();
+}
+
+class _MultiSelectDropDownScreenState extends State<MultiSelectDropDownScreen> {
   final AppDataController controller = Get.put(AppDataController());
+
+  late bool isPicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +29,13 @@ class MultiSelectDropDownScreen extends StatelessWidget {
     });
 
     return Container(
-      height: 100.h,
+      height: isPicked ? 100.h : null,
+      // height: 70.h,
       child: Column(
         children: [
           GetBuilder<AppDataController>(builder: (controller) {
             return Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(0.0),
               child: MultiSelectDialogField(
                 dialogHeight: 200,
                 items: controller.dropDownData,
@@ -34,10 +46,10 @@ class MultiSelectDropDownScreen extends StatelessWidget {
                 selectedColor: Colors.black,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(30)),
+                  borderRadius: const BorderRadius.all(Radius.circular(15)),
                   border: Border.all(
-                    color: Colors.black,
-                    width: 2,
+                    color: appTheme.gray500,
+                    width: 1,
                   ),
                 ),
                 buttonIcon: const Icon(
@@ -45,22 +57,31 @@ class MultiSelectDropDownScreen extends StatelessWidget {
                   color: Colors.blue,
                 ),
                 buttonText: const Text(
-                  "Select Your Subject",
+                  "Select Service",
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 16,
+                    fontSize: 14,
                   ),
                 ),
                 onConfirm: (results) {
-                  subjectData = [];
+                  if (results.length > 0) {isPicked = true;}
+
+                  // subjectData = [];
                   for (var i = 0; i < results.length; i++) {
                     SubjectModel data = results[i] as SubjectModel;
-                    print(data.subjectId);
-                    print(data.subjectName);
-                    subjectData.add(data.subjectId);
-                  }
-                  print("data $subjectData");
+                    //print(data.subjectId);
+                    //print(data.subjectName);
 
+                    // service += data.subjectName;
+
+                    widget.service += data.subjectName;
+                    if (i < results.length - 1) {
+                      widget.service += ", ";
+                    }
+
+                  }
+                  // print("data ${widget.service}");
+                  
                   //_selectedAnimals = results;
                 },
               ),

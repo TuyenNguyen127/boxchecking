@@ -38,19 +38,3 @@ class MyApp extends StatelessWidget {
     });
   }
 }
-
-class NewBoxOrder {
-  String orderId;
-  String productName;
-  int quantity;
-
-  NewBoxOrder(
-      {required this.orderId,
-      required this.productName,
-      required this.quantity});
-}
-
-final newBoxOrderProvider = Provider<NewBoxOrder>((ref) {
-  // Thay thế dữ liệu mẫu bằng thông tin thực tế của đơn hàng new box
-  return NewBoxOrder(orderId: '123', productName: 'Product Name', quantity: 1);
-});

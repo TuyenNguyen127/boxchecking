@@ -16,13 +16,16 @@ import 'controller/onb_address_controller.dart';
 // ignore_for_file: must_be_immutable
 class OnbAddressScreen extends GetWidget<OnbAddressController> {
   OnbAddressScreen({Key? key}) : super(key: key);
-
+  
   Completer<GoogleMapController> googleMapController = Completer();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    final boxs = arguments['boxs'];
+    print(boxs);
     return SafeArea(
       child: Scaffold(
         //
@@ -305,7 +308,7 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
             _buildNinetySix(),
             SizedBox(height: 20.v),
             //
-            _buildMaps(),
+            //_buildMaps(),
           ],
         ),
       ),

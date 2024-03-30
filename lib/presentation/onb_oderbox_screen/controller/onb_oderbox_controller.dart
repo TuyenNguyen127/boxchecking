@@ -1,3 +1,5 @@
+import 'package:lastapp/presentation/onb_oderbox_screen/models/new_box.dart';
+
 import '../../../core/app_export.dart';
 import '../models/onb_oderbox_model.dart';
 import '../../../model/onb.dart';
@@ -8,6 +10,8 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 /// This class manages the state of the OnbOderboxScreen, including the
 /// current onbOderboxModelObj
 class OnbOderboxController extends GetxController {
+  var currentList = <NewOrderBox>[].obs;
+
   Rx<OnbOderboxModel> onbOderboxModelObj = OnbOderboxModel().obs;
 
   Rx<NewOrderBoxModel> listOrders = NewOrderBoxModel().obs;
@@ -72,14 +76,9 @@ class AppDataController extends GetxController {
       "code": 200,
       "message": "Course subject lists.",
       "data": [
-        {"subject_id": "1", "subject_name": "English"},
-        {"subject_id": "2", "subject_name": "Physics"},
-        {"subject_id": "3", "subject_name": "Chemistry"},
-        {"subject_id": "4", "subject_name": "Geography"},
-        {"subject_id": "5", "subject_name": "Math"},
-        {"subject_id": "6", "subject_name": "History"},
-        {"subject_id": "7", "subject_name": "Computer Science"},
-        {"subject_id": "8", "subject_name": "Arts"}
+        {"subject_id": "1", "service_name": "Hang On"},
+        {"subject_id": "2", "service_name": "Washing"},
+        {"subject_id": "3", "service_name": "Chemistry"},
       ]
     };
 
@@ -90,7 +89,7 @@ class AppDataController extends GetxController {
           tempSubjectData.add(
             SubjectModel(
               subjectId: data['subject_id'],
-              subjectName: data['subject_name'],
+              subjectName: data['service_name'],
             ),
           );
         },
