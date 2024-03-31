@@ -1,3 +1,251 @@
+// import 'package:flutter/material.dart';
+// import 'package:multi_select_flutter/multi_select_flutter.dart';
+
+// void main() {
+//   runApp(MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Flutter Multi Select',
+//       theme: ThemeData(
+//         primarySwatch: Colors.purple,
+//         visualDensity: VisualDensity.adaptivePlatformDensity,
+//       ),
+//       home: MyHomePage(title: 'Flutter Multi Select'),
+//     );
+//   }
+// }
+
+// class Animal {
+//   final int id;
+//   final String name;
+
+//   Animal({
+//     required this.id,
+//     required this.name,
+//   });
+// }
+
+// class MyHomePage extends StatefulWidget {
+//   MyHomePage({Key? key, required this.title}) : super(key: key);
+//   final String title;
+//   @override
+//   _MyHomePageState createState() => _MyHomePageState();
+// }
+
+// class _MyHomePageState extends State<MyHomePage> {
+//   static List<Animal> _animals = [
+//     Animal(id: 1, name: "Lion"),
+//     Animal(id: 2, name: "Flamingo"),
+//     Animal(id: 3, name: "Hippo"),
+//     Animal(id: 4, name: "Horse"),
+//     Animal(id: 5, name: "Tiger"),
+//     Animal(id: 6, name: "Penguin"),
+//     Animal(id: 7, name: "Spider"),
+//     Animal(id: 8, name: "Snake"),
+//     Animal(id: 9, name: "Bear"),
+//     Animal(id: 10, name: "Beaver"),
+//     Animal(id: 11, name: "Cat"),
+//     Animal(id: 12, name: "Fish"),
+//     Animal(id: 13, name: "Rabbit"),
+//     Animal(id: 14, name: "Mouse"),
+//     Animal(id: 15, name: "Dog"),
+//     Animal(id: 16, name: "Zebra"),
+//     Animal(id: 17, name: "Cow"),
+//     Animal(id: 18, name: "Frog"),
+//     Animal(id: 19, name: "Blue Jay"),
+//     Animal(id: 20, name: "Moose"),
+//     Animal(id: 21, name: "Gecko"),
+//     Animal(id: 22, name: "Kangaroo"),
+//     Animal(id: 23, name: "Shark"),
+//     Animal(id: 24, name: "Crocodile"),
+//     Animal(id: 25, name: "Owl"),
+//     Animal(id: 26, name: "Dragonfly"),
+//     Animal(id: 27, name: "Dolphin"),
+//   ];
+//   final _items = _animals
+//       .map((animal) => MultiSelectItem<Animal>(animal, animal.name))
+//       .toList();
+//   //List<Animal> _selectedAnimals = [];
+//   List<Animal> _selectedAnimals2 = [];
+//   List<Animal> _selectedAnimals3 = [];
+//   //List<Animal> _selectedAnimals4 = [];
+//   List<Animal> _selectedAnimals5 = [];
+//   final _multiSelectKey = GlobalKey<FormFieldState>();
+
+//   @override
+//   void initState() {
+//     _selectedAnimals5 = _animals;
+//     super.initState();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(widget.title),
+//       ),
+//       body: SingleChildScrollView(
+//         child: Container(
+//           alignment: Alignment.center,
+//           padding: EdgeInsets.all(20),
+//           child: Column(
+//             children: <Widget>[
+//               SizedBox(height: 40),
+//               //################################################################################################
+//               // Rounded blue MultiSelectDialogField
+//               //################################################################################################
+//               MultiSelectDialogField(
+//                 items: _items,
+//                 title: Text("Animals"),
+//                 selectedColor: Colors.blue,
+//                 decoration: BoxDecoration(
+//                   color: Colors.blue.withOpacity(0.1),
+//                   borderRadius: BorderRadius.all(Radius.circular(40)),
+//                   border: Border.all(
+//                     color: Colors.blue,
+//                     width: 2,
+//                   ),
+//                 ),
+//                 buttonIcon: Icon(
+//                   Icons.pets,
+//                   color: Colors.blue,
+//                 ),
+//                 buttonText: Text(
+//                   "Favorite Animals",
+//                   style: TextStyle(
+//                     color: Colors.blue[800],
+//                     fontSize: 16,
+//                   ),
+//                 ),
+//                 onConfirm: (results) {
+//                   //_selectedAnimals = results;
+//                 },
+//               ),
+//               SizedBox(height: 50),
+//               //################################################################################################
+//               // This MultiSelectBottomSheetField has no decoration, but is instead wrapped in a Container that has
+//               // decoration applied. This allows the ChipDisplay to render inside the same Container.
+//               //################################################################################################
+//               Container(
+//                 decoration: BoxDecoration(
+//                   color: Theme.of(context).primaryColor.withOpacity(.4),
+//                   border: Border.all(
+//                     color: Theme.of(context).primaryColor,
+//                     width: 2,
+//                   ),
+//                 ),
+//                 child: Column(
+//                   children: <Widget>[
+//                     MultiSelectBottomSheetField(
+//                       initialChildSize: 0.4,
+//                       listType: MultiSelectListType.CHIP,
+//                       searchable: true,
+//                       buttonText: Text("Favorite Animals"),
+//                       title: Text("Animals"),
+//                       items: _items,
+//                       onConfirm: (values) {
+//                         _selectedAnimals2 = values.cast();
+//                       },
+//                       chipDisplay: MultiSelectChipDisplay(
+//                         onTap: (value) {
+//                           setState(() {
+//                             _selectedAnimals2.remove(value);
+//                           });
+//                         },
+//                       ),
+//                     ),
+//                     _selectedAnimals2 == null || _selectedAnimals2.isEmpty
+//                         ? Container(
+//                             padding: EdgeInsets.all(10),
+//                             alignment: Alignment.centerLeft,
+//                             child: Text(
+//                               "None selected",
+//                               style: TextStyle(color: Colors.black54),
+//                             ))
+//                         : Container(),
+//                   ],
+//                 ),
+//               ),
+//               SizedBox(height: 40),
+//               //################################################################################################
+//               // MultiSelectBottomSheetField with validators
+//               //################################################################################################
+//               MultiSelectBottomSheetField<Animal>(
+//                 key: _multiSelectKey,
+//                 initialChildSize: 0.7,
+//                 maxChildSize: 0.95,
+//                 title: Text("Animals"),
+//                 buttonText: Text("Favorite Animals"),
+//                 items: _items,
+//                 searchable: true,
+//                 validator: (values) {
+//                   if (values == null || values.isEmpty) {
+//                     return "Required";
+//                   }
+//                   List<String> names = values.map((e) => e.name).toList();
+//                   if (names.contains("Frog")) {
+//                     return "Frogs are weird!";
+//                   }
+//                   return null;
+//                 },
+//                 onConfirm: (values) {
+//                   setState(() {
+//                     _selectedAnimals3 = values;
+//                   });
+//                   _multiSelectKey.currentState?.validate();
+//                 },
+//                 chipDisplay: MultiSelectChipDisplay(
+//                   onTap: (item) {
+//                     setState(() {
+//                       _selectedAnimals3.remove(item);
+//                     });
+//                     _multiSelectKey.currentState?.validate();
+//                   },
+//                 ),
+//               ),
+//               SizedBox(height: 40),
+//               //################################################################################################
+//               // MultiSelectChipField
+//               //################################################################################################
+//               MultiSelectChipField(
+//                 items: _items,
+//                 initialValue: [_animals[4], _animals[7], _animals[9]],
+//                 title: Text("Animals"),
+//                 headerColor: Colors.blue.withOpacity(0.5),
+//                 decoration: BoxDecoration(
+//                   border: Border.all(color: Colors.blue, width: 1.8),
+//                 ),
+//                 selectedChipColor: Colors.blue.withOpacity(0.5),
+//                 selectedTextStyle: TextStyle(color: Colors.blue[800]),
+//                 onTap: (values) {
+//                   //_selectedAnimals4 = values;
+//                 },
+//               ),
+//               SizedBox(height: 40),
+//               //################################################################################################
+//               // MultiSelectDialogField with initial values
+//               //################################################################################################
+//               MultiSelectDialogField(
+//                 onConfirm: (val) {
+//                   _selectedAnimals5 = val.cast();
+//                 },
+//                 dialogWidth: MediaQuery.of(context).size.width * 0.7,
+//                 items: _items,
+//                 initialValue:
+//                     _selectedAnimals5, // setting the value of this in initState() to pre-select values.
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 import 'dart:convert';
 import 'dart:js';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +261,9 @@ import 'package:lastapp/widgets/custom_elevated_button.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'controller/onb_oderbox_controller.dart';
+import 'models/subject_model.dart';
 import 'widgets/custom_stepper_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
@@ -21,15 +271,16 @@ import 'package:flutter/material.dart' as flutter;
 import './models/new_box.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 
-class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
+class OnbOderboxScreen extends StatelessWidget {
   OnbOderboxScreen({Key? key}) : super(key: key);
+
+  OnbOderboxController controller = Get.put(OnbOderboxController());
 
   late List<NewOrderBox> _currentList = [];
   late String typeBox = "";
   late String modelBox = "";
-  late String service = ""; 
+  late String service = "";
 
-   
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -55,23 +306,25 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
                       Positioned(
                         top: 100.v,
                         child: Container(
+                          // decoration: AppDecoration.fillGray,
                           height: SizeUtils.height - 160.v,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  _buildFormSection(context),
+                          child: SingleChildScrollView(
+                            physics: BouncingScrollPhysics(),
+                            child: Column(
+                              children: [
+                                _buildFormSection(context),
 
-                                  SizedBox(height: 10.v),
-                                  // _buildListOder(),
-                                  _orderBoxItem(),
-                                ],
+                                SizedBox(height: 10.v),
+                                // _buildListOder(),
+                                _buildListOrderBox(),
+                              ],
                             ),
                           ),
                         ),
                       ),
                       Container(
                         padding: EdgeInsets.only(
-                            left: 35.h, right: 35.h, bottom: 45.v),
+                            left: 35.h, right: 35.h, bottom: 25.v),
                         child: CustomIconButton(
                           height: 60.adaptSize,
                           width: 60.adaptSize,
@@ -259,32 +512,37 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           topLeft: Radius.circular(30),
         ),
       ),
-      // height: 360.v,
       width: SizeUtils.width,
-      // margin: EdgeInsets.only(top: 90.h),
       padding: EdgeInsets.only(left: 20.h, right: 20.h, bottom: 10.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           //
-          SizedBox(height: 30.v),
+          SizedBox(height: 20.v),
+          //
+          Container(
+            // height: 10.v,
+            width: SizeUtils.width,
+            child: Center(
+              child: Text(
+                'Information about box',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+          //
+          SizedBox(height: 20.v),
+          //
           Padding(
             padding: EdgeInsets.only(right: 2.h),
             child: CustomDropDown(
-              // icon: Container(
-              //   margin: EdgeInsets.fromLTRB(30.h, 19.v, 21.h, 19.v),
-              //   child: CustomImageView(
-              //     imagePath: ImageConstant.imgSave,
-              //     height: 12.v,
-              //     width: 19.h,
-              //   ),
-              // ),
               hintText: "lbl_type_box".tr,
               hintStyle: CustomTextStyles.bodyLargeBlack900,
               items:
                   controller.onbOderboxModelObj.value.dropdownItemList!.value,
-              // contentPadding:
-              //     EdgeInsets.only(left: 18.h, top: 15.v, bottom: 15.v),
               onChanged: (value) {
                 controller.onSelected(value);
                 typeBox = value.title;
@@ -301,8 +559,6 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
               hintStyle: CustomTextStyles.bodyLargeBlack900,
               items:
                   controller.onbOderboxModelObj.value.dropdownItemList1!.value,
-              // contentPadding:
-              //     EdgeInsets.only(left: 19.h, top: 15.v, bottom: 15.v),
               onChanged: (value) {
                 controller.onSelected1(value);
                 modelBox = value.title;
@@ -314,8 +570,7 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           SizedBox(height: 10.v),
           Padding(
             padding: EdgeInsets.only(right: 2.h),
-            // child: MultiSelectDropDownScreen(service: service,),
-            child: tempMulti(),
+            child: _buildMultiService(),
           ),
           SizedBox(height: 10.v),
 
@@ -323,10 +578,15 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
             width: 90.h,
             text: "lbl_add".tr,
             buttonStyle: CustomButtonStyles.fillRedA,
-            onPressed: () async {
-              final _new = NewOrderBox(typeBox: typeBox, modelBox: modelBox, services: service.length > 0 ? service : "Nothing");
-              print(_new.modelBox + " " + _new.typeBox + " " + _new.services );
-              _currentList.add(_new);
+            onPressed: () {
+              // final _new = NewOrderBox(
+              //     typeBox: typeBox,
+              //     modelBox: modelBox,
+              //     services: service.length > 0 ? service : "Nothing");
+              // //print(_new.modelBox + " " + _new.typeBox + " " + _new.services);
+              // _currentList.add(_new);
+
+              controller.addNewOrderBox(typeBox, modelBox, service);
             },
           ),
         ],
@@ -334,30 +594,28 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
     );
   }
 
-  Widget tempMulti () {
-    final AppDataController controller = Get.put(AppDataController());
+  Widget _buildMultiService() {
     late bool isPicked = false;
 
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       controller.getSubjectData();
     });
 
     return Container(
-      height: isPicked ? 100.h : null,
-      // height: 70.h,
+      height: isPicked ? 80.h : null,
       child: Column(
         children: [
-          GetBuilder<AppDataController>(builder: (controller) {
+          GetBuilder<OnbOderboxController>(builder: (controller) {
             return Padding(
               padding: const EdgeInsets.all(0.0),
               child: MultiSelectDialogField(
-                dialogHeight: 200,
+                dialogHeight: 150,
                 items: controller.dropDownData,
                 title: const Text(
                   "Select Subject",
                   style: TextStyle(color: Colors.black),
                 ),
-                selectedColor: Colors.black,
+                selectedColor: appTheme.blue500,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: const BorderRadius.all(Radius.circular(15)),
@@ -389,349 +647,154 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
                     }
                   }
                 },
+                chipDisplay: MultiSelectChipDisplay(
+                  chipColor: Color.fromARGB(14, 227, 227, 227),
+                  textStyle: TextStyle(
+                    color: appTheme.blue500,
+                  ),
+                ),
               ),
             );
           }),
         ],
       ),
     );
-
   }
 
-  /// Section Widget
-  Widget _buildListOder() {
+  Widget _buildListOrderBox() {
     return Container(
-      height: 350.v,
-      // margin: EdgeInsets.only(top: 380.h),
-      padding: EdgeInsets.symmetric(horizontal: 30.h, vertical: 20.v),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary,
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(30),
-          topLeft: Radius.circular(30),
-        ),
-      ),
+      color: theme.colorScheme.primary,
+      width: SizeUtils.width,
+      padding: EdgeInsets.only(left: 20.h, right: 20.h, bottom: 10.h),
       child: Column(
         children: [
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Text("lbl_list_order_box".tr,
-                  style: CustomTextStyles.titleMediumBlack900)),
-          SizedBox(height: 22.v),
-          Padding(
-              padding: EdgeInsets.only(right: 2.h),
-              child:
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center, 
-                    children: [
-                CustomImageView(
-                    imagePath: ImageConstant.imgThumbsUpBlueGray300,
-                    height: 12.v,
-                    width: 11.h,
-                    margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
-                Padding(
-                    padding: EdgeInsets.only(left: 10.h),
-                    child: Text("lbl_carton_box".tr,
-                        style: CustomTextStyles.titleMediumGreen80002)),
-                Spacer(),
-                CustomImageView(
-                    imagePath: ImageConstant.imgEditBlack90015x15,
-                    height: 20.adaptSize,
-                    width: 20.adaptSize,
-                    margin: EdgeInsets.symmetric(vertical: 2.v))
-              ])),
-          SizedBox(height: 9.v),
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Row(children: [
-                CustomImageView(
-                    imagePath: ImageConstant.imgContrast,
-                    height: 12.adaptSize,
-                    width: 12.adaptSize,
-                    margin: EdgeInsets.symmetric(vertical: 1.v)),
-                Padding(
-                    padding: EdgeInsets.only(left: 12.h),
-                    child: Text("lbl_50_x_50_x_50".tr,
-                        style: CustomTextStyles.labelLargeOnPrimary))
-              ])),
-          SizedBox(height: 9.v),
-          Padding(
-            padding: EdgeInsets.only(right: 2.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomImageView(
-                    imagePath: ImageConstant.imgThumbsUp,
-                    height: 9.v,
-                    width: 11.h,
-                    margin: EdgeInsets.only(top: 4.v, bottom: 6.v)),
-                Padding(
-                    padding: EdgeInsets.only(left: 12.h),
-                    child: Text("msg_hang_on_washing".tr,
-                        style: theme.textTheme.bodyMedium)),
-                Spacer(),
-
-                //
-                Container(
-                  decoration: BoxDecoration(
-                    color: appTheme.redA200,
-                    borderRadius: BorderRadius.circular(30.h),
-                  ),
-                  height: 15.adaptSize,
-                  width: 15.adaptSize,
-                  child: Center(
-                    child: Text(
-                      '-',
-                      style: TextStyle(
-                        color: theme.colorScheme.primary,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
+          //
+          Container(
+            width: SizeUtils.width,
+            padding: EdgeInsets.only(top: 10.v),
+            child: Center(
+              child: Text(
+                'List order box',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                  fontSize: 16,
                 ),
-                Container(
-                    width: 38.h,
-                    margin: EdgeInsets.only(left: 5.h, bottom: 2.v),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.h, vertical: 1.v),
-                    decoration: AppDecoration.outlineBluegray3002.copyWith(
-                        borderRadius: BorderRadiusStyle.roundedBorder5),
-                    child: Text("lbl_1".tr, style: theme.textTheme.labelLarge)),
-
-                //
-                Container(
-                  decoration: BoxDecoration(
-                    color: appTheme.teal900,
-                    borderRadius: BorderRadius.circular(30.h),
-                  ),
-                  margin: EdgeInsets.only(left: 5.v),
-                  height: 15.adaptSize,
-                  width: 15.adaptSize,
-                  child: Center(
-                    child: Text(
-                      '+',
-                      style: TextStyle(
-                        color: theme.colorScheme.primary,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ),
-                ),
-
-                //
-                // Padding(
-                //   padding: EdgeInsets.only(left: 5.h, bottom: 3.v),
-                //   child: CustomIconButton(
-                //     height: 15.adaptSize,
-                //     width: 15.adaptSize,
-                //     child: CustomImageView(),
-                //   ),
-                // ),
-              ],
+              ),
             ),
           ),
-          SizedBox(height: 20.v),
-          Padding(
-              padding: EdgeInsets.only(right: 2.h),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      CustomImageView(
-                          imagePath: ImageConstant.imgThumbsUpBlueGray300,
-                          height: 12.v,
-                          width: 11.h,
-                          margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
-                      Padding(
-                          padding: EdgeInsets.only(left: 10.h),
-                          child: Text("lbl_carton_box2".tr,
-                              style: CustomTextStyles.titleMediumGreen80002))
-                    ]),
-                    CustomImageView(
-                        imagePath: ImageConstant.imgEditBlack90015x15,
-                        height: 20.adaptSize,
-                        width: 20.adaptSize,
-                        margin: EdgeInsets.symmetric(vertical: 2.v))
-                  ])),
-          SizedBox(height: 9.v),
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Row(children: [
-                CustomImageView(
-                    imagePath: ImageConstant.imgContrast,
-                    height: 12.adaptSize,
-                    width: 12.adaptSize,
-                    margin: EdgeInsets.symmetric(vertical: 1.v)),
-                Padding(
-                    padding: EdgeInsets.only(left: 12.h),
-                    child: Text("lbl_50_x_100_x_50".tr,
-                        style: CustomTextStyles.labelLargeOnPrimary))
-              ])),
-          SizedBox(height: 9.v),
-          Padding(
-            padding: EdgeInsets.only(right: 2.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomImageView(
-                    imagePath: ImageConstant.imgThumbsUp,
-                    height: 9.v,
-                    width: 11.h,
-                    margin: EdgeInsets.only(top: 4.v, bottom: 6.v)),
-                Padding(
-                    padding: EdgeInsets.only(left: 12.h),
-                    child: Text("lbl_nothing".tr,
-                        style: theme.textTheme.bodyMedium)),
-                Spacer(),
-
-                //
-                Container(
-                  decoration: BoxDecoration(
-                    color: appTheme.redA200,
-                    borderRadius: BorderRadius.circular(30.h),
-                  ),
-                  height: 15.adaptSize,
-                  width: 15.adaptSize,
-                  child: Center(
-                    child: Text(
-                      '-',
-                      style: TextStyle(
-                        color: theme.colorScheme.primary,
-                        fontSize: 12,
-                      ),
+          //
+          SizedBox(height: 10.v),
+          //
+          Obx(
+            () => Container(
+              height: SizeUtils.height -
+                  160.v -
+                  360.v +
+                  (controller.khueListOrders.length < 2
+                      ? 0
+                      : (controller.khueListOrders.length - 2) * 140.v),
+              child: Column(
+                children: [
+                  //
+                  Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: controller.khueListOrders.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _orderBoxItem(
+                            controller.khueListOrders[index], index);
+                      },
                     ),
                   ),
-                ),
-                Container(
-                    width: 38.h,
-                    margin: EdgeInsets.only(left: 5.h, bottom: 2.v),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.h, vertical: 1.v),
-                    decoration: AppDecoration.outlineBluegray3002.copyWith(
-                        borderRadius: BorderRadiusStyle.roundedBorder5),
-                    child: Text("lbl_1".tr, style: theme.textTheme.labelLarge)),
-
-                Container(
-                  decoration: BoxDecoration(
-                    color: appTheme.teal900,
-                    borderRadius: BorderRadius.circular(30.h),
-                  ),
-                  margin: EdgeInsets.only(left: 5.v),
-                  height: 15.adaptSize,
-                  width: 15.adaptSize,
-                  child: Center(
-                    child: Text(
-                      '+',
-                      style: TextStyle(
-                        color: theme.colorScheme.primary,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                  //
+                ],
+              ),
             ),
           ),
-          // SizedBox(height: 20.v),
-          // Padding(
-          //   padding: EdgeInsets.only(right: 12.h),
-          //   child: CustomIconButton(
-          //     height: 60.adaptSize,
-          //     width: 60.adaptSize,
-          //     padding: EdgeInsets.all(15.h),
-          //     alignment: Alignment.centerRight,
-          //     onTap: () {
-          //       onTapBtnArrowRight();
-          //     },
-          //     child: CustomImageView(imagePath: ImageConstant.imgArrowRight),
-          //   ),
-          // ),
         ],
       ),
     );
   }
 
-  Widget _orderBoxItem() {
+  Widget _orderBoxItem(NewOrderBox _new, index) {
     return Container(
-      // height: SizeUtils.height - 360.v - 160.v - 25.v,
-      //height: 460.v,
+      // height: 120.v,
       width: SizeUtils.width,
-      // margin: EdgeInsets.only(top: 380.h),
-      padding: EdgeInsets.symmetric(horizontal: 30.h, vertical: 20.v),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary,
-      ),
-      child: Padding(
-        padding: EdgeInsets.zero,
-        // child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Text('dfasdf'),
-            
-            _itemsOder(NewOrderBox( typeBox: 'SD', modelBox: '1', services: '1')),
-            _itemsOder(NewOrderBox( typeBox: 'SD', modelBox: '1', services: '1')),
-            _itemsOder(NewOrderBox( typeBox: 'SD', modelBox: '1', services: '1')),
-            _itemsOder(NewOrderBox( typeBox: 'SD', modelBox: '1', services: '1')),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _itemsOder(NewOrderBox _new) {
-    return Container(
-      height: 130.v,
       child: Column(
         // crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              CustomImageView(
-                imagePath: ImageConstant.imgThumbsUpBlueGray300,
-                height: 12.v,
-                width: 11.h,
-                margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
-              Spacer(),
-              Text(_new.typeBox,
-                style: CustomTextStyles.titleMediumGreen80002),
-              Spacer(),
-              Text('Carton Box',
-                style: CustomTextStyles.titleMediumGreen80002),
-            ],
+          //
+          Container(
+            height: 40.v,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomImageView(
+                    imagePath: ImageConstant.imgThumbsUpBlueGray300,
+                    height: 12.v,
+                    width: 11.h,
+                    margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
+                SizedBox(width: 10.v),
+                // Spacer(),
+                Text(_new.typeBox,
+                    style: CustomTextStyles.titleMediumGreen80002),
+                SizedBox(width: 10.v),
+                // Spacer(),
+                //
+                IconButton(
+                  onPressed: () {
+                    controller.removeOrderBox(index);
+                  },
+                  icon: Icon(Icons.delete_outline),
+                ),
+              ],
+            ),
           ),
-          Row(
-            children: [
-              CustomImageView(
-                imagePath: ImageConstant.imgThumbsUpBlueGray300,
-                height: 12.v,
-                width: 11.h,
-                margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
-              Spacer(),
-              Text(_new.modelBox,
-                style: CustomTextStyles.titleMediumGreen80002),
-              Spacer(),
-              Text('Carton Box',
-                style: CustomTextStyles.titleMediumGreen80002),
-            ],
+          //
+          Container(
+            height: 40.v,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomImageView(
+                    imagePath: ImageConstant.imgThumbsUpBlueGray300,
+                    height: 12.v,
+                    width: 11.h,
+                    margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
+                SizedBox(width: 10.v),
+                Text(_new.modelBox,
+                    style: CustomTextStyles.titleMediumGreen80002),
+                SizedBox(width: 10.v),
+                Text('Carton Box',
+                    style: CustomTextStyles.titleMediumGreen80002),
+              ],
+            ),
           ),
-          Row(
-            children: [
-              CustomImageView(
-                imagePath: ImageConstant.imgThumbsUpBlueGray300,
-                height: 12.v,
-                width: 11.h,
-                margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
-              Spacer(),
-              Text(_new.services,
-                style: CustomTextStyles.titleMediumGreen80002),
-              Spacer(),
-              Text('Carton Box',
-                style: CustomTextStyles.titleMediumGreen80002),
-            ],
-          ),              
+          //
+          Container(
+            height: 40.v,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomImageView(
+                    imagePath: ImageConstant.imgThumbsUpBlueGray300,
+                    height: 12.v,
+                    width: 11.h,
+                    margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
+                SizedBox(width: 10.v),
+                Text(_new.services,
+                    style: CustomTextStyles.titleMediumGreen80002),
+                SizedBox(width: 10.v),
+                Text('Carton Box',
+                    style: CustomTextStyles.titleMediumGreen80002),
+              ],
+            ),
+          ),
+          //
+          SizedBox(height: 20.v),
         ],
       ),
     );
