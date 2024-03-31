@@ -203,6 +203,7 @@ class OnbCheckingAndPaymentScreen
   
 
   Widget _buildContentPageCheckingAndPayment() {
+    
     return 
     // SingleChildScrollView(
     //   child: 
@@ -394,29 +395,6 @@ class OnbCheckingAndPaymentScreen
                 1, "Carton box", 50, 50, 25, "Washing, Hang on"),
             SizedBox(height: 10.v),
             //
-            // Align(
-            //   alignment: Alignment.centerLeft,
-            //   child: Padding(
-            //     padding: EdgeInsets.only(left: 10.h),
-            //     child: Text("lbl_1x_carton_box".tr,
-            //         style: CustomTextStyles.labelLargeGreen600),
-            //   ),
-            // ),
-            // SizedBox(height: 6.v),
-            // //
-            // Padding(
-            //   padding: EdgeInsets.only(left: 10.h, right: 39.h),
-            //   child: _buildSize(
-            //       size: "lbl_size".tr, xXTwentyFive: "lbl_50_x_50_x_25".tr),
-            // ),
-            // SizedBox(height: 12.v),
-            // //
-            // Padding(
-            //   padding: EdgeInsets.only(left: 10.h, right: 38.h),
-            //   child: _buildSize(
-            //       size: "lbl_services2".tr,
-            //       xXTwentyFive: "msg_washing_hang_on".tr),
-            // ),
           ],
         ),
       ),
@@ -528,62 +506,6 @@ class OnbCheckingAndPaymentScreen
       ),
     );
   }
-
-  // /// Section Widget
-  // Widget _buildPhone() {
-  //   return Padding(
-  //       padding: EdgeInsets.only(left: 33.h, right: 40.h),
-  //       child:
-  //           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-  //         Padding(
-  //             padding: EdgeInsets.only(bottom: 1.v),
-  //             child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   Text("lbl_phone".tr, style: theme.textTheme.bodySmall),
-  //                   SizedBox(height: 10.v),
-  //                   Text("lbl_address".tr, style: theme.textTheme.bodySmall)
-  //                 ])),
-  //         Column(children: [
-  //           Align(
-  //               alignment: Alignment.centerRight,
-  //               child: Text("lbl_0123456789".tr,
-  //                   style: theme.textTheme.bodySmall)),
-  //           SizedBox(height: 11.v),
-  //           Text("msg_tay_mo_nam_tu_liem".tr, style: theme.textTheme.bodySmall)
-  //         ])
-  //       ]));
-  // }
-
-  // /// Common widget
-  // Widget _buildSize({
-  //   required String size,
-  //   required String xXTwentyFive,
-  // }) {
-  //   return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-  //     Text(size,
-  //         style: theme.textTheme.bodySmall!.copyWith(color: appTheme.black900)),
-  //     Text(xXTwentyFive,
-  //         style: theme.textTheme.bodySmall!.copyWith(color: appTheme.black900))
-  //   ]);
-  // }
-
-  // /// Common widget
-  // Widget _buildFullName({
-  //   required String fullName,
-  //   required String longDo,
-  // }) {
-  //   return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-  //     Padding(
-  //         padding: EdgeInsets.only(bottom: 1.v),
-  //         child: Text(fullName,
-  //             style: theme.textTheme.bodySmall!
-  //                 .copyWith(color: appTheme.black900))),
-  //     Text(longDo,
-  //         style: theme.textTheme.bodySmall!.copyWith(color: appTheme.black900))
-  //   ]);
-  // }
-
   /// Section Widget
   Widget _buildAgreethetermsofuse() {
     return Obx(

@@ -25,10 +25,11 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
   OnbOderboxScreen({Key? key}) : super(key: key);
 
   late List<NewOrderBox> _currentList = [];
-  late String typeBox = "";
-  late String modelBox = "";
+  final List<Map<String, dynamic>> data = [];
+  late int typeBox = 1;
+  late int modelBox = 1;
   late String service = ""; 
-
+  
    
   @override
   Widget build(BuildContext context) {
@@ -77,12 +78,36 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
                           width: 60.adaptSize,
                           padding: EdgeInsets.all(15.h),
                           alignment: Alignment.bottomRight,
-                          onTap: () {
+                          onTap: () { 
+                            if (ModalRoute.of(context)!.settings.arguments != null) {
+                              final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+                              final name = arguments['name'] ?? '';
+                              final phoneNumber = arguments['phoneNumber'] ?? '';
+                              final address = arguments['address'] ?? '';
+                              final date = arguments['date'] ?? '';
+                              final toWardCode = arguments['toWardCode'] ?? '';
+                              final toDistrictId = arguments['toDistrictId'] ?? 1;
+                              
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.onbAddressScreen,
+                                arguments: {
+                                  'name': name,
+                                  'phoneNumber': phoneNumber,
+                                  'address': address,
+                                  'date': date,
+                                  'toWardCode': toWardCode,
+                                  'toDistrictId': toDistrictId,
+                                  'boxs': data,
+                                },
+                              );
+                            }
+                            
                             Navigator.pushNamed(
                               context,
                               AppRoutes.onbAddressScreen,
                               arguments: {
-                                'boxs': _currentList,
+                                'boxs': data,
                               },
                             );
                           },
@@ -287,7 +312,7 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
               //     EdgeInsets.only(left: 18.h, top: 15.v, bottom: 15.v),
               onChanged: (value) {
                 controller.onSelected(value);
-                typeBox = value.title;
+                typeBox = value.id!;
               },
             ),
           ),
@@ -305,7 +330,7 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
               //     EdgeInsets.only(left: 19.h, top: 15.v, bottom: 15.v),
               onChanged: (value) {
                 controller.onSelected1(value);
-                modelBox = value.title;
+                modelBox = value.id!;
               },
             ),
           ),
@@ -325,7 +350,9 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
             buttonStyle: CustomButtonStyles.fillRedA,
             onPressed: () async {
               final _new = NewOrderBox(typeBox: typeBox, modelBox: modelBox, services: service.length > 0 ? service : "Nothing");
-              print(_new.modelBox + " " + _new.typeBox + " " + _new.services );
+              
+              data.add(_new.toJson());
+              print(data);
               _currentList.add(_new);
             },
           ),
@@ -670,10 +697,10 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           children: [
             Text('dfasdf'),
             
-            _itemsOder(NewOrderBox( typeBox: 'SD', modelBox: '1', services: '1')),
-            _itemsOder(NewOrderBox( typeBox: 'SD', modelBox: '1', services: '1')),
-            _itemsOder(NewOrderBox( typeBox: 'SD', modelBox: '1', services: '1')),
-            _itemsOder(NewOrderBox( typeBox: 'SD', modelBox: '1', services: '1')),
+            _itemsOder(NewOrderBox( typeBox: 1, modelBox: 2, services: '1')),
+            _itemsOder(NewOrderBox( typeBox: 1, modelBox: 1, services: '1')),
+            _itemsOder(NewOrderBox( typeBox: 1, modelBox: 3, services: '1')),
+            _itemsOder(NewOrderBox( typeBox: 1, modelBox: 4, services: '1')),
           ],
         ),
       ),
@@ -681,6 +708,11 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
   }
 
   Widget _itemsOder(NewOrderBox _new) {
+    String? type_box = controller.onbOderboxModelObj.value.dropdownItemList.value.firstWhere((item) => 
+    item.id == _new.typeBox, orElse: () => SelectionPopupModel(id: _new.typeBox, title: "None")).title;
+    String? model_box= controller.onbOderboxModelObj.value.dropdownItemList1.value.firstWhere((item) => 
+    item.id == _new.modelBox, orElse: () => SelectionPopupModel(id: _new.modelBox, title: "None")).title;
+
     return Container(
       height: 130.v,
       child: Column(
@@ -695,7 +727,7 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
                 width: 11.h,
                 margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
               Spacer(),
-              Text(_new.typeBox,
+              Text( type_box,
                 style: CustomTextStyles.titleMediumGreen80002),
               Spacer(),
               Text('Carton Box',
@@ -710,7 +742,7 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
                 width: 11.h,
                 margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
               Spacer(),
-              Text(_new.modelBox,
+              Text( model_box,
                 style: CustomTextStyles.titleMediumGreen80002),
               Spacer(),
               Text('Carton Box',

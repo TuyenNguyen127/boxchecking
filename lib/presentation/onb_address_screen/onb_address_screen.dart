@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:js';
+
 import 'package:flutter/widgets.dart';
 import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
@@ -13,6 +16,42 @@ import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'controller/onb_address_controller.dart';
 
+
+class Address{
+  late String name;
+  late String phoneNumber;
+  late String address;
+  late String date;
+  late String toWardCode;
+  late int toDistrictId;
+  Address({
+    required this.name,
+    required this.phoneNumber,
+    required this.address,
+    required this.date,
+    required this.toWardCode,
+    required this.toDistrictId,
+  });
+
+  Map<String, dynamic> toJson() =>
+  {
+    'name': name,
+    'phoneNumber': phoneNumber,
+    'address': address,
+    'date': date,
+    'toWardCode': toWardCode,
+    'toDistrictId': toDistrictId
+  }; 
+  factory Address.fromJson(Map<String, dynamic> json) => Address(
+    name: json["name"] ?? '',
+    phoneNumber: json["phoneNumber"] ?? '',
+    address: json["address"] ?? '',
+    date: json["date"] ?? '',
+    toWardCode: json["toWardCode"] ?? '',
+    toDistrictId: json["toDistrictId"] ?? 1,
+  );
+}
+
 // ignore_for_file: must_be_immutable
 class OnbAddressScreen extends GetWidget<OnbAddressController> {
   OnbAddressScreen({Key? key}) : super(key: key);
@@ -20,12 +59,16 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
   Completer<GoogleMapController> googleMapController = Completer();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  
+  late String name = "";
+  late String phoneNumber = "";
+  late String address = "";
+  late String date = "";
+  late String toWardCode = "";
+  late int toDistrictId = 0;
 
   @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)!.settings.arguments as Map;
-    final boxs = arguments['boxs'];
-    print(boxs);
     return SafeArea(
       child: Scaffold(
         //
@@ -49,75 +92,13 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
               //
               Positioned(
                 top: 100.v,
-                child: _buildFormPageAddress(),
+                child: _buildFormPageAddress(context),
               ),
               //
-              _buildArrowRightLeft(),
+              _buildArrowRightLeft(context),
             ],
           ),
         ),
-
-        //
-        // body: Form(
-        //   key: _formKey,
-        //   child: SizedBox(
-        //     width: 392.h,
-        //     child: Column(
-        //       children: [
-        //         //
-        //         // _buildNineteen(),
-        //         //
-        //         Expanded(
-        //           child: SingleChildScrollView(
-        //             child: Container(
-        //               height: 812.v,
-        //               width: 392.h,
-        //               margin: EdgeInsets.only(bottom: 5.v),
-        //               child: Stack(
-        //                 alignment: Alignment.bottomCenter,
-        //                 children: [
-        //                   Align(
-        //                       alignment: Alignment.center,
-        //                       child: SizedBox(height: 806.v, width: 392.h)),
-        //                   Align(
-        //                     alignment: Alignment.bottomCenter,
-        //                     child: Container(
-        //                       margin: EdgeInsets.symmetric(horizontal: 20.h),
-        //                       decoration: AppDecoration.fillPrimary.copyWith(
-        //                           borderRadius:
-        //                               BorderRadiusStyle.customBorderTL20),
-        //                       child: Column(
-        //                         mainAxisSize: MainAxisSize.min,
-        //                         children: [
-        //                           // _buildPhoneNumber(),
-        //                           // SizedBox(height: 18.v),
-        //                           // _buildFullName(),
-        //                           // SizedBox(height: 18.v),
-        //                           // _buildTime(),
-        //                           // SizedBox(height: 18.v),
-        //                           // _buildAddress(),
-        //                           // SizedBox(height: 21.v),
-        //                           // _buildCity1(),
-        //                           // SizedBox(height: 18.v),
-        //                           // _buildNinetySix(),
-        //                           // SizedBox(height: 20.v),
-        //                           // _buildMaps(),
-        //                         ],
-        //                       ),
-        //                     ),
-        //                   ),
-        //                 ],
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
-
-        //
-        // bottomNavigationBar: _buildArrowRight(),
       ),
     );
   }
@@ -255,7 +236,17 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
     );
   }
 
-  Widget _buildFormPageAddress() {
+  Widget _buildFormPageAddress(BuildContext context) {
+    if (ModalRoute.of(context)!.settings.arguments != null) {
+      final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      Address _address = Address.fromJson(arguments);
+      name = _address.name;
+      phoneNumber = _address.phoneNumber;
+      date = _address.date;
+      address = _address.address;
+      toWardCode = _address.toWardCode;
+      toDistrictId = _address.toDistrictId;
+    }
     return SingleChildScrollView(
       child: Container(
         decoration: BoxDecoration(
@@ -290,10 +281,10 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
           mainAxisSize: MainAxisSize.min,
           children: [
             //
-            _buildPhoneNumber(),
+            _buildFullName(),
             SizedBox(height: 18.v),
             //
-            _buildFullName(),
+            _buildPhoneNumber(),
             SizedBox(height: 18.v),
             //
             _buildTime(),
@@ -313,50 +304,6 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
         ),
       ),
     );
-
-    // return Expanded(
-    //   child: SingleChildScrollView(
-    //     child: Container(
-    //       height: 812.v,
-    //       width: 392.h,
-    //       margin: EdgeInsets.only(bottom: 5.v),
-    //       child: Stack(
-    //         alignment: Alignment.bottomCenter,
-    //         children: [
-    //           Align(
-    //               alignment: Alignment.center,
-    //               child: SizedBox(height: 806.v, width: 392.h)),
-    //           Align(
-    //             alignment: Alignment.bottomCenter,
-    //             child: Container(
-    //               margin: EdgeInsets.symmetric(horizontal: 20.h),
-    //               decoration: AppDecoration.fillPrimary.copyWith(
-    //                   borderRadius: BorderRadiusStyle.customBorderTL20),
-    //               child: Column(
-    //                 mainAxisSize: MainAxisSize.min,
-    //                 children: [
-    //                   _buildPhoneNumber(),
-    //                   SizedBox(height: 18.v),
-    //                   _buildFullName(),
-    //                   SizedBox(height: 18.v),
-    //                   _buildTime(),
-    //                   SizedBox(height: 18.v),
-    //                   _buildAddress(),
-    //                   SizedBox(height: 21.v),
-    //                   _buildCity1(),
-    //                   SizedBox(height: 18.v),
-    //                   _buildNinetySix(),
-    //                   SizedBox(height: 20.v),
-    //                   _buildMaps(),
-    //                 ],
-    //               ),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 
   /// Section Widget
@@ -435,7 +382,7 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
             padding: EdgeInsets.only(right: 5.h, bottom: 1.v),
             child: CustomTextFormField(
                 controller: controller.cityController,
-                hintText: "lbl_city".tr)));
+                hintText: 'Ward Code')));
   }
 
   /// Section Widget
@@ -452,7 +399,9 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
   Widget _buildCity1() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [_buildCity(), _buildAddress1()]);
+        children: [_buildCity()
+        //, _buildAddress1()
+        ]);
   }
 
   /// Section Widget
@@ -462,7 +411,7 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
             padding: EdgeInsets.only(right: 5.h, bottom: 1.v),
             child: CustomTextFormField(
                 controller: controller.addressController2,
-                hintText: "lbl_address".tr)));
+                hintText: 'District Id')));
   }
 
   /// Section Widget
@@ -480,7 +429,7 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
   Widget _buildNinetySix() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [_buildAddress2(), _buildType()]);
+        children: [_buildAddress2()]);
   }
 
   /// Section Widget
@@ -506,7 +455,7 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
   }
 
   /// Section Widget
-  Widget _buildArrowRightLeft() {
+  Widget _buildArrowRightLeft(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 45.v),
       child: Row(
@@ -517,7 +466,23 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
             width: 60.adaptSize,
             padding: EdgeInsets.all(15.h),
             onTap: () {
-              onTapBtnArrowLeft();
+              final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+              final boxs = arguments['boxs'];
+
+              Navigator.popAndPushNamed(
+                context, 
+                AppRoutes.onbOderboxScreen,
+                arguments: {
+                  'name': name,
+                  'phoneNumber': phoneNumber,
+                  'address': address,
+                  'date': date,
+                  'toWardCode': toWardCode,
+                  'toDistrictId': toDistrictId,
+                  'boxs': boxs,
+                }
+              );
+              //onTapBtnArrowLeft();
             },
             child: CustomImageView(
               imagePath: ImageConstant.imgArrowRightOnerrorcontainer,
@@ -528,6 +493,22 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
             width: 60.adaptSize,
             padding: EdgeInsets.all(15.h),
             onTap: () {
+              final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+              final boxs = arguments['boxs'];
+              //final _new = Address(name: name, phoneNumber: phoneNumber, address: address, date: date, toWardCode: toWardCode, toDistrictId: toDistrictId);
+              Navigator.pushNamed(
+                context,
+                AppRoutes.onbCheckingAndPaymentScreen,
+                arguments: {
+                  'name': name,
+                  'phoneNumber': phoneNumber,
+                  'address': address,
+                  'date': date,
+                  'toWardCode': toWardCode,
+                  'toDistrictId': toDistrictId,
+                  'boxs': boxs,
+                },
+              );
               onTapBtnArrowRight();
             },
             child: CustomImageView(imagePath: ImageConstant.imgArrowRight),
@@ -583,14 +564,15 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
     Get.toNamed(
       AppRoutes.onbOderboxScreen,
     );
+    //NavigationBar.pop();
   }
 
   /// Navigates to the onbCheckingAndPaymentScreen when the action is triggered.
   onTapBtnArrowRight() {
     // print('right');
 
-    Get.toNamed(
-      AppRoutes.onbCheckingAndPaymentScreen,
-    );
+    // Get.toNamed(
+    //   AppRoutes.onbCheckingAndPaymentScreen,
+    // );
   }
 }
