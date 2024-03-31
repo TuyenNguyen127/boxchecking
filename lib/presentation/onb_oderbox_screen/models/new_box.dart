@@ -1,5 +1,3 @@
-
-
 class NewOrderBox {
   int? typeBox;
   int? modelBox;
@@ -13,17 +11,15 @@ class NewOrderBox {
     required this.amount,
   });
   factory NewOrderBox.fromJson(Map<String, dynamic> json) => NewOrderBox(
-        typeBox: json["type_box"] ?? 1,
-        modelBox: json["model_box"] ?? 1,
-        services: json["services"] ?? '',
-        amount: json["amount"] ?? ''
-      );
+      typeBox: json["type_box"] ?? 1,
+      modelBox: json["model_box"] ?? 1,
+      services: json["services"] ?? '',
+      amount: json["amount"] ?? '');
 
   Map<String, dynamic> toJson() => {
         "type_box": typeBox,
         "model_box": modelBox,
         "services": services,
-        "amount" : amount
+        "amount": amount
       };
 }
-

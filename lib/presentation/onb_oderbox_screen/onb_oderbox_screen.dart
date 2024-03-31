@@ -1,13 +1,4 @@
-import 'dart:convert';
-import 'dart:js';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
-import 'package:lastapp/main.dart';
-import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
-import 'package:lastapp/widgets/app_bar/appbar_title.dart';
-import 'package:another_stepper/widgets/another_stepper.dart';
-import 'package:another_stepper/dto/stepper_data.dart';
 import 'package:lastapp/widgets/custom_drop_down.dart';
 import 'package:lastapp/widgets/custom_elevated_button.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
@@ -16,25 +7,21 @@ import 'package:lastapp/core/app_export.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'controller/onb_oderbox_controller.dart';
 import 'models/subject_model.dart';
-import 'widgets/custom_stepper_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
 import 'package:flutter/material.dart' as flutter;
 import './models/new_box.dart';
-import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 
 class OnbOderboxScreen extends StatelessWidget {
   OnbOderboxScreen({Key? key}) : super(key: key);
 
-  OnbOderboxController controller = Get.put(OnbOderboxController());
+  OnbOderboxController oderBoxController = Get.put(OnbOderboxController());
 
-  late List<NewOrderBox> _currentList = [];
   final List<Map<String, dynamic>> data = [];
+
   late int typeBox = 1;
   late int modelBox = 1;
-  late String service = ""; 
-  
-   
+  late String service = "";
+
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -84,38 +71,8 @@ class OnbOderboxScreen extends StatelessWidget {
                           width: 60.adaptSize,
                           padding: EdgeInsets.all(15.h),
                           alignment: Alignment.bottomRight,
-                          onTap: () { 
-                            if (ModalRoute.of(context)!.settings.arguments != null) {
-                              final arguments = ModalRoute.of(context)!.settings.arguments as Map;
-                              final name = arguments['name'] ?? '';
-                              final phoneNumber = arguments['phoneNumber'] ?? '';
-                              final address = arguments['address'] ?? '';
-                              final date = arguments['date'] ?? '';
-                              final toWardCode = arguments['toWardCode'] ?? '';
-                              final toDistrictId = arguments['toDistrictId'] ?? 1;
-                              
-                              Navigator.pushNamed(
-                                context,
-                                AppRoutes.onbAddressScreen,
-                                arguments: {
-                                  'name': name,
-                                  'phoneNumber': phoneNumber,
-                                  'address': address,
-                                  'date': date,
-                                  'toWardCode': toWardCode,
-                                  'toDistrictId': toDistrictId,
-                                  'boxs': data,
-                                },
-                              );
-                            }
-                            
-                            Navigator.pushNamed(
-                              context,
-                              AppRoutes.onbAddressScreen,
-                              arguments: {
-                                'boxs': data,
-                              },
-                            );
+                          onTap: () {
+                            onTapBtnArrowRight(context);
                           },
                           child: CustomImageView(
                             imagePath: ImageConstant.imgArrowRight,
@@ -319,10 +276,10 @@ class OnbOderboxScreen extends StatelessWidget {
             child: CustomDropDown(
               hintText: "lbl_type_box".tr,
               hintStyle: CustomTextStyles.bodyLargeBlack900,
-              items:
-                  controller.onbOderboxModelObj.value.dropdownItemList!.value,
+              items: oderBoxController
+                  .onbOderboxModelObj.value.dropdownItemList!.value,
               onChanged: (value) {
-                controller.onSelected(value);
+                oderBoxController.onSelected(value);
                 typeBox = value.id!;
               },
             ),
@@ -335,10 +292,10 @@ class OnbOderboxScreen extends StatelessWidget {
             child: CustomDropDown(
               hintText: "lbl_model_box".tr,
               hintStyle: CustomTextStyles.bodyLargeBlack900,
-              items:
-                  controller.onbOderboxModelObj.value.dropdownItemList1!.value,
+              items: oderBoxController
+                  .onbOderboxModelObj.value.dropdownItemList1!.value,
               onChanged: (value) {
-                controller.onSelected1(value);
+                oderBoxController.onSelected1(value);
                 modelBox = value.id!;
               },
             ),
@@ -353,18 +310,21 @@ class OnbOderboxScreen extends StatelessWidget {
           SizedBox(height: 10.v),
 
           CustomElevatedButton(
-            width: 90.h,
-            text: "lbl_add".tr,
-            buttonStyle: CustomButtonStyles.fillRedA,
-            onPressed: () async {
-              final _new = NewOrderBox(typeBox: typeBox, modelBox: modelBox, services: service.length > 0 ? service : "Nothing", amount: 1);
-              
-              data.add(_new.toJson());
-              print(data);
-              //_currentList.add(_new);
-              controller.addNewOrderBox(typeBox, modelBox, service);
-            }
-          ),
+              width: 90.h,
+              text: "lbl_add".tr,
+              buttonStyle: CustomButtonStyles.fillRedA,
+              onPressed: () async {
+                final _new = NewOrderBox(
+                    typeBox: typeBox,
+                    modelBox: modelBox,
+                    services: service.length > 0 ? service : "Nothing",
+                    amount: 1);
+
+                data.add(_new.toJson());
+                print(data);
+                //_currentList.add(_new);
+                oderBoxController.addNewOrderBox(typeBox, modelBox, service);
+              }),
         ],
       ),
     );
@@ -374,19 +334,19 @@ class OnbOderboxScreen extends StatelessWidget {
     late bool isPicked = false;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      controller.getSubjectData();
+      oderBoxController.getSubjectData();
     });
 
     return Container(
       height: isPicked ? 80.h : null,
       child: Column(
         children: [
-          GetBuilder<OnbOderboxController>(builder: (controller) {
+          GetBuilder<OnbOderboxController>(builder: (oderBoxController) {
             return Padding(
               padding: const EdgeInsets.all(0.0),
               child: MultiSelectDialogField(
                 dialogHeight: 150,
-                items: controller.dropDownData,
+                items: oderBoxController.dropDownData,
                 title: const Text(
                   "Select Subject",
                   style: TextStyle(color: Colors.black),
@@ -467,9 +427,9 @@ class OnbOderboxScreen extends StatelessWidget {
               height: SizeUtils.height -
                   160.v -
                   360.v +
-                  (controller.khueListOrders.length < 2
+                  (oderBoxController.khueListOrders.length < 2
                       ? 0
-                      : (controller.khueListOrders.length - 2) * 140.v),
+                      : (oderBoxController.khueListOrders.length - 2) * 140.v),
               child: Column(
                 children: [
                   //
@@ -477,10 +437,10 @@ class OnbOderboxScreen extends StatelessWidget {
                     child: ListView.builder(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
-                      itemCount: controller.khueListOrders.length,
+                      itemCount: oderBoxController.khueListOrders.length,
                       itemBuilder: (BuildContext context, int index) {
                         return _itemsOder(
-                            controller.khueListOrders[index], index);
+                            oderBoxController.khueListOrders[index], index);
                       },
                     ),
                   ),
@@ -495,10 +455,16 @@ class OnbOderboxScreen extends StatelessWidget {
   }
 
   Widget _itemsOder(NewOrderBox _new, index) {
-    String? type_box = controller.onbOderboxModelObj.value.dropdownItemList.value.firstWhere((item) => 
-    item.id == _new.typeBox, orElse: () => SelectionPopupModel(id: _new.typeBox, title: "None")).title;
-    String? model_box= controller.onbOderboxModelObj.value.dropdownItemList1.value.firstWhere((item) => 
-    item.id == _new.modelBox, orElse: () => SelectionPopupModel(id: _new.modelBox, title: "None")).title;
+    String? type_box = oderBoxController
+        .onbOderboxModelObj.value.dropdownItemList.value
+        .firstWhere((item) => item.id == _new.typeBox,
+            orElse: () => SelectionPopupModel(id: _new.typeBox, title: "None"))
+        .title;
+    String? model_box = oderBoxController
+        .onbOderboxModelObj.value.dropdownItemList1.value
+        .firstWhere((item) => item.id == _new.modelBox,
+            orElse: () => SelectionPopupModel(id: _new.modelBox, title: "None"))
+        .title;
 
     return Container(
       height: 140.v,
@@ -519,14 +485,13 @@ class OnbOderboxScreen extends StatelessWidget {
                     margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
                 SizedBox(width: 10.v),
                 // Spacer(),
-                Text(type_box,
-                    style: CustomTextStyles.titleMediumGreen80002),
+                Text(type_box, style: CustomTextStyles.titleMediumGreen80002),
                 SizedBox(width: 10.v),
                 // Spacer(),
                 //
                 IconButton(
                   onPressed: () {
-                    controller.removeOrderBox(index);
+                    oderBoxController.removeOrderBox(index);
                   },
                   icon: Icon(Icons.delete_outline),
                 ),
@@ -545,8 +510,7 @@ class OnbOderboxScreen extends StatelessWidget {
                     width: 11.h,
                     margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
                 SizedBox(width: 10.v),
-                Text(model_box,
-                    style: CustomTextStyles.titleMediumGreen80002),
+                Text(model_box, style: CustomTextStyles.titleMediumGreen80002),
                 SizedBox(width: 10.v),
                 Text('Carton Box',
                     style: CustomTextStyles.titleMediumGreen80002),
@@ -575,7 +539,6 @@ class OnbOderboxScreen extends StatelessWidget {
           ),
           //
           SizedBox(height: 20.v),
-                        
         ],
       ),
     );
@@ -589,10 +552,45 @@ class OnbOderboxScreen extends StatelessWidget {
   }
 
   /// Navigates to the onbAddressScreen when the action is triggered.
-  onTapBtnArrowRight() {
+  onTapBtnArrowRight(context) {
     // Get.toNamed(
-    //   AppRoutes.onbAddressScreen,
+    // AppRoutes.onbAddressScreen,
     // );
-    //Navigator.pushNamed(context, '/newScreen', _currentList);
+
+    Navigator.pushNamed(context, AppRoutes.onbAddressScreen);
+
+    // if (ModalRoute.of(context)!.settings.arguments != null) {
+    //   final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    //   final name = arguments['name'] ?? '';
+    //   final phoneNumber = arguments['phoneNumber'] ?? '';
+    //   final address = arguments['address'] ?? '';
+    //   final date = arguments['date'] ?? '';
+    //   final toWardCode = arguments['toWardCode'] ?? '';
+    //   final toDistrictId = arguments['toDistrictId'] ?? 1;
+
+    //   // print(ModalRoute.of(context)!.settings.arguments as Map);
+
+    //   Navigator.pushNamed(
+    //     context,
+    //     AppRoutes.onbAddressScreen,
+    //     arguments: {
+    //       'name': name,
+    //       'phoneNumber': phoneNumber,
+    //       'address': address,
+    //       'date': date,
+    //       'toWardCode': toWardCode,
+    //       'toDistrictId': toDistrictId,
+    //       'boxs': data,
+    //     },
+    //   );
+    // } else {
+    //   Navigator.pushNamed(
+    //     context,
+    //     AppRoutes.onbAddressScreen,
+    //     arguments: {
+    //       'boxs': data,
+    //     },
+    //   );
+    // }
   }
 }
