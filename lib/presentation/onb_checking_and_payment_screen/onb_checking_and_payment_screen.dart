@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/app_bar/appbar_title.dart';
@@ -7,16 +9,20 @@ import 'package:lastapp/widgets/custom_checkbox_button.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
+import '../onb_oderbox_screen/controller/onb_oderbox_controller.dart';
+import '../onb_oderbox_screen/models/new_box.dart';
 import 'controller/onb_checking_and_payment_controller.dart';
+import 'package:http/http.dart' as http;
 
 class OnbCheckingAndPaymentScreen
     extends GetWidget<OnbCheckingAndPaymentController> {
-  const OnbCheckingAndPaymentScreen({Key? key}) : super(key: key);
+  OnbCheckingAndPaymentScreen({Key? key}) : super(key: key);
   static late bool isChecked = false;
 
+  OnbOderboxController onb_controller = Get.put(OnbOderboxController());
+  
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: Scaffold(
         //
@@ -260,8 +266,12 @@ class OnbCheckingAndPaymentScreen
     );
   }
 
-  Widget _buildPackageRequirementsItem(int amount, String nameItem, int size1,
-      int size2, int size3, String services) {
+  Widget _buildPackageRequirementsItem(NewOrderBox _new, index) {
+    String? type_box = onb_controller.onbOderboxModelObj.value.dropdownItemList.value.firstWhere((item) => 
+    item.id == _new.typeBox, orElse: () => SelectionPopupModel(id: _new.typeBox, title: "None")).title;
+    String? model_box= onb_controller.onbOderboxModelObj.value.dropdownItemList1.value.firstWhere((item) => 
+    item.id == _new.modelBox, orElse: () => SelectionPopupModel(id: _new.modelBox, title: "None")).title;
+
     return Column(
       children: [
         //
@@ -271,11 +281,11 @@ class OnbCheckingAndPaymentScreen
             padding: EdgeInsets.only(left: 10.h),
             child: RichText(
               text: TextSpan(
-                text: amount.toString(),
+                text: _new.amount.toString(),
                 style: CustomTextStyles.labelLargeGreen600,
                 children: <TextSpan>[
                   TextSpan(
-                    text: 'x ${nameItem}',
+                    text: 'x ${type_box}',
                     style: CustomTextStyles.labelLargeGreen600,
                   )
                 ],
@@ -303,19 +313,7 @@ class OnbCheckingAndPaymentScreen
                 text: TextSpan(
                   style: theme.textTheme.bodySmall!
                       .copyWith(color: appTheme.black900),
-                  text: '${size1} x ',
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: '${size2} x ',
-                      style: theme.textTheme.bodySmall!
-                          .copyWith(color: appTheme.black900),
-                    ),
-                    TextSpan(
-                      text: '${size3}',
-                      style: theme.textTheme.bodySmall!
-                          .copyWith(color: appTheme.black900),
-                    ),
-                  ],
+                  text: '${model_box}'
                 ),
               ),
             ],
@@ -338,7 +336,7 @@ class OnbCheckingAndPaymentScreen
               ),
               //
               Text(
-                services,
+                _new.services,
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.black900),
               ),
@@ -349,11 +347,65 @@ class OnbCheckingAndPaymentScreen
     );
   }
 
+  Widget _buildListOrderBox() {
+    return Container(
+      color: theme.colorScheme.primary,
+      width: SizeUtils.width,
+      padding: EdgeInsets.only(left: 20.h, right: 20.h, bottom: 10.h),
+      child: Column(
+        children: [
+          //
+          Container(
+            width: SizeUtils.width,
+            padding: EdgeInsets.only(top: 10.v),
+            child: Center(
+              child: Text(
+                'List order box',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+          //
+          SizedBox(height: 10.v),
+          //
+          Obx(
+            () => Container(
+              height: SizeUtils.height -
+                  160.v -
+                  360.v +
+                  (onb_controller.khueListOrders.length < 2
+                      ? 0
+                      : (onb_controller.khueListOrders.length - 2) * 140.v),
+              child: Column(
+                children: [
+                  //
+                  Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: onb_controller.khueListOrders.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _buildPackageRequirementsItem(
+                            onb_controller.khueListOrders[index], index);
+                      },
+                    ),
+                  ),
+                  //
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildPackageRequirementsSection() {
     return Container(
-      //height: 320.v,
-      // height: 200.v,
-      // padding: EdgeInsets.only(left: 25.h),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -366,33 +418,60 @@ class OnbCheckingAndPaymentScreen
               ),
             ),
             SizedBox(height: 10.v),
+            Obx(
+            () => Container(
+              height: SizeUtils.height -
+                  160.v -
+                  360.v +
+                  (onb_controller.khueListOrders.length < 2
+                      ? 0
+                      : (onb_controller.khueListOrders.length - 2) * 140.v),
+              child: Column(
+                children: [
+                  //
+                  Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: onb_controller.khueListOrders.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _buildPackageRequirementsItem(
+                            onb_controller.khueListOrders[index], index);
+                      },
+                    ),
+                  ),
+                  //
+                ],
+              ),
+            ),
+          ),
             //
-            _buildPackageRequirementsItem(
-                1, "Carton box", 50, 50, 50, "Washing, Keeping the hotels"),
-            SizedBox(height: 13.v),
-            //
-            _buildPackageRequirementsItem(
-                1, "Carton box", 50, 50, 25, "Washing, Hang on"),
-            SizedBox(height: 30.v),
+            // _buildPackageRequirementsItem(
+            //     1, "Carton box", 50, 50, 50, "Washing, Keeping the hotels"),
+            // SizedBox(height: 13.v),
+            // //
+            // _buildPackageRequirementsItem(
+            //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+            // SizedBox(height: 30.v),
 
-            //
-            _buildPackageRequirementsItem(
-                1, "Carton box", 50, 50, 25, "Washing, Hang on"),
-            SizedBox(height: 30.v),
+            // //
+            // _buildPackageRequirementsItem(
+            //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+            // SizedBox(height: 30.v),
 
-            //
-            _buildPackageRequirementsItem(
-                1, "Carton box", 50, 50, 25, "Washing, Hang on"),
-            SizedBox(height: 30.v),
+            // //
+            // _buildPackageRequirementsItem(
+            //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+            // SizedBox(height: 30.v),
 
-            //
-            _buildPackageRequirementsItem(
-                1, "Carton box", 50, 50, 25, "Washing, Hang on"),
-            SizedBox(height: 30.v),
+            // //
+            // _buildPackageRequirementsItem(
+            //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+            // SizedBox(height: 30.v),
 
-            //
-            _buildPackageRequirementsItem(
-                1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+            // //
+            // _buildPackageRequirementsItem(
+            //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
             SizedBox(height: 10.v),
             //
           ],
@@ -581,8 +660,51 @@ class OnbCheckingAndPaymentScreen
 
   /// Navigates to the homeContainerScreen when the action is triggered.
   onTapBtnArrowRight() {
-    Get.toNamed(
-      AppRoutes.homeContainerScreen,
-    );
+    // Get.toNamed(
+    //   AppRoutes.homeContainerScreen,
+    // );
+    createRequestOrder();
+  }
+
+  Future<void> createRequestOrder() async {
+    try {
+      var uri = Uri.https('f83d-118-70-128-84.ngrok-free.app', '/api/Order/CreateNewOrderBox');
+      final response = await http.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: jsonEncode(<String, dynamic>{
+          "name": "Tuyen dep zai vaicaloz",
+          "phoneNumber": "0388508956",
+          "address": "Tòa nhà Sông Đà, Phạm Hùng, Mỹ Đình, Nam Từ Liêm, Hà Nội",
+          "date": "2024-03-29T06:45:15.053Z",
+          "toWardCode": "510102",
+          "toDistrictId": 1442,
+          "boxs": [
+            {
+              "typeId": 1,
+              "modelId": 1,
+              "listItem": "10 cái quần, 20 cái áo",
+
+              "services": [
+                1,2
+              ],
+              "weight": 200,
+              "quantity": 1
+            }
+          ]
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print('buuuu');
+      } else {
+        throw Exception('Failed to create album.');
+      }
+    } catch(e) {
+      print(e);
+    }
   }
 }
