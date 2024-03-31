@@ -1,6 +1,7 @@
 import 'package:lastapp/presentation/onb_oderbox_screen/models/new_box.dart';
 
 import '../../../core/app_export.dart';
+import '../models/subject_model.dart';
 import '../models/onb_oderbox_model.dart';
 import '../../../model/onb.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -10,6 +11,9 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 /// This class manages the state of the OnbOderboxScreen, including the
 /// current onbOderboxModelObj
 class OnbOderboxController extends GetxController {
+  RxList<NewOrderBox> khueListOrders = <NewOrderBox>[].obs;
+  late NewOrderBox newOrderBox;
+
   var currentList = <NewOrderBox>[].obs;
 
   Rx<OnbOderboxModel> onbOderboxModelObj = OnbOderboxModel().obs;
@@ -62,9 +66,26 @@ class OnbOderboxController extends GetxController {
     refreshDropDown();
     //listOrders.
   }
-}
 
-class AppDataController extends GetxController {
+  void addNewOrderBox(String typeBox, String modelBox, String services) {
+    newOrderBox = NewOrderBox(
+        typeBox: typeBox, modelBox: modelBox, services: services, amount: 1);
+    khueListOrders.add(newOrderBox);
+
+    // print(khueListOrders);
+  }
+
+  void removeOrderBox(index) {
+    if (khueListOrders.isEmpty) return;
+
+    // int removeIdx = khueListOrders.length - 1;
+    // khueListOrders[index].dispose();
+
+    khueListOrders.removeAt(index);
+  }
+
+  //
+  // multi select
   List<SubjectModel> subjectData = [];
   List<MultiSelectItem> dropDownData = [];
 
@@ -85,17 +106,18 @@ class AppDataController extends GetxController {
     if (apiResponse['code'] == 200) {
       List<SubjectModel> tempSubjectData = [];
       apiResponse['data'].forEach(
-        (data) {
+        (data) => {
           tempSubjectData.add(
             SubjectModel(
               subjectId: data['subject_id'],
               subjectName: data['service_name'],
             ),
-          );
+          )
         },
       );
-      print(tempSubjectData);
+      // print(tempSubjectData);
       subjectData.addAll(tempSubjectData);
+      // print(subjectData);
 
       dropDownData = subjectData.map((subjectdata) {
         return MultiSelectItem(subjectdata, subjectdata.subjectName);
@@ -108,13 +130,4 @@ class AppDataController extends GetxController {
       print("show some error model like something went worng..");
     }
   }
-}
-
-class SubjectModel {
-  String subjectId;
-  String subjectName;
-  SubjectModel({
-    required this.subjectId,
-    required this.subjectName,
-  });
 }
