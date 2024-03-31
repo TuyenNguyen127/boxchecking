@@ -361,7 +361,7 @@ class OnbOderboxScreen extends StatelessWidget {
               
               data.add(_new.toJson());
               print(data);
-              _currentList.add(_new);
+              //_currentList.add(_new);
               controller.addNewOrderBox(typeBox, modelBox, service);
             }
           ),
@@ -479,7 +479,7 @@ class OnbOderboxScreen extends StatelessWidget {
                       shrinkWrap: true,
                       itemCount: controller.khueListOrders.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return _orderBoxItem(
+                        return _itemsOder(
                             controller.khueListOrders[index], index);
                       },
                     ),
@@ -494,40 +494,14 @@ class OnbOderboxScreen extends StatelessWidget {
     );
   }
 
-  Widget _orderBoxItem(NewOrderBox _new, index) {
-    return Container(
-      // height: 120.v,
-      width: SizeUtils.width,
-      // margin: EdgeInsets.only(top: 380.h),
-      padding: EdgeInsets.symmetric(horizontal: 30.h, vertical: 20.v),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary,
-      ),
-      child: Padding(
-        padding: EdgeInsets.zero,
-        // child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Text('dfasdf'),
-            
-            _itemsOder(NewOrderBox( typeBox: 1, modelBox: 2, services: '1')),
-            _itemsOder(NewOrderBox( typeBox: 1, modelBox: 1, services: '1')),
-            _itemsOder(NewOrderBox( typeBox: 1, modelBox: 3, services: '1')),
-            _itemsOder(NewOrderBox( typeBox: 1, modelBox: 4, services: '1')),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _itemsOder(NewOrderBox _new) {
+  Widget _itemsOder(NewOrderBox _new, index) {
     String? type_box = controller.onbOderboxModelObj.value.dropdownItemList.value.firstWhere((item) => 
     item.id == _new.typeBox, orElse: () => SelectionPopupModel(id: _new.typeBox, title: "None")).title;
     String? model_box= controller.onbOderboxModelObj.value.dropdownItemList1.value.firstWhere((item) => 
     item.id == _new.modelBox, orElse: () => SelectionPopupModel(id: _new.modelBox, title: "None")).title;
 
     return Container(
-      height: 130.v,
+      height: 140.v,
       child: Column(
         // crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -545,7 +519,7 @@ class OnbOderboxScreen extends StatelessWidget {
                     margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
                 SizedBox(width: 10.v),
                 // Spacer(),
-                Text(_new.typeBox,
+                Text(type_box,
                     style: CustomTextStyles.titleMediumGreen80002),
                 SizedBox(width: 10.v),
                 // Spacer(),
@@ -571,7 +545,7 @@ class OnbOderboxScreen extends StatelessWidget {
                     width: 11.h,
                     margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
                 SizedBox(width: 10.v),
-                Text(_new.modelBox,
+                Text(model_box,
                     style: CustomTextStyles.titleMediumGreen80002),
                 SizedBox(width: 10.v),
                 Text('Carton Box',
@@ -601,51 +575,7 @@ class OnbOderboxScreen extends StatelessWidget {
           ),
           //
           SizedBox(height: 20.v),
-          Row(
-            children: [
-              CustomImageView(
-                imagePath: ImageConstant.imgThumbsUpBlueGray300,
-                height: 12.v,
-                width: 11.h,
-                margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
-              Spacer(),
-              Text( type_box,
-                style: CustomTextStyles.titleMediumGreen80002),
-              Spacer(),
-              Text('Carton Box',
-                style: CustomTextStyles.titleMediumGreen80002),
-            ],
-          ),
-          Row(
-            children: [
-              CustomImageView(
-                imagePath: ImageConstant.imgThumbsUpBlueGray300,
-                height: 12.v,
-                width: 11.h,
-                margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
-              Spacer(),
-              Text( model_box,
-                style: CustomTextStyles.titleMediumGreen80002),
-              Spacer(),
-              Text('Carton Box',
-                style: CustomTextStyles.titleMediumGreen80002),
-            ],
-          ),
-          Row(
-            children: [
-              CustomImageView(
-                imagePath: ImageConstant.imgThumbsUpBlueGray300,
-                height: 12.v,
-                width: 11.h,
-                margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
-              Spacer(),
-              Text(_new.services,
-                style: CustomTextStyles.titleMediumGreen80002),
-              Spacer(),
-              Text('Carton Box',
-                style: CustomTextStyles.titleMediumGreen80002),
-            ],
-          ),              
+                        
         ],
       ),
     );

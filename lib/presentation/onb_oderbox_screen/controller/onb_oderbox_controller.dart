@@ -67,7 +67,7 @@ class OnbOderboxController extends GetxController {
     //listOrders.
   }
 
-  void addNewOrderBox(String typeBox, String modelBox, String services) {
+  void addNewOrderBox(int typeBox, int modelBox, String services) {
     newOrderBox = NewOrderBox(
         typeBox: typeBox, modelBox: modelBox, services: services, amount: 1);
     khueListOrders.add(newOrderBox);
