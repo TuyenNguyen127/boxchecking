@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:lastapp/presentation/onb_address_screen/controller/onb_address_controller.dart';
 import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/app_bar/appbar_title.dart';
@@ -20,9 +21,13 @@ class OnbCheckingAndPaymentScreen
   static late bool isChecked = false;
 
   OnbOderboxController onb_controller = Get.put(OnbOderboxController());
-  
+  OnbAddressController onbAddressController = Get.put(OnbAddressController());
+
   @override
   Widget build(BuildContext context) {
+    // print(onbAddressController.tuyenListAddress.length);
+    // print(onbAddressController.tuyenListAddress[0].name.toString());
+
     return SafeArea(
       child: Scaffold(
         //
@@ -195,7 +200,6 @@ class OnbCheckingAndPaymentScreen
   }
 
   Widget _buildFakeBackground() {
-    
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 20.v),
@@ -206,71 +210,75 @@ class OnbCheckingAndPaymentScreen
       ),
     );
   }
-  
 
   Widget _buildContentPageCheckingAndPayment() {
-    
-    return 
-    // SingleChildScrollView(
-    //   child: 
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.v, vertical: 10.v),
-        decoration: AppDecoration.fillPrimary
-            .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
-        height: SizeUtils.height - 250.v,
-        width: SizeUtils.width,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              //
-              Text("Request Data", style: CustomTextStyles.titleLargeGray800),
-              //
-              SizedBox(height: 10.v),
-              Divider(),
-              SizedBox(height: 10.v),
-              //
-              Container(
-                height: SizeUtils.height - 350.v,
-                decoration: AppDecoration.fillPrimary
-                    .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
-                child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      //
-                      _buildPackageRequirementsSection(),
-                      //
-                      SizedBox(height: 10.v),
-                      Divider(),
-                      SizedBox(height: 10.v),
-                      //
-                      _buildAddress(),
-                      // 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildAgreethetermsofuse(),
-                        ],
-                      ),
-                    ],
-                  ),
+    return
+        // SingleChildScrollView(
+        //   child:
+        Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.v, vertical: 10.v),
+      decoration: AppDecoration.fillPrimary
+          .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
+      height: SizeUtils.height - 250.v,
+      width: SizeUtils.width,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            //
+            Text("Request Data", style: CustomTextStyles.titleLargeGray800),
+            //
+            SizedBox(height: 10.v),
+            Divider(),
+            SizedBox(height: 10.v),
+            //
+            Container(
+              height: SizeUtils.height - 350.v,
+              decoration: AppDecoration.fillPrimary
+                  .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    //
+                    _buildPackageRequirementsSection(),
+                    //
+                    SizedBox(height: 10.v),
+                    Divider(),
+                    SizedBox(height: 10.v),
+                    //
+                    _buildAddress(),
+                    //
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildAgreethetermsofuse(),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
       // ),
     );
   }
 
   Widget _buildPackageRequirementsItem(NewOrderBox _new, index) {
-    String? type_box = onb_controller.onbOderboxModelObj.value.dropdownItemList.value.firstWhere((item) => 
-    item.id == _new.typeBox, orElse: () => SelectionPopupModel(id: _new.typeBox, title: "None")).title;
-    String? model_box= onb_controller.onbOderboxModelObj.value.dropdownItemList1.value.firstWhere((item) => 
-    item.id == _new.modelBox, orElse: () => SelectionPopupModel(id: _new.modelBox, title: "None")).title;
+    String? type_box = onb_controller
+        .onbOderboxModelObj.value.dropdownItemList.value
+        .firstWhere((item) => item.id == _new.typeBox,
+            orElse: () => SelectionPopupModel(id: _new.typeBox, title: "None"))
+        .title;
+    String? model_box = onb_controller
+        .onbOderboxModelObj.value.dropdownItemList1.value
+        .firstWhere((item) => item.id == _new.modelBox,
+            orElse: () => SelectionPopupModel(id: _new.modelBox, title: "None"))
+        .title;
 
     return Column(
       children: [
@@ -311,10 +319,9 @@ class OnbCheckingAndPaymentScreen
               //
               RichText(
                 text: TextSpan(
-                  style: theme.textTheme.bodySmall!
-                      .copyWith(color: appTheme.black900),
-                  text: '${model_box}'
-                ),
+                    style: theme.textTheme.bodySmall!
+                        .copyWith(color: appTheme.black900),
+                    text: '${model_box}'),
               ),
             ],
           ),
@@ -406,26 +413,23 @@ class OnbCheckingAndPaymentScreen
 
   Widget _buildPackageRequirementsSection() {
     return Container(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            //
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Packaging requirements",
-                style: CustomTextStyles.labelLargeBold,
-              ),
+      // child: SingleChildScrollView(
+      child: Column(
+        children: [
+          //
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Packaging requirements",
+              style: CustomTextStyles.labelLargeBold,
             ),
-            SizedBox(height: 10.v),
-            Obx(
+          ),
+          SizedBox(height: 10.v),
+          Obx(
             () => Container(
-              height: SizeUtils.height -
-                  160.v -
-                  360.v +
-                  (onb_controller.khueListOrders.length < 2
-                      ? 0
-                      : (onb_controller.khueListOrders.length - 2) * 140.v),
+              height: (onb_controller.khueListOrders.length < 2
+                  ? 200.v
+                  : (onb_controller.khueListOrders.length - 2) * 140.v),
               child: Column(
                 children: [
                   //
@@ -445,43 +449,43 @@ class OnbCheckingAndPaymentScreen
               ),
             ),
           ),
-            //
-            // _buildPackageRequirementsItem(
-            //     1, "Carton box", 50, 50, 50, "Washing, Keeping the hotels"),
-            // SizedBox(height: 13.v),
-            // //
-            // _buildPackageRequirementsItem(
-            //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
-            // SizedBox(height: 30.v),
+          //
+          // _buildPackageRequirementsItem(
+          //     1, "Carton box", 50, 50, 50, "Washing, Keeping the hotels"),
+          // SizedBox(height: 13.v),
+          // //
+          // _buildPackageRequirementsItem(
+          //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+          // SizedBox(height: 30.v),
 
-            // //
-            // _buildPackageRequirementsItem(
-            //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
-            // SizedBox(height: 30.v),
+          // //
+          // _buildPackageRequirementsItem(
+          //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+          // SizedBox(height: 30.v),
 
-            // //
-            // _buildPackageRequirementsItem(
-            //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
-            // SizedBox(height: 30.v),
+          // //
+          // _buildPackageRequirementsItem(
+          //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+          // SizedBox(height: 30.v),
 
-            // //
-            // _buildPackageRequirementsItem(
-            //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
-            // SizedBox(height: 30.v),
+          // //
+          // _buildPackageRequirementsItem(
+          //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+          // SizedBox(height: 30.v),
 
-            // //
-            // _buildPackageRequirementsItem(
-            //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
-            SizedBox(height: 10.v),
-            //
-          ],
-        ),
+          // //
+          // _buildPackageRequirementsItem(
+          //     1, "Carton box", 50, 50, 25, "Washing, Hang on"),
+          SizedBox(height: 10.v),
+          //
+        ],
+        // ),
       ),
     );
   }
 
   Widget _buildAddressItem(
-      String fullName, String phoneNumber, String address) {
+      String fullName, String phoneNumber, String address, String date, String toWardCode, String districtId) {
     return Column(
       children: [
         //
@@ -554,6 +558,75 @@ class OnbCheckingAndPaymentScreen
             ],
           ),
         ),
+        SizedBox(height: 10.v),
+
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.h),
+          // padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              //
+              Text(
+                "Date:",
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+              //
+              Text(
+                date,
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 10.v),
+        //
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.h),
+          // padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              //
+              Text(
+                "To Ward Code:",
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+              //
+              Text(
+                toWardCode,
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 10.v),
+
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.h),
+          // padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              //
+              Text(
+                "District ID:",
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+              //
+              Text(
+                districtId,
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+            ],
+          ),
+        ),
         SizedBox(height: 30.v),
       ],
     );
@@ -577,14 +650,25 @@ class OnbCheckingAndPaymentScreen
             ),
             SizedBox(height: 10.v),
             //
-            _buildAddressItem("Long Do", "0123456789",
-                "Tay Mo, Nam Tu Liem, Ha Noi, Vietnam"),
+            // _buildAddressItem("Long Do", "0123456789",
+            //     "Tay Mo, Nam Tu Liem, Ha Noi, Vietnam"),
+
+            //
+            _buildAddressItem(
+              onbAddressController.tuyenListAddress[0].name.toString(),
+              onbAddressController.tuyenListAddress[0].phoneNumber.toString(),
+              onbAddressController.tuyenListAddress[0].address.toString(),
+              onbAddressController.tuyenListAddress[0].date.toString(),
+              onbAddressController.tuyenListAddress[0].towardCode.toString(),
+              onbAddressController.tuyenListAddress[0].districtId.toString(),
+            ),
             //
           ],
         ),
       ),
     );
   }
+
   /// Section Widget
   Widget _buildAgreethetermsofuse() {
     return Obx(
@@ -611,7 +695,7 @@ class OnbCheckingAndPaymentScreen
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // 
+          //
           CustomIconButton(
             height: 60.adaptSize,
             width: 60.adaptSize,
@@ -624,7 +708,7 @@ class OnbCheckingAndPaymentScreen
               imagePath: ImageConstant.imgArrowRightOnerrorcontainer,
             ),
           ),
-          // 
+          //
           CustomIconButton(
             height: 60.adaptSize,
             width: 60.adaptSize,
@@ -655,7 +739,6 @@ class OnbCheckingAndPaymentScreen
     Get.toNamed(
       AppRoutes.onbAddressScreen,
     );
-    
   }
 
   /// Navigates to the homeContainerScreen when the action is triggered.
@@ -666,9 +749,20 @@ class OnbCheckingAndPaymentScreen
     createRequestOrder();
   }
 
+  // Map<String, dynamic> toJson() => {
+  //       'name': onbAddressController.tuyenListAddress[0].name.toString(),
+  //       'phoneNumber': onbAddressController.tuyenListAddress[0].phoneNumber.toString(),
+  //       'address': onbAddressController.tuyenListAddress[0].address.toString(),
+  //       'date': onbAddressController.tuyenListAddress[0].date.toString(),
+  //       'towardCode': onbAddressController.tuyenListAddress[0].towardCode.toString(),
+  //       'districtId': onbAddressController.tuyenListAddress[0].districtId.toString(),
+  //       'box': onb_controller.khueListOrders.value;
+  //     };
+
   Future<void> createRequestOrder() async {
     try {
-      var uri = Uri.https('f83d-118-70-128-84.ngrok-free.app', '/api/Order/CreateNewOrderBox');
+      var uri = Uri.https(
+          'f83d-118-70-128-84.ngrok-free.app', '/api/Order/CreateNewOrderBox');
       final response = await http.post(
         uri,
         headers: <String, String>{
@@ -676,7 +770,7 @@ class OnbCheckingAndPaymentScreen
           'ngrok-skip-browser-warning': 'true',
         },
         body: jsonEncode(<String, dynamic>{
-          "name": "Tuyen dep zai vaicaloz",
+          "name": "Long Do",
           "phoneNumber": "0388508956",
           "address": "Tòa nhà Sông Đà, Phạm Hùng, Mỹ Đình, Nam Từ Liêm, Hà Nội",
           "date": "2024-03-29T06:45:15.053Z",
@@ -687,10 +781,7 @@ class OnbCheckingAndPaymentScreen
               "typeId": 1,
               "modelId": 1,
               "listItem": "10 cái quần, 20 cái áo",
-
-              "services": [
-                1,2
-              ],
+              "services": [1, 2],
               "weight": 200,
               "quantity": 1
             }
@@ -703,7 +794,7 @@ class OnbCheckingAndPaymentScreen
       } else {
         throw Exception('Failed to create album.');
       }
-    } catch(e) {
+    } catch (e) {
       print(e);
     }
   }

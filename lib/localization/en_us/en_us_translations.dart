@@ -64,7 +64,7 @@ final Map<String, String> enUs = {
   // Type Request Screen
   "lbl_get_back_box": "Get back box",
   "lbl_help": "Help",
-  "lbl_oder_new_box": "Oder new box",
+  "lbl_oder_new_box": "Order new box",
   "lbl_request": "Request",
   "msg_send_box_to_warehouse": "Send box to warehouse",
 

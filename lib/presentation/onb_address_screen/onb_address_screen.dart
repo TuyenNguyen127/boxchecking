@@ -1,12 +1,7 @@
-import 'dart:convert';
-import 'dart:js';
-
 import 'package:flutter/widgets.dart';
-import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
+import 'package:lastapp/presentation/onb_address_screen/models/address.dart';
+import 'package:lastapp/presentation/onb_oderbox_screen/controller/onb_oderbox_controller.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
-import 'package:lastapp/widgets/app_bar/appbar_title.dart';
-import 'package:another_stepper/widgets/another_stepper.dart';
-import 'package:another_stepper/dto/stepper_data.dart';
 import 'package:lastapp/core/utils/validation_functions.dart';
 import 'package:lastapp/widgets/custom_text_form_field.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -15,64 +10,37 @@ import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'controller/onb_address_controller.dart';
-
-
-class Address{
-  late String name;
-  late String phoneNumber;
-  late String address;
-  late String date;
-  late String toWardCode;
-  late int toDistrictId;
-  Address({
-    required this.name,
-    required this.phoneNumber,
-    required this.address,
-    required this.date,
-    required this.toWardCode,
-    required this.toDistrictId,
-  });
-
-  Map<String, dynamic> toJson() =>
-  {
-    'name': name,
-    'phoneNumber': phoneNumber,
-    'address': address,
-    'date': date,
-    'toWardCode': toWardCode,
-    'toDistrictId': toDistrictId
-  }; 
-  factory Address.fromJson(Map<String, dynamic> json) => Address(
-    name: json["name"] ?? '',
-    phoneNumber: json["phoneNumber"] ?? '',
-    address: json["address"] ?? '',
-    date: json["date"] ?? '',
-    toWardCode: json["toWardCode"] ?? '',
-    toDistrictId: json["toDistrictId"] ?? 1,
-  );
-}
+import '';
 
 // ignore_for_file: must_be_immutable
-class OnbAddressScreen extends GetWidget<OnbAddressController> {
+class OnbAddressScreen extends StatelessWidget {
   OnbAddressScreen({Key? key}) : super(key: key);
-  
+
+  OnbOderboxController onb_controller = Get.put(OnbOderboxController());
+  OnbAddressController onbAddressController = Get.put(OnbAddressController());
+
   Completer<GoogleMapController> googleMapController = Completer();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  
+
   late String name = "";
   late String phoneNumber = "";
   late String address = "";
   late String date = "";
-  late String toWardCode = "";
-  late int toDistrictId = 0;
+  late String towardCode = "";
+  // late int districtId = 0;
+  late String districtId = '';
+
+  late bool isPickedDate = false;
 
   @override
   Widget build(BuildContext context) {
+    // print(onb_controller.khueListOrders.length);
+    // print(onb_controller.khueListOrders[0].typeBox.toString());
+
     return SafeArea(
       child: Scaffold(
         //
-        // resizeToAvoidBottomInset: false,
         appBar: _buildAppBarPageAddress(),
         //
         body: Container(
@@ -237,16 +205,18 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
   }
 
   Widget _buildFormPageAddress(BuildContext context) {
-    if (ModalRoute.of(context)!.settings.arguments != null) {
-      final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      Address _address = Address.fromJson(arguments);
-      name = _address.name;
-      phoneNumber = _address.phoneNumber;
-      date = _address.date;
-      address = _address.address;
-      toWardCode = _address.toWardCode;
-      toDistrictId = _address.toDistrictId;
-    }
+    // if (ModalRoute.of(context)!.settings.arguments != null) {
+    //   final arguments =
+    //       ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    //   Address _address = Address.fromJson(arguments);
+    //   name = _address.name;
+    //   phoneNumber = _address.phoneNumber;
+    //   date = _address.date;
+    //   address = _address.address;
+    //   towardCode = _address.towardCode;
+    //   districtId = _address.districtId;
+    // }
+
     return SingleChildScrollView(
       child: Container(
         decoration: BoxDecoration(
@@ -296,7 +266,7 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
             _buildCity1(),
             SizedBox(height: 18.v),
             //
-            _buildNinetySix(),
+            _wrapBuildDistrictView(),
             SizedBox(height: 20.v),
             //
             //_buildMaps(),
@@ -309,127 +279,146 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
   /// Section Widget
   Widget _buildPhoneNumber() {
     return CustomTextFormField(
-        controller: controller.phoneNumberController,
-        hintText: "lbl_phone_number".tr,
-        textInputType: TextInputType.phone,
-        validator: (value) {
-          if (!isValidPhone(value)) {
-            return "err_msg_please_enter_valid_phone_number".tr;
-          }
-          return null;
-        });
+      controller: onbAddressController.phoneNumberController,
+      hintText: "lbl_phone_number".tr,
+      textInputType: TextInputType.phone,
+      validator: (value) {
+        if (!isValidPhone(value)) {
+          return "err_msg_please_enter_valid_phone_number".tr;
+        }
+        return null;
+      },
+      onChanged: (value) => setPhoneNumberToTempData(value),
+    );
+  }
+
+  setPhoneNumberToTempData(value) {
+    value = value.toString();
+
+    if (value != '' || value != null) {
+      onbAddressController.addPhoneNumber(value);
+    }
   }
 
   /// Section Widget
   Widget _buildFullName() {
     return CustomTextFormField(
-        controller: controller.fullNameController,
-        hintText: "lbl_full_name".tr,
-        validator: (value) {
-          if (!isText(value)) {
-            return "err_msg_please_enter_valid_text".tr;
-          }
-          return null;
-        });
+      controller: onbAddressController.fullNameController,
+      hintText: "lbl_full_name".tr,
+      validator: (value) {
+        if (!isText(value)) {
+          return "err_msg_please_enter_valid_text".tr;
+        }
+        return null;
+      },
+      onChanged: (value) => setFullnameToTempData(value),
+      // initialValue: onbAddressController.fullNameController.text,
+    );
   }
 
-  /// Section Widget
-  Widget _buildTime() {
-    return GestureDetector(
-      onTap: () {
-        onTapTime();
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 15.v),
-        decoration: AppDecoration.outlineGray500
-            .copyWith(borderRadius: BorderRadiusStyle.roundedBorder10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Obx(() => Text(controller.onbAddressModelObj.value.date.value,
-                style: theme.textTheme.bodyLarge)),
-            CustomImageView(
-              imagePath: ImageConstant.imgCalendarBlack900,
-              height: 15.v,
-              width: 13.h,
-              margin: EdgeInsets.only(top: 3.v, right: 6.h, bottom: 2.v),
-            ),
-          ],
-        ),
-      ),
-    );
+  setFullnameToTempData(value) {
+    value = value.toString();
+
+    if (value != '' || value != null) {
+      onbAddressController.addFullname(value);
+    }
   }
 
   /// Section Widget
   Widget _buildAddress() {
     return CustomTextFormField(
-        controller: controller.addressController,
-        hintText: "lbl_address2".tr,
-        suffix: Container(
-            margin: EdgeInsets.fromLTRB(30.h, 15.v, 24.h, 15.v),
-            child: CustomImageView(
-                imagePath: ImageConstant.imgLinkedinBlack900,
-                height: 20.v,
-                width: 14.h)),
-        suffixConstraints: BoxConstraints(maxHeight: 50.v),
-        contentPadding: EdgeInsets.only(left: 18.h, top: 15.v, bottom: 15.v));
+      controller: onbAddressController.addressController,
+      hintText: "lbl_address2".tr,
+      suffix: Container(
+          margin: EdgeInsets.fromLTRB(30.h, 15.v, 24.h, 15.v),
+          child: CustomImageView(
+              imagePath: ImageConstant.imgLinkedinBlack900,
+              height: 20.v,
+              width: 14.h)),
+      suffixConstraints: BoxConstraints(maxHeight: 50.v),
+      contentPadding: EdgeInsets.only(left: 18.h, top: 15.v, bottom: 15.v),
+      onChanged: (value) => setAddressToTempData(value),
+    );
+  }
+
+  setAddressToTempData(value) {
+    value = value.toString();
+
+    if (value != '' || value != null) {
+      onbAddressController.addAddress(value);
+    }
   }
 
   /// Section Widget
-  Widget _buildCity() {
+  Widget _buildTowardCodeView() {
     return Expanded(
-        child: Padding(
-            padding: EdgeInsets.only(right: 5.h, bottom: 1.v),
-            child: CustomTextFormField(
-                controller: controller.cityController,
-                hintText: 'Ward Code')));
+      child: Padding(
+        padding: EdgeInsets.only(right: 5.h, bottom: 1.v),
+        child: CustomTextFormField(
+          controller: onbAddressController.towardCodeController,
+          hintText: 'Ward Code',
+          onChanged: (value) => setTowardCodeToTempData(value),
+        ),
+      ),
+    );
   }
 
-  /// Section Widget
-  Widget _buildAddress1() {
-    return Expanded(
-        child: Padding(
-            padding: EdgeInsets.only(left: 5.h),
-            child: CustomTextFormField(
-                controller: controller.addressController1,
-                hintText: "lbl_address".tr)));
+  setTowardCodeToTempData(value) {
+    value = value.toString();
+
+    if (value != '' || value != null) {
+      onbAddressController.addTowardCode(value);
+    }
   }
 
   /// Section Widget
   Widget _buildCity1() {
     return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [_buildCity()
-        //, _buildAddress1()
-        ]);
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildTowardCodeView(),
+      ],
+    );
   }
 
   /// Section Widget
-  Widget _buildAddress2() {
+  Widget _buildDistrictView() {
     return Expanded(
-        child: Padding(
-            padding: EdgeInsets.only(right: 5.h, bottom: 1.v),
-            child: CustomTextFormField(
-                controller: controller.addressController2,
-                hintText: 'District Id')));
+      child: Padding(
+        padding: EdgeInsets.only(right: 5.h, bottom: 1.v),
+        child: CustomTextFormField(
+          controller: onbAddressController.districtIdController,
+          hintText: 'District Id',
+          onChanged: (value) => setDistrictIdToTempData(value),
+        ),
+      ),
+    );
+  }
+
+  setDistrictIdToTempData(value) {
+    value = value.toString();
+
+    if (value != '' || value != null) {
+      onbAddressController.addDistrictId(value);
+    }
   }
 
   /// Section Widget
-  Widget _buildType() {
-    return Expanded(
-        child: Padding(
-            padding: EdgeInsets.only(left: 5.h),
-            child: CustomTextFormField(
-                controller: controller.typeController,
-                hintText: "lbl_street".tr,
-                textInputAction: TextInputAction.done)));
-  }
+  // Widget _buildType() {
+  //   return Expanded(
+  //       child: Padding(
+  //           padding: EdgeInsets.only(left: 5.h),
+  //           child: CustomTextFormField(
+  //               controller: onbAddressController.typeController,
+  //               hintText: "lbl_street".tr,
+  //               textInputAction: TextInputAction.done)));
+  // }
 
   /// Section Widget
-  Widget _buildNinetySix() {
+  Widget _wrapBuildDistrictView() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [_buildAddress2()]);
+        children: [_buildDistrictView()]);
   }
 
   /// Section Widget
@@ -466,23 +455,23 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
             width: 60.adaptSize,
             padding: EdgeInsets.all(15.h),
             onTap: () {
-              final arguments = ModalRoute.of(context)!.settings.arguments as Map;
-              final boxs = arguments['boxs'];
+              //
 
-              Navigator.popAndPushNamed(
-                context, 
-                AppRoutes.onbOderboxScreen,
-                arguments: {
-                  'name': name,
-                  'phoneNumber': phoneNumber,
-                  'address': address,
-                  'date': date,
-                  'toWardCode': toWardCode,
-                  'toDistrictId': toDistrictId,
-                  'boxs': boxs,
-                }
-              );
-              //onTapBtnArrowLeft();
+              // final arguments =
+              //     ModalRoute.of(context)!.settings.arguments as Map;
+              // final boxs = arguments['boxs'];
+
+              //     arguments: {
+              //       'name': name,
+              //       'phoneNumber': phoneNumber,
+              //       'address': address,
+              //       'date': date,
+              //       'towardCode': towardCode,
+              //       'districtId': districtId,
+              //       'boxs': boxs,
+              //     });
+
+              onTapBtnArrowLeft(context);
             },
             child: CustomImageView(
               imagePath: ImageConstant.imgArrowRightOnerrorcontainer,
@@ -493,27 +482,45 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
             width: 60.adaptSize,
             padding: EdgeInsets.all(15.h),
             onTap: () {
-              final arguments = ModalRoute.of(context)!.settings.arguments as Map;
-              final boxs = arguments['boxs'];
-              //final _new = Address(name: name, phoneNumber: phoneNumber, address: address, date: date, toWardCode: toWardCode, toDistrictId: toDistrictId);
-              Navigator.pushNamed(
-                context,
-                AppRoutes.onbCheckingAndPaymentScreen,
-                arguments: {
-                  'name': name,
-                  'phoneNumber': phoneNumber,
-                  'address': address,
-                  'date': date,
-                  'toWardCode': toWardCode,
-                  'toDistrictId': toDistrictId,
-                  'boxs': boxs,
-                },
-              );
-              onTapBtnArrowRight();
+              onTapBtnArrowRight(context);
             },
             child: CustomImageView(imagePath: ImageConstant.imgArrowRight),
           ),
         ],
+      ),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildTime() {
+    return GestureDetector(
+      onTap: () {
+        onTapTime();
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 15.v),
+        decoration: AppDecoration.outlineGray500
+            .copyWith(borderRadius: BorderRadiusStyle.roundedBorder10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Obx(
+              () => Text(
+                // onbAddressController.onbAddressModelObj.value.date.value,
+                onbAddressController.dateController.value.toString(),
+                style: TextStyle(
+                  color: isPickedDate ? Colors.black : appTheme.black900,
+                ),
+              ),
+            ),
+            CustomImageView(
+              imagePath: ImageConstant.imgCalendarBlack900,
+              height: 15.v,
+              width: 13.h,
+              margin: EdgeInsets.only(top: 3.v, right: 6.h, bottom: 2.v),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -526,7 +533,9 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
   Future<void> onTapTime() async {
     DateTime? dateTime = await showDatePicker(
       context: Get.context!,
-      initialDate: controller.onbAddressModelObj.value.selectedDate!.value,
+      initialDate:
+          // onbAddressController.onbAddressModelObj.value.selectedDate!.value,
+          onbAddressController.dateController.value,
       firstDate: DateTime(
         DateTime.now().year,
         DateTime.now().month,
@@ -540,9 +549,26 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
     );
 
     if (dateTime != null) {
-      controller.onbAddressModelObj.value.selectedDate!.value = dateTime;
-      controller.onbAddressModelObj.value.date.value =
-          dateTime.format(pattern: dateTimeFormatPattern);
+      // onbAddressController.onbAddressModelObj.value.selectedDate!.value = dateTime;
+      // onbAddressController.onbAddressModelObj.value.date.value =
+      //     dateTime.format(pattern: dateTimeFormatPattern);
+
+      isPickedDate = true;
+
+      onbAddressController.dateController.value = dateTime;
+
+      setDateToTempData(dateTime);
+
+      // onbAddressController.dateController.value.date.value =
+      //     dateTime.format(pattern: dateTimeFormatPattern);
+    }
+  }
+
+  setDateToTempData(value) {
+    value = value.toString();
+
+    if (value != '' || value != null) {
+      onbAddressController.addDate(DateTime.parse(value));
     }
   }
 
@@ -558,21 +584,82 @@ class OnbAddressScreen extends GetWidget<OnbAddressController> {
   }
 
   /// Navigates to the onbOderboxScreen when the action is triggered.
-  onTapBtnArrowLeft() {
+  onTapBtnArrowLeft(context) {
     // print('left');
+
+    //NavigationBar.pop();
+
+    //
+    // print(onbAddressController.fullNameStringList.length > 0);
+    // print(onbAddressController.phoneNumberStringList.length > 0);
+    // print(onbAddressController.addressStringList.length > 0);
+
+    //
+    saveDataForAddressPage();
+    //
+    // Navigator.pop(context);
 
     Get.toNamed(
       AppRoutes.onbOderboxScreen,
     );
-    //NavigationBar.pop();
   }
 
   /// Navigates to the onbCheckingAndPaymentScreen when the action is triggered.
-  onTapBtnArrowRight() {
+  onTapBtnArrowRight(context) {
     // print('right');
 
     // Get.toNamed(
     //   AppRoutes.onbCheckingAndPaymentScreen,
     // );
+
+    //
+    saveDataForAddressPage();
+    //
+    // Navigator.pop(context);
+    //
+    // Get.toNamed(
+    //   AppRoutes.onbCheckingAndPaymentScreen,
+    // );
+
+    //
+    Navigator.pushNamed(
+      context,
+      AppRoutes.onbCheckingAndPaymentScreen,
+    );
+  }
+
+  saveDataForAddressPage() {
+    // if (onbAddressController.dateTimeList.length > 0) {
+    //   print(onbAddressController.dateTimeList.last);
+    // }
+
+    if (onbAddressController.fullNameStringList.length > 0 &&
+        onbAddressController.phoneNumberStringList.length > 0 &&
+        onbAddressController.addressStringList.length > 0 &&
+        // onbAddressController.dateTimeList.length > 0
+        onbAddressController.dateTimeList.length > 0 &&
+        onbAddressController.districtIdStringList.length > 0 &&
+        onbAddressController.towardCodeStringList.length > 0) {
+      print('run');
+      // print(onbAddressController.fullNameStringList.length);
+
+      // print(onbAddressController.fullNameStringList.last);
+      // print(onbAddressController.phoneNumberStringList.last);
+      // print(onbAddressController.districtIdStringList.last);
+      // print(onbAddressController.dateTimeList.last);
+      // print(onbAddressController.addressStringList.last);
+      // print(onbAddressController.towardCodeStringList.last);
+
+      Address newAddress = Address(
+        name: onbAddressController.fullNameStringList.last,
+        phoneNumber: onbAddressController.phoneNumberStringList.last,
+        date: onbAddressController.dateTimeList.last.toString(),
+        address: onbAddressController.addressStringList.last,
+        towardCode: onbAddressController.towardCodeStringList.toString(),
+        districtId: onbAddressController.districtIdStringList.last,
+      );
+
+      onbAddressController.addNewAddress(newAddress);
+    }
   }
 }
