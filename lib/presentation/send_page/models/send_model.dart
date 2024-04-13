@@ -8,16 +8,16 @@ class SendModel {
   Rx<List<SelectionPopupModel>> dropdownItemList = Rx([
     SelectionPopupModel(
       id: 1,
-      title: "Item One",
+      title: "14 days ago",
       isSelected: true,
     ),
     SelectionPopupModel(
       id: 2,
-      title: "Item Two",
+      title: "1 month ago",
     ),
     SelectionPopupModel(
       id: 3,
-      title: "Item Three",
+      title: "3 months ago",
     )
   ]);
 
@@ -26,32 +26,28 @@ class SendModel {
         id: "ID".obs,
         widget: "33589549623491-001".obs,
         status: "Pending".obs,
-        xuanThuyCau: "144 Xuan Thuy, Cau Giay, Ha Noi".obs,
-        xQuanJeanxAo: "10xQuan Jean; 10xAo so mi; 10xThat lung da".obs,
-        hangOnWashing: "Hang On, Washing".obs,
-        box: "Box".obs,
-        nothing: "Nothing".obs,
-        callshipper: "Call shipper".obs,
-        editorder: "Edit order".obs,
-        revoke: "Revoke".obs,
-        fiftySeven: "...".obs),
+        address: "144 Xuan Thuy, Cau Giay, Ha Noi".obs,
+        commodity: "10xQuan Jean; 10xAo so mi; 10xThat lung da".obs,
+        service: "Hang On, Washing".obs,
+        type: "Box".obs,
+        note: "Nothing".obs),
     SendItemModel(
         id: "ID".obs,
         widget: "33589549623491-002".obs,
         status: "Pending".obs,
-        xuanThuyCau: "144 Xuan Thuy, Cau Giay, Ha Noi".obs,
-        xQuanJeanxAo: "10xQuan Jean; 10xAo so mi; 10xThat lung da".obs,
-        hangOnWashing: "Hang On, Washing".obs,
-        box: "Box".obs,
-        nothing: "Nothing".obs),
+        address: "144 Xuan Thuy, Cau Giay, Ha Noi".obs,
+        commodity: "10xQuan Jean; 10xAo so mi; 10xThat lung da".obs,
+        service: "Hang On, Washing".obs,
+        type: "Box".obs,
+        note: "Nothing".obs),
     SendItemModel(
         id: "ID".obs,
         widget: "33589549623491-003".obs,
         status: "Pending".obs,
-        xuanThuyCau: "144 Xuan Thuy, Cau Giay, Ha Noi".obs,
-        xQuanJeanxAo: "10xQuan Jean; 10xAo so mi; 10xThat lung da".obs,
-        hangOnWashing: "Hang On, Washing".obs,
-        box: "Bag".obs,
-        nothing: "Nothing".obs)
+        address: "144 Xuan Thuy, Cau Giay, Ha Noi".obs,
+        commodity: "10xQuan Jean; 10xAo so mi; 10xThat lung da".obs,
+        service: "Hang On, Washing".obs,
+        type: "Bag".obs,
+        note: "Nothing".obs)
   ]);
 }

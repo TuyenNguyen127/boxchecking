@@ -115,7 +115,7 @@ class SeventytwoItemWidget extends StatelessWidget {
                     padding: EdgeInsets.only(left: 9.h),
                     child: Obx(
                       () => Text(
-                        seventytwoItemModelObj.xQuanJeanxAo!.value,
+                        seventytwoItemModelObj.commodity!.value,
                         style: CustomTextStyles.labelLargeGray80002,
                       ),
                     ),
@@ -142,7 +142,7 @@ class SeventytwoItemWidget extends StatelessWidget {
                     padding: EdgeInsets.only(left: 9.h),
                     child: Obx(
                       () => Text(
-                        seventytwoItemModelObj.hangOnWashing!.value,
+                        seventytwoItemModelObj.service!.value,
                         style: CustomTextStyles.labelLargeLightblue800,
                       ),
                     ),
@@ -165,7 +165,7 @@ class SeventytwoItemWidget extends StatelessWidget {
                     padding: EdgeInsets.only(left: 9.h),
                     child: Obx(
                       () => Text(
-                        seventytwoItemModelObj.price!.value,
+                        seventytwoItemModelObj.model!.value,
                         style: CustomTextStyles.labelLargeOrangeA700,
                       ),
                     ),
@@ -192,7 +192,7 @@ class SeventytwoItemWidget extends StatelessWidget {
                     padding: EdgeInsets.only(left: 8.h),
                     child: Obx(
                       () => Text(
-                        seventytwoItemModelObj.day!.value,
+                        seventytwoItemModelObj.price!.value,
                         style: CustomTextStyles.labelLargeGreen80001,
                       ),
                     ),

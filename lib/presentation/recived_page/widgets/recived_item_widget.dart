@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 import '../models/recived_item_model.dart';
 import '../controller/recived_controller.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +95,7 @@ class RecivedItemWidget extends StatelessWidget {
                   padding: EdgeInsets.only(left: 11.h),
                   child: Obx(
                     () => Text(
-                      recivedItemModelObj.xuanThuyCau!.value,
+                      recivedItemModelObj.address!.value,
                       style: CustomTextStyles.labelLargeTeal900,
                     ),
                   ),
@@ -119,7 +121,7 @@ class RecivedItemWidget extends StatelessWidget {
                   padding: EdgeInsets.only(left: 9.h),
                   child: Obx(
                     () => Text(
-                      recivedItemModelObj.xQuanJeanxAo!.value,
+                      recivedItemModelObj.commodity!.value,
                       style: CustomTextStyles.labelLargeGray80002,
                     ),
                   ),
@@ -142,7 +144,7 @@ class RecivedItemWidget extends StatelessWidget {
                   padding: EdgeInsets.only(left: 8.h),
                   child: Obx(
                     () => Text(
-                      recivedItemModelObj.nguyNVNTuyN!.value,
+                      recivedItemModelObj.name!.value,
                       style: theme.textTheme.labelLarge,
                     ),
                   ),
@@ -199,57 +201,74 @@ class RecivedItemWidget extends StatelessWidget {
           SizedBox(height: 14.v),
           Row(
             children: [
-              Container(
-                width: 143.h,
-                padding: EdgeInsets.symmetric(vertical: 9.v),
-                decoration: AppDecoration.outlineGray,
-                child: Obx(
-                  () => Center(
-                    child: Text(
-                      recivedItemModelObj.callshipper!.value,
-                      style: CustomTextStyles.labelLargePrimaryContainer,
+              GestureDetector(
+                onTap: ()=>{
+                  print('da an')
+                },
+                child: Container(
+                  width: 143.h,
+                  padding: EdgeInsets.symmetric(vertical: 9.v),
+                  decoration: AppDecoration.outlineGray,
+                  child: 
+                  // Obx(
+                  //   () => 
+                    Center(
+                      child: Text(
+                        //recivedItemModelObj.callshipper!.value,
+                        'Call shipper',
+                        style: CustomTextStyles.labelLargePrimaryContainer,
+                      ),
                     ),
-                  ),
+                  //),
                 ),
               ),
               Container(
                 width: 104.h,
                 padding: EdgeInsets.symmetric(vertical: 9.v),
                 decoration: AppDecoration.outlineGray,
-                child: Obx(
-                  () => Center(
+                child: 
+                // Obx(
+                //   () => 
+                  Center(
                     child: Text(
-                      recivedItemModelObj.editorder!.value,
+                      //recivedItemModelObj.editorder!.value,
+                      'Edit order',
                       style: CustomTextStyles.labelLargePrimaryContainer,
                     ),
                   ),
-                ),
+                // ),
               ),
               Container(
                 width: 94.h,
                 padding: EdgeInsets.symmetric(vertical: 9.v),
                 decoration: AppDecoration.outlineGray,
-                child: Obx(
-                  () => Center(
+                child: 
+                // Obx(
+                //   () => 
+                  Center(
                     child: Text(
-                      recivedItemModelObj.revoke!.value,
+                      //recivedItemModelObj.revoke!.value,
+                      'Revoke',
                       style: CustomTextStyles.labelLargePrimaryContainer,
                     ),
                   ),
-                ),
+                //),
               ),
               Container(
                 width: 43.h,
                 padding: EdgeInsets.symmetric(vertical: 9.v),
                 decoration: AppDecoration.outlineGray,
-                child: Obx(
-                  () => Center(
+                child: 
+                // Obx(
+                //   () => 
+                  Center(
                     child: Text(
-                      recivedItemModelObj.sixtySix!.value,
+                      //recivedItemModelObj.sixtySix!.value,
+                      '...',
                       style: theme.textTheme.labelLarge,
                     ),
                   ),
-                ),
+                //),
               ),
             ],
           ),

@@ -19,9 +19,11 @@ class SendItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      // width: 300.adaptSize,
+      width: SizeUtils.width,
       decoration: AppDecoration.fillPrimary,
       child: Column(
-        // crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 11.v),
           Padding(
@@ -91,7 +93,7 @@ class SendItemWidget extends StatelessWidget {
                   padding: EdgeInsets.only(left: 11.h),
                   child: Obx(
                     () => Text(
-                      sendItemModelObj.xuanThuyCau!.value,
+                      sendItemModelObj.address!.value,
                       style: CustomTextStyles.labelLargeTeal900,
                     ),
                   ),
@@ -103,9 +105,10 @@ class SendItemWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(
               left: 14.h,
-              right: 100.h,
+              // right: 100.h,
             ),
             child: Row(
+        mainAxisSize: MainAxisSize.min,
               children: [
                 CustomImageView(
                   imagePath: ImageConstant.imgGrid,
@@ -116,9 +119,15 @@ class SendItemWidget extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(left: 9.h),
                   child: Obx(
-                    () => Text(
-                      sendItemModelObj.xQuanJeanxAo!.value,
-                      style: CustomTextStyles.labelLargeGray80002,
+                    () => Expanded(
+                      child: Container(
+                        width: SizeUtils.width - 100.v,
+                        child: Text(
+                          sendItemModelObj.commodity!.value + "dfgddfgddfgddfgddfgd",
+                          overflow: TextOverflow.clip,
+                          style: CustomTextStyles.labelLargeGray80002,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -144,7 +153,7 @@ class SendItemWidget extends StatelessWidget {
                   padding: EdgeInsets.only(left: 9.h),
                   child: Obx(
                     () => Text(
-                      sendItemModelObj.hangOnWashing!.value,
+                      sendItemModelObj.service!.value,
                       style: CustomTextStyles.labelLargeLightblue800,
                     ),
                   ),
@@ -167,7 +176,7 @@ class SendItemWidget extends StatelessWidget {
                   padding: EdgeInsets.only(left: 9.h),
                   child: Obx(
                     () => Text(
-                      sendItemModelObj.box!.value,
+                      sendItemModelObj.type!.value,
                       style: CustomTextStyles.labelLargeOrangeA700,
                     ),
                   ),
@@ -190,7 +199,7 @@ class SendItemWidget extends StatelessWidget {
                   padding: EdgeInsets.only(left: 8.h),
                   child: Obx(
                     () => Text(
-                      sendItemModelObj.nothing!.value,
+                      sendItemModelObj.note!.value,
                       style: CustomTextStyles.labelLargeBluegray400,
                     ),
                   ),

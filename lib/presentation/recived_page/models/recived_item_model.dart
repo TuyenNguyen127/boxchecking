@@ -6,9 +6,9 @@ class RecivedItemModel {
       {this.id,
       this.widget,
       this.status,
-      this.xuanThuyCau,
-      this.xQuanJeanxAo,
-      this.nguyNVNTuyN,
+      this.address,
+      this.commodity,
+      this.name,
       this.mobileNo,
       this.nothing,
       this.callshipper,
@@ -18,17 +18,16 @@ class RecivedItemModel {
     id = id ?? Rx("ID");
     widget = widget ?? Rx("33589549623491-001");
     status = status ?? Rx("Pending");
-    xuanThuyCau = xuanThuyCau ?? Rx("144 Xuan Thuy, Cau Giay, Ha Noi");
-    xQuanJeanxAo =
-        xQuanJeanxAo ?? Rx("10xQuan Jean; 10xAo so mi; 10xThat lung da");
-    nguyNVNTuyN = nguyNVNTuyN ?? Rx("Nguyễn Văn Tuyển");
+    address = address ?? Rx("144 Xuan Thuy, Cau Giay, Ha Noi");
+    commodity =
+        commodity ?? Rx("10xQuan Jean; 10xAo so mi; 10xThat lung da");
+    name = name ?? Rx("Nguyễn Văn Tuyển");
     mobileNo = mobileNo ?? Rx("0123456789");
     nothing = nothing ?? Rx("Nothing");
     callshipper = callshipper ?? Rx("Call shipper");
     editorder = editorder ?? Rx("Edit order");
     revoke = revoke ?? Rx("Revoke");
     sixtySix = sixtySix ?? Rx("...");
-    id = id ?? Rx("");
   }
 
   Rx<String>? id;
@@ -37,11 +36,11 @@ class RecivedItemModel {
 
   Rx<String>? status;
 
-  Rx<String>? xuanThuyCau;
+  Rx<String>? address;
 
-  Rx<String>? xQuanJeanxAo;
+  Rx<String>? commodity;
 
-  Rx<String>? nguyNVNTuyN;
+  Rx<String>? name;
 
   Rx<String>? mobileNo;
 

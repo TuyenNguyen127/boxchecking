@@ -10,7 +10,12 @@ class CustomCheckboxButton extends StatelessWidget {
     this.isRightCheck,
     this.iconSize,
     this.value,
-    this.text,
+    this.text1,
+    this.color1,
+    this.text2,
+    this.color2,
+    this.text3,
+    this.color3,
     this.width,
     this.padding,
     this.textStyle,
@@ -32,7 +37,14 @@ class CustomCheckboxButton extends StatelessWidget {
 
   final Function(bool) onChange;
 
-  final String? text;
+  final String? text1;
+  final int? color1;
+
+  final String? text2;
+  final int? color2;
+
+  final String? text3;
+  final int? color3;
 
   final double? width;
 
@@ -65,6 +77,7 @@ class CustomCheckboxButton extends StatelessWidget {
           child: (isRightCheck ?? false) ? rightSideCheckbox : leftSideCheckbox,
         ),
       );
+
   Widget get leftSideCheckbox => Row(
         children: [
           Padding(
@@ -74,6 +87,7 @@ class CustomCheckboxButton extends StatelessWidget {
           isExpandedText ? Expanded(child: textWidget) : textWidget,
         ],
       );
+
   Widget get rightSideCheckbox => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -84,24 +98,59 @@ class CustomCheckboxButton extends StatelessWidget {
           ),
         ],
       );
-  Widget get textWidget => Text(
-        text ?? "",
-        textAlign: textAlignment ?? TextAlign.center,
-        style: textStyle ?? CustomTextStyles.titleMediumBlack900Medium,
-      );
-  Widget get checkboxWidget => SizedBox(
-        height: iconSize ?? 20.h,
-        width: iconSize ?? 20.h,
-        child: Checkbox(
-          visualDensity: VisualDensity(
-            vertical: -4,
-            horizontal: -4,
-          ),
-          value: value ?? false,
-          checkColor: theme.colorScheme.primary,
-          onChanged: (value) {
-            onChange(value!);
-          },
+
+  Widget get textWidget => RichText(
+        text: TextSpan(
+          text: '${text1!} ',
+          style: TextStyle(color: Color(color1!)),
+          children: <TextSpan>[
+            TextSpan(
+              text: '${text2!} ',
+              style: TextStyle(color: Color(color2!)),
+            ),
+            TextSpan(
+              text: '${text3!} ',
+              style: TextStyle(color: Color(color3!)),
+            ),
+          ],
         ),
+      );
+
+  // Widget get textWidget => Text(
+  //       text1 ?? "",
+  //       textAlign: textAlignment ?? TextAlign.center,
+  //       style: textStyle ?? CustomTextStyles.titleMediumBlack900Medium,
+  //     );
+
+  Widget get checkboxWidget => Container(
+        height: iconSize ?? 22.h,
+        width: iconSize ?? 22.h,
+        decoration: BoxDecoration(
+          border: Border.all(
+            width: 2.v,
+            color: Color(0xff309cff),
+          ),
+        ),
+        child: value ?? false
+            ? Center(
+                child: Icon(
+                  Icons.check,
+                  size: iconSize ?? 18.h,
+                  color: Color(0xff309cff),
+                ),
+              )
+            : null,
+
+        // child: Checkbox(
+        //   visualDensity: VisualDensity(
+        //     vertical: -4,
+        //     horizontal: -4,
+        //   ),
+        //   value: value ?? false,
+        //   checkColor: theme.colorScheme.primary,
+        //   onChanged: (value) {
+        //     onChange(value!);
+        //   },
+        // ),
       );
 }

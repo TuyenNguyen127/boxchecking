@@ -6,11 +6,11 @@ class SendItemModel {
     this.id,
     this.widget,
     this.status,
-    this.xuanThuyCau,
-    this.xQuanJeanxAo,
-    this.hangOnWashing,
-    this.box,
-    this.nothing,
+    this.address,
+    this.commodity,
+    this.service,
+    this.type,
+    this.note,
     this.callshipper,
     this.editorder,
     this.revoke,
@@ -19,17 +19,16 @@ class SendItemModel {
     id = id ?? Rx("ID");
     widget = widget ?? Rx("33589549623491-001");
     status = status ?? Rx("Pending");
-    xuanThuyCau = xuanThuyCau ?? Rx("144 Xuan Thuy, Cau Giay, Ha Noi");
-    xQuanJeanxAo =
-        xQuanJeanxAo ?? Rx("10xQuan Jean; 10xAo so mi; 10xThat lung da");
-    hangOnWashing = hangOnWashing ?? Rx("Hang On, Washing");
-    box = box ?? Rx("Box");
-    nothing = nothing ?? Rx("Nothing");
+    address = address ?? Rx("144 Xuan Thuy, Cau Giay, Ha Noi");
+    commodity =
+        commodity ?? Rx("10xQuan Jean; 10xAo so mi; 10xThat lung da");
+    service = service ?? Rx("Hang On, Washing");
+    type = type ?? Rx("Box");
+    note = note ?? Rx("Nothing");
     callshipper = callshipper ?? Rx("Call shipper");
     editorder = editorder ?? Rx("Edit order");
     revoke = revoke ?? Rx("Revoke");
     fiftySeven = fiftySeven ?? Rx("...");
-    id = id ?? Rx("");
   }
 
   Rx<String>? id;
@@ -38,15 +37,15 @@ class SendItemModel {
 
   Rx<String>? status;
 
-  Rx<String>? xuanThuyCau;
+  Rx<String>? address;
 
-  Rx<String>? xQuanJeanxAo;
+  Rx<String>? commodity;
 
-  Rx<String>? hangOnWashing;
+  Rx<String>? service;
 
-  Rx<String>? box;
+  Rx<String>? type;
 
-  Rx<String>? nothing;
+  Rx<String>? note;
 
   Rx<String>? callshipper;
 

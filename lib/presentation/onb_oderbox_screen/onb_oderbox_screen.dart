@@ -1,61 +1,94 @@
-import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
+import 'package:flutter/material.dart' as flutter;
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lastapp/core/app_export.dart';
+import 'package:lastapp/presentation/onb_oderbox_screen/models/new_box_day.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
-import 'package:lastapp/widgets/app_bar/appbar_title.dart';
-import 'package:another_stepper/widgets/another_stepper.dart';
-import 'package:another_stepper/dto/stepper_data.dart';
 import 'package:lastapp/widgets/custom_drop_down.dart';
 import 'package:lastapp/widgets/custom_elevated_button.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
-import 'package:flutter/material.dart';
-import 'package:lastapp/core/app_export.dart';
-import 'controller/onb_oderbox_controller.dart';
-import 'widgets/custom_stepper_bar.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
+import './models/new_box.dart';
+import 'controller/onb_oderbox_controller.dart';
+import 'models/subject_model.dart';
+
+class OnbOderboxScreen extends StatelessWidget {
   OnbOderboxScreen({Key? key}) : super(key: key);
 
-  // int _currentIndex = 0;
+  OnbOderboxController oderBoxController = Get.put(OnbOderboxController());
 
-  List<String> boxTypes = <String>['One', 'Two', 'Three', 'Four'];
+  final List<Map<String, dynamic>> data = [];
 
-  List<DropdownMenuItem<String>> get dropdownItems {
-    List<DropdownMenuItem<String>> boxTypes = [
-      DropdownMenuItem(child: Text("One"), value: "One"),
-      DropdownMenuItem(child: Text("Two"), value: "Two"),
-      DropdownMenuItem(child: Text("Three"), value: "Three"),
-      DropdownMenuItem(child: Text("four"), value: "four"),
-    ];
-    return boxTypes;
-  }
-
-  String valueBoxType = "One";
-  String? dropdownValue = "One";
+  late int typeBox = 1;
+  late int modelBox = 1;
+  late String service = "";
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: _buildAppBarPageOrderbox(),
-        body: Container(
-          decoration: BoxDecoration(color: Colors.grey[200]),
-          width: SizeUtils.width,
+    return Consumer(
+      builder: (context, ref, _) {
+        return flutter.SafeArea(
+          child: Scaffold(
+            appBar: _buildAppBarPageOrderbox(),
+            body: Consumer(
+              builder: (context, newBoxOrder, _) {
+                return Container(
+                  width: SizeUtils.width,
+                  height: SizeUtils.height,
+                  decoration: AppDecoration.fillGray,
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: _buildSectionTrackProgress(),
+                        ),
+                      ),
+                      Positioned(
+                        top: 100.v,
+                        child: Container(
+                          // decoration: AppDecoration.fillGray,
+                          height: SizeUtils.height - 160.v,
+                          child: SingleChildScrollView(
+                            physics: BouncingScrollPhysics(),
+                            child: Column(
+                              children: [
+                                _buildFormSection(context),
 
-          // child: CustomStepperBar(),
-
-          child: Stack(
-            children: [
-              //
-              _buildSectionTrackProgress(),
-              //
-              // SizedBox(height: 20.v),
-              _buildFormSection(),
-              //
-              // SizedBox(height: 20.v),
-              _buildListOder(),
-            ],
+                                SizedBox(height: 10.v),
+                                // _buildListOder(),
+                                _buildListOrderBox(),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(
+                            left: 35.h, right: 35.h, bottom: 25.v),
+                        child: CustomIconButton(
+                          height: 60.adaptSize,
+                          width: 60.adaptSize,
+                          padding: EdgeInsets.all(15.h),
+                          alignment: Alignment.bottomRight,
+                          onTap: () {
+                            onTapBtnArrowRight(context);
+                          },
+                          child: CustomImageView(
+                            imagePath: ImageConstant.imgArrowRight,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -68,7 +101,7 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
       leadingWidth: 60.h,
       leading: AppbarLeadingImage(
         imagePath: ImageConstant.imgVectorPrimary,
-        margin: EdgeInsets.only(left: 22.h, top: 4.v, right: 22.h),
+        margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
         onTap: () {
           onTapVector();
         },
@@ -86,10 +119,11 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
 
   Widget _buildSectionTrackProgress() {
     return Container(
-      height: 150.v,
+      height: 160.v,
       padding: EdgeInsets.only(left: 60.v, right: 60.v, top: 10.v),
       decoration: BoxDecoration(color: appTheme.redA200),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -189,18 +223,18 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
   }
 
   /// Section Widget
-  Widget _buildFormSection() {
+  Widget _buildFormSection(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.grey,
+            color: Colors.black26,
             offset: const Offset(
-              5.0,
-              5.0,
+              0.5,
+              0.5,
             ),
-            blurRadius: 10.0,
-            spreadRadius: 1.0,
+            blurRadius: 1.0,
+            spreadRadius: 0.5,
           ), //BoxShadow
           BoxShadow(
             color: Colors.white,
@@ -215,34 +249,40 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           topLeft: Radius.circular(30),
         ),
       ),
-      height: 300.adaptSize,
       width: SizeUtils.width,
-      margin: EdgeInsets.only(top: 90.h),
-      padding: EdgeInsets.symmetric(horizontal: 20.h),
+      padding: EdgeInsets.only(left: 20.h, right: 20.h, bottom: 10.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           //
-          SizedBox(height: 30.v),
+          SizedBox(height: 20.v),
+          //
+          Container(
+            // height: 10.v,
+            width: SizeUtils.width,
+            child: Center(
+              child: Text(
+                'Information about box',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+          //
+          SizedBox(height: 20.v),
+          //
           Padding(
             padding: EdgeInsets.only(right: 2.h),
             child: CustomDropDown(
-              icon: Container(
-                margin: EdgeInsets.fromLTRB(30.h, 19.v, 21.h, 19.v),
-                child: CustomImageView(
-                  imagePath: ImageConstant.imgSave,
-                  height: 12.v,
-                  width: 19.h,
-                ),
-              ),
               hintText: "lbl_type_box".tr,
               hintStyle: CustomTextStyles.bodyLargeBlack900,
-              items:
-                  controller.onbOderboxModelObj.value.dropdownItemList!.value,
-              contentPadding:
-                  EdgeInsets.only(left: 18.h, top: 15.v, bottom: 15.v),
+              items: oderBoxController
+                  .onbOderboxModelObj.value.dropdownItemList!.value,
               onChanged: (value) {
-                controller.onSelected(value);
+                oderBoxController.onSelected(value);
+                typeBox = value.id!;
               },
             ),
           ),
@@ -252,22 +292,13 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           Padding(
             padding: EdgeInsets.only(right: 2.h),
             child: CustomDropDown(
-              icon: Container(
-                margin: EdgeInsets.fromLTRB(30.h, 19.v, 20.h, 19.v),
-                child: CustomImageView(
-                  imagePath: ImageConstant.imgSave,
-                  height: 12.v,
-                  width: 19.h,
-                ),
-              ),
               hintText: "lbl_model_box".tr,
               hintStyle: CustomTextStyles.bodyLargeBlack900,
-              items:
-                  controller.onbOderboxModelObj.value.dropdownItemList1!.value,
-              contentPadding:
-                  EdgeInsets.only(left: 19.h, top: 15.v, bottom: 15.v),
+              items: oderBoxController
+                  .onbOderboxModelObj.value.dropdownItemList1!.value,
               onChanged: (value) {
-                controller.onSelected1(value);
+                oderBoxController.onSelected1(value);
+                modelBox = value.id!;
               },
             ),
           ),
@@ -276,285 +307,262 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
           SizedBox(height: 10.v),
           Padding(
             padding: EdgeInsets.only(right: 2.h),
-            child: CustomDropDown(
-              icon: Container(
-                margin: EdgeInsets.fromLTRB(30.h, 19.v, 20.h, 19.v),
-                child: CustomImageView(
-                  imagePath: ImageConstant.imgSave,
-                  height: 12.v,
-                  width: 19.h,
+            child: _buildMultiService(),
+          ),
+          SizedBox(height: 10.v),
+
+          CustomElevatedButton(
+              width: 90.h,
+              text: "lbl_add".tr,
+              buttonStyle: CustomButtonStyles.fillRedA,
+              onPressed: () async {
+                final _new = NewOrderBox(
+                    typeBox: typeBox,
+                    modelBox: modelBox,
+                    services: service.length > 0 ? service : "Nothing",
+                    amount: 1);
+
+                data.add(_new.toJson());
+                print(data);
+                oderBoxController.init();
+                //_currentList.add(_new);
+                oderBoxController.addNewOrderBox(typeBox, modelBox, service);
+              }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMultiService() {
+    late bool isPicked = false;
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      oderBoxController.getSubjectData();
+    });
+
+    return Container(
+      height: isPicked ? 80.h : null,
+      child: Column(
+        children: [
+          GetBuilder<OnbOderboxController>(builder: (oderBoxController) {
+            return Padding(
+              padding: const EdgeInsets.all(0.0),
+              child: MultiSelectDialogField(
+                dialogHeight: 150,
+                items: oderBoxController.dropDownData,
+                title: const Text(
+                  "Select Subject",
+                  style: TextStyle(color: Colors.black),
+                ),
+                selectedColor: appTheme.blue500,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.all(Radius.circular(15)),
+                  border: Border.all(
+                    color: appTheme.gray500,
+                    width: 1,
+                  ),
+                ),
+                buttonIcon: const Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.blue,
+                ),
+                buttonText: const Text(
+                  "Select Service",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                  ),
+                ),
+                onConfirm: (results) {
+                  if (results.length > 0) {
+                    isPicked = true;
+                  }
+                  for (var i = 0; i < results.length; i++) {
+                    SubjectModel data = results[i] as SubjectModel;
+                    service += data.subjectName;
+                    if (i < results.length - 1) {
+                      service += ", ";
+                    }
+                  }
+                },
+                chipDisplay: MultiSelectChipDisplay(
+                  chipColor: Color.fromARGB(14, 227, 227, 227),
+                  textStyle: TextStyle(
+                    color: appTheme.blue500,
+                  ),
                 ),
               ),
-              hintText: "lbl_service".tr,
-              hintStyle: CustomTextStyles.bodyLargeBlack900,
-              items:
-                  controller.onbOderboxModelObj.value.dropdownItemList2!.value,
-              contentPadding:
-                  EdgeInsets.only(left: 19.h, top: 15.v, bottom: 15.v),
-              onChanged: (value) {
-                controller.onSelected2(value);
-              },
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildListOrderBox() {
+    return Container(
+      color: theme.colorScheme.primary,
+      width: SizeUtils.width,
+      padding: EdgeInsets.only(left: 20.h, right: 20.h, bottom: 10.h),
+      child: Column(
+        children: [
+          //
+          Container(
+            width: SizeUtils.width,
+            padding: EdgeInsets.only(top: 10.v),
+            child: Center(
+              child: Text(
+                'List order box',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ),
-          SizedBox(height: 20.v),
-
           //
-          CustomElevatedButton(
-            width: 90.h,
-            text: "lbl_add".tr,
-            buttonStyle: CustomButtonStyles.fillRedA,
+          SizedBox(height: 10.v),
+          //
+          Obx(
+            () => Container(
+              height: SizeUtils.height -
+                  160.v -
+                  360.v +
+                  (oderBoxController.khueListOrders.length < 2
+                      ? 0
+                      : (oderBoxController.khueListOrders.length - 2) * 140.v),
+              child: Column(
+                children: [
+                  //
+                  Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: oderBoxController.khueListOrders.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _itemsOder(
+                            oderBoxController.khueListOrders[index], index);
+                      },
+                    ),
+                    // child: ListView.builder(
+                    //   itemCount: oderBoxController.tuyenList.length,
+                    //   itemBuilder: (context, index) {
+                    //     return CheckboxListTile(
+                    //       controlAffinity: ListTileControlAffinity.leading,
+                    //       title: Row(
+                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //         children: [
+                    //           Text(oderBoxController.tuyenList[index].services),
+                    //         ],
+                    //       ),
+                    //       value: oderBoxController.tuyenList[index].selected,
+                    //       onChanged: (value) => {
+                    //         oderBoxController.tuyenList[index].selected = value
+                    //       },
+                    //     );
+                    //   },
+                    // ),
+                  ),
+                  //
+                ],
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  /// Section Widget
-  Widget _buildListOder() {
+  Widget _itemsOder(NewOrderBox _new, index) {
+    String? type_box = oderBoxController
+        .onbOderboxModelObj.value.dropdownItemList.value
+        .firstWhere((item) => item.id == _new.typeBox,
+            orElse: () => SelectionPopupModel(id: _new.typeBox, title: "None"))
+        .title;
+    String? model_box = oderBoxController
+        .onbOderboxModelObj.value.dropdownItemList1.value
+        .firstWhere((item) => item.id == _new.modelBox,
+            orElse: () => SelectionPopupModel(id: _new.modelBox, title: "None"))
+        .title;
+
     return Container(
-        margin: EdgeInsets.only(top: 380.h),
-        padding: EdgeInsets.symmetric(horizontal: 30.h, vertical: 20.v),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.primary,
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(30),
-            topLeft: Radius.circular(30),
-          ),
-        ),
-        child: Column(children: [
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Text("lbl_list_order_box".tr,
-                  style: CustomTextStyles.titleMediumBlack900)),
-          SizedBox(height: 22.v),
-          Padding(
-              padding: EdgeInsets.only(right: 2.h),
-              child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      height: 140.v,
+      child: Column(
+        // crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          //
+          Container(
+            height: 40.v,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
                 CustomImageView(
                     imagePath: ImageConstant.imgThumbsUpBlueGray300,
                     height: 12.v,
                     width: 11.h,
                     margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
-                Padding(
-                    padding: EdgeInsets.only(left: 10.h),
-                    child: Text("lbl_carton_box".tr,
-                        style: CustomTextStyles.titleMediumGreen80002)),
-                Spacer(),
-                CustomImageView(
-                    imagePath: ImageConstant.imgEditBlack90015x15,
-                    height: 20.adaptSize,
-                    width: 20.adaptSize,
-                    margin: EdgeInsets.symmetric(vertical: 2.v))
-              ])),
-          SizedBox(height: 9.v),
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Row(children: [
-                CustomImageView(
-                    imagePath: ImageConstant.imgContrast,
-                    height: 12.adaptSize,
-                    width: 12.adaptSize,
-                    margin: EdgeInsets.symmetric(vertical: 1.v)),
-                Padding(
-                    padding: EdgeInsets.only(left: 12.h),
-                    child: Text("lbl_50_x_50_x_50".tr,
-                        style: CustomTextStyles.labelLargeOnPrimary))
-              ])),
-          SizedBox(height: 9.v),
-          Padding(
-            padding: EdgeInsets.only(right: 2.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomImageView(
-                    imagePath: ImageConstant.imgThumbsUp,
-                    height: 9.v,
-                    width: 11.h,
-                    margin: EdgeInsets.only(top: 4.v, bottom: 6.v)),
-                Padding(
-                    padding: EdgeInsets.only(left: 12.h),
-                    child: Text("msg_hang_on_washing".tr,
-                        style: theme.textTheme.bodyMedium)),
-                Spacer(),
-
+                SizedBox(width: 10.v),
+                // Spacer(),
+                Text(type_box, style: CustomTextStyles.titleMediumGreen80002),
+                SizedBox(width: 10.v),
+                // Spacer(),
                 //
-                Container(
-                  decoration: BoxDecoration(
-                    color: appTheme.redA200,
-                    borderRadius: BorderRadius.circular(30.h),
-                  ),
-                  height: 15.adaptSize,
-                  width: 15.adaptSize,
-                  child: Center(
-                    child: Text(
-                      '-',
-                      style: TextStyle(
-                        color: theme.colorScheme.primary,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                    width: 38.h,
-                    margin: EdgeInsets.only(left: 5.h, bottom: 2.v),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.h, vertical: 1.v),
-                    decoration: AppDecoration.outlineBluegray3002.copyWith(
-                        borderRadius: BorderRadiusStyle.roundedBorder5),
-                    child: Text("lbl_1".tr, style: theme.textTheme.labelLarge)),
-
-                //
-                Container(
-                  decoration: BoxDecoration(
-                    color: appTheme.teal900,
-                    borderRadius: BorderRadius.circular(30.h),
-                  ),
-                  margin: EdgeInsets.only(left: 5.v),
-                  height: 15.adaptSize,
-                  width: 15.adaptSize,
-                  child: Center(
-                    child: Text(
-                      '+',
-                      style: TextStyle(
-                        color: theme.colorScheme.primary,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ),
-                ),
-
-                //
-                // Padding(
-                //   padding: EdgeInsets.only(left: 5.h, bottom: 3.v),
-                //   child: CustomIconButton(
-                //     height: 15.adaptSize,
-                //     width: 15.adaptSize,
-                //     child: CustomImageView(),
-                //   ),
-                // ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20.v),
-          Padding(
-              padding: EdgeInsets.only(right: 2.h),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      CustomImageView(
-                          imagePath: ImageConstant.imgThumbsUpBlueGray300,
-                          height: 12.v,
-                          width: 11.h,
-                          margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
-                      Padding(
-                          padding: EdgeInsets.only(left: 10.h),
-                          child: Text("lbl_carton_box2".tr,
-                              style: CustomTextStyles.titleMediumGreen80002))
-                    ]),
-                    CustomImageView(
-                        imagePath: ImageConstant.imgEditBlack90015x15,
-                        height: 20.adaptSize,
-                        width: 20.adaptSize,
-                        margin: EdgeInsets.symmetric(vertical: 2.v))
-                  ])),
-          SizedBox(height: 9.v),
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Row(children: [
-                CustomImageView(
-                    imagePath: ImageConstant.imgContrast,
-                    height: 12.adaptSize,
-                    width: 12.adaptSize,
-                    margin: EdgeInsets.symmetric(vertical: 1.v)),
-                Padding(
-                    padding: EdgeInsets.only(left: 12.h),
-                    child: Text("lbl_50_x_100_x_50".tr,
-                        style: CustomTextStyles.labelLargeOnPrimary))
-              ])),
-          SizedBox(height: 9.v),
-          Padding(
-            padding: EdgeInsets.only(right: 2.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomImageView(
-                    imagePath: ImageConstant.imgThumbsUp,
-                    height: 9.v,
-                    width: 11.h,
-                    margin: EdgeInsets.only(top: 4.v, bottom: 6.v)),
-                Padding(
-                    padding: EdgeInsets.only(left: 12.h),
-                    child: Text("lbl_nothing".tr,
-                        style: theme.textTheme.bodyMedium)),
-                Spacer(),
-
-                //
-                Container(
-                  decoration: BoxDecoration(
-                    color: appTheme.redA200,
-                    borderRadius: BorderRadius.circular(30.h),
-                  ),
-                  height: 15.adaptSize,
-                  width: 15.adaptSize,
-                  child: Center(
-                    child: Text(
-                      '-',
-                      style: TextStyle(
-                        color: theme.colorScheme.primary,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                    width: 38.h,
-                    margin: EdgeInsets.only(left: 5.h, bottom: 2.v),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.h, vertical: 1.v),
-                    decoration: AppDecoration.outlineBluegray3002.copyWith(
-                        borderRadius: BorderRadiusStyle.roundedBorder5),
-                    child: Text("lbl_1".tr, style: theme.textTheme.labelLarge)),
-
-                Container(
-                  decoration: BoxDecoration(
-                    color: appTheme.teal900,
-                    borderRadius: BorderRadius.circular(30.h),
-                  ),
-                  margin: EdgeInsets.only(left: 5.v),
-                  height: 15.adaptSize,
-                  width: 15.adaptSize,
-                  child: Center(
-                    child: Text(
-                      '+',
-                      style: TextStyle(
-                        color: theme.colorScheme.primary,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20.v),
-          Padding(
-              padding: EdgeInsets.only(right: 12.h),
-              child: CustomIconButton(
-                  height: 60.adaptSize,
-                  width: 60.adaptSize,
-                  padding: EdgeInsets.all(15.h),
-                  alignment: Alignment.centerRight,
-                  onTap: () {
-                    onTapBtnArrowRight();
+                IconButton(
+                  onPressed: () {
+                    oderBoxController.removeOrderBox(index);
                   },
-                  child:
-                      CustomImageView(imagePath: ImageConstant.imgArrowRight))),
-        ]));
+                  icon: Icon(Icons.delete_outline),
+                ),
+              ],
+            ),
+          ),
+          //
+          Container(
+            height: 40.v,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomImageView(
+                    imagePath: ImageConstant.imgThumbsUpBlueGray300,
+                    height: 12.v,
+                    width: 11.h,
+                    margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
+                SizedBox(width: 10.v),
+                Text(model_box, style: CustomTextStyles.titleMediumGreen80002),
+                SizedBox(width: 10.v),
+                Text('Carton Box',
+                    style: CustomTextStyles.titleMediumGreen80002),
+              ],
+            ),
+          ),
+          //
+          Container(
+            height: 40.v,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomImageView(
+                    imagePath: ImageConstant.imgThumbsUpBlueGray300,
+                    height: 12.v,
+                    width: 11.h,
+                    margin: EdgeInsets.only(top: 5.v, bottom: 2.v)),
+                SizedBox(width: 10.v),
+                Text(_new.services,
+                    style: CustomTextStyles.titleMediumGreen80002),
+                SizedBox(width: 10.v),
+                Text('Carton Box',
+                    style: CustomTextStyles.titleMediumGreen80002),
+              ],
+            ),
+          ),
+          //
+          SizedBox(height: 20.v),
+        ],
+      ),
+    );
   }
 
   /// Navigates to the typeRequestScreen when the action is triggered.
@@ -565,9 +573,45 @@ class OnbOderboxScreen extends GetWidget<OnbOderboxController> {
   }
 
   /// Navigates to the onbAddressScreen when the action is triggered.
-  onTapBtnArrowRight() {
+  onTapBtnArrowRight(context) {
     // Get.toNamed(
-    //   AppRoutes.onbAddressScreen,
+    // AppRoutes.onbAddressScreen,
     // );
+
+    Navigator.pushNamed(context, AppRoutes.onbAddressScreen);
+
+    // if (ModalRoute.of(context)!.settings.arguments != null) {
+    //   final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    //   final name = arguments['name'] ?? '';
+    //   final phoneNumber = arguments['phoneNumber'] ?? '';
+    //   final address = arguments['address'] ?? '';
+    //   final date = arguments['date'] ?? '';
+    //   final toWardCode = arguments['toWardCode'] ?? '';
+    //   final toDistrictId = arguments['toDistrictId'] ?? 1;
+
+    //   // print(ModalRoute.of(context)!.settings.arguments as Map);
+
+    //   Navigator.pushNamed(
+    //     context,
+    //     AppRoutes.onbAddressScreen,
+    //     arguments: {
+    //       'name': name,
+    //       'phoneNumber': phoneNumber,
+    //       'address': address,
+    //       'date': date,
+    //       'toWardCode': toWardCode,
+    //       'toDistrictId': toDistrictId,
+    //       'boxs': data,
+    //     },
+    //   );
+    // } else {
+    //   Navigator.pushNamed(
+    //     context,
+    //     AppRoutes.onbAddressScreen,
+    //     arguments: {
+    //       'boxs': data,
+    //     },
+    //   );
+    // }
   }
 }

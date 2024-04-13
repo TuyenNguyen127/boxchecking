@@ -49,6 +49,13 @@ class ThemeHelper {
     var colorScheme =
         _supportedColorScheme[_appTheme] ?? ColorSchemes.primaryColorScheme;
     return ThemeData(
+      // buttonTheme: ButtonThemeData(
+      //   buttonColor: Colors.black, //  <-- dark color
+      //   textTheme:
+      //       ButtonTextTheme.normal, //  <-- this auto selects the right color
+      //   // colorScheme: colorScheme,
+      // ),
+      //
       visualDensity: VisualDensity.standard,
       colorScheme: colorScheme,
       textTheme: TextThemes.textTheme(colorScheme),
@@ -173,6 +180,8 @@ class TextThemes {
 
 /// Class containing the supported color schemes.
 class ColorSchemes {
+  
+
   static final primaryColorScheme = ColorScheme.light(
     // Primary colors
     primary: Color(0XFFFFFFFF),
@@ -194,6 +203,8 @@ class PrimaryColors {
   Color get amber100 => Color(0XFFFFEDBE);
   Color get amber10001 => Color(0XFFFFECBD);
   Color get amber600 => Color(0XFFFFB700);
+  Color get amber800 => Color(0xFFFF8F00);
+  Color get amber900 => Color(0xFFFF6F00);
 
   // Black
   Color get black900 => Color(0XFF000000);

@@ -6,20 +6,20 @@ class SeventytwoItemModel {
     this.id,
     this.widget,
     this.status,
-    this.xQuanJeanxAo,
-    this.hangOnWashing,
+    this.commodity,
+    this.service,
+    this.model,
     this.price,
-    this.day,
     this.startat
   }) {
     id = id ?? Rx("ID");
     widget = widget ?? Rx("33589549623491-001");
     status = status ?? Rx("Saving");
-    xQuanJeanxAo =
-        xQuanJeanxAo ?? Rx("10xQuan Jean; 10xAo so mi; 10xThat lung da");
-    hangOnWashing = hangOnWashing ?? Rx("Hang On, Washing");
-    price = price ?? Rx("Box | 50x50x100 | 20kg");
-    day = day ?? Rx("10000đ / day ");
+    commodity =
+        commodity ?? Rx("10xQuan Jean; 10xAo so mi; 10xThat lung da");
+    service = service ?? Rx("Hang On, Washing");
+    model = model ?? Rx("Box | 50x50x100 | 20kg");
+    price = price ?? Rx("10000đ / day ");
     startat = startat ?? Rx("Start at: 20/12/2023");
     id = id ?? Rx("");
   }
@@ -30,13 +30,13 @@ class SeventytwoItemModel {
 
   Rx<String>? status;
 
-  Rx<String>? xQuanJeanxAo;
+  Rx<String>? commodity;
 
-  Rx<String>? hangOnWashing;
+  Rx<String>? service;
+
+  Rx<String>? model;
 
   Rx<String>? price;
-
-  Rx<String>? day;
 
   Rx<String>? startat;
 }
