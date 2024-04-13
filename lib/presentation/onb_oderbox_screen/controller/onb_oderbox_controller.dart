@@ -1,4 +1,5 @@
 import 'package:lastapp/presentation/onb_oderbox_screen/models/new_box.dart';
+import 'package:lastapp/presentation/onb_oderbox_screen/models/new_box_day.dart';
 
 import '../../../core/app_export.dart';
 import '../models/subject_model.dart';
@@ -12,6 +13,8 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 /// current onbOderboxModelObj
 class OnbOderboxController extends GetxController {
   RxList<NewOrderBox> khueListOrders = <NewOrderBox>[].obs;
+  RxList<NewOrderBoxDay> tuyenList = <NewOrderBoxDay>[].obs;
+
   late NewOrderBox newOrderBox;
 
   var currentList = <NewOrderBox>[].obs;
@@ -82,6 +85,23 @@ class OnbOderboxController extends GetxController {
     // khueListOrders[index].dispose();
 
     khueListOrders.removeAt(index);
+  }
+
+  
+
+  void init() {
+    tuyenList.addAll({
+      NewOrderBoxDay(
+          typeBox: 1, modelBox: 1, services: '1', amount: 1, selected: false),
+      NewOrderBoxDay(
+          typeBox: 2, modelBox: 2, services: '2', amount: 2, selected: false),
+      NewOrderBoxDay(
+          typeBox: 3, modelBox: 3, services: '3', amount: 3, selected: false),
+      NewOrderBoxDay(
+          typeBox: 4, modelBox: 4, services: '4', amount: 4, selected: false),
+      NewOrderBoxDay(
+          typeBox: 5, modelBox: 5, services: '5', amount: 5, selected: false),
+    });
   }
 
   //

@@ -1,6 +1,4 @@
-import 'package:flutter/widgets.dart';
-import 'package:lastapp/presentation/onb_address_screen/models/address.dart';
-import 'package:lastapp/presentation/onb_oderbox_screen/controller/onb_oderbox_controller.dart';
+import 'package:lastapp/model/address.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/core/utils/validation_functions.dart';
 import 'package:lastapp/widgets/custom_text_form_field.dart';
@@ -10,34 +8,21 @@ import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'controller/onb_address_controller.dart';
-import '';
 
 // ignore_for_file: must_be_immutable
 class OnbAddressScreen extends StatelessWidget {
   OnbAddressScreen({Key? key}) : super(key: key);
 
-  OnbOderboxController onb_controller = Get.put(OnbOderboxController());
   OnbAddressController onbAddressController = Get.put(OnbAddressController());
 
   Completer<GoogleMapController> googleMapController = Completer();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  late String name = "";
-  late String phoneNumber = "";
-  late String address = "";
-  late String date = "";
-  late String towardCode = "";
-  // late int districtId = 0;
-  late String districtId = '';
-
   late bool isPickedDate = false;
 
   @override
   Widget build(BuildContext context) {
-    // print(onb_controller.khueListOrders.length);
-    // print(onb_controller.khueListOrders[0].typeBox.toString());
-
     return SafeArea(
       child: Scaffold(
         //
@@ -205,18 +190,6 @@ class OnbAddressScreen extends StatelessWidget {
   }
 
   Widget _buildFormPageAddress(BuildContext context) {
-    // if (ModalRoute.of(context)!.settings.arguments != null) {
-    //   final arguments =
-    //       ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    //   Address _address = Address.fromJson(arguments);
-    //   name = _address.name;
-    //   phoneNumber = _address.phoneNumber;
-    //   date = _address.date;
-    //   address = _address.address;
-    //   towardCode = _address.towardCode;
-    //   districtId = _address.districtId;
-    // }
-
     return SingleChildScrollView(
       child: Container(
         decoration: BoxDecoration(
@@ -312,7 +285,6 @@ class OnbAddressScreen extends StatelessWidget {
         return null;
       },
       onChanged: (value) => setFullnameToTempData(value),
-      // initialValue: onbAddressController.fullNameController.text,
     );
   }
 
@@ -404,17 +376,6 @@ class OnbAddressScreen extends StatelessWidget {
   }
 
   /// Section Widget
-  // Widget _buildType() {
-  //   return Expanded(
-  //       child: Padding(
-  //           padding: EdgeInsets.only(left: 5.h),
-  //           child: CustomTextFormField(
-  //               controller: onbAddressController.typeController,
-  //               hintText: "lbl_street".tr,
-  //               textInputAction: TextInputAction.done)));
-  // }
-
-  /// Section Widget
   Widget _wrapBuildDistrictView() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -455,22 +416,6 @@ class OnbAddressScreen extends StatelessWidget {
             width: 60.adaptSize,
             padding: EdgeInsets.all(15.h),
             onTap: () {
-              //
-
-              // final arguments =
-              //     ModalRoute.of(context)!.settings.arguments as Map;
-              // final boxs = arguments['boxs'];
-
-              //     arguments: {
-              //       'name': name,
-              //       'phoneNumber': phoneNumber,
-              //       'address': address,
-              //       'date': date,
-              //       'towardCode': towardCode,
-              //       'districtId': districtId,
-              //       'boxs': boxs,
-              //     });
-
               onTapBtnArrowLeft(context);
             },
             child: CustomImageView(
@@ -525,11 +470,6 @@ class OnbAddressScreen extends StatelessWidget {
     );
   }
 
-  /// Displays a date picker dialog and updates the selected date in the
-  /// [onbAddressModelObj] object of the current [date] if the user
-  /// selects a valid date.
-  ///
-  /// This function returns a `Future` that completes with `void`.
   Future<void> onTapTime() async {
     DateTime? dateTime = await showDatePicker(
       context: Get.context!,
@@ -549,18 +489,11 @@ class OnbAddressScreen extends StatelessWidget {
     );
 
     if (dateTime != null) {
-      // onbAddressController.onbAddressModelObj.value.selectedDate!.value = dateTime;
-      // onbAddressController.onbAddressModelObj.value.date.value =
-      //     dateTime.format(pattern: dateTimeFormatPattern);
-
       isPickedDate = true;
 
       onbAddressController.dateController.value = dateTime;
 
       setDateToTempData(dateTime);
-
-      // onbAddressController.dateController.value.date.value =
-      //     dateTime.format(pattern: dateTimeFormatPattern);
     }
   }
 
@@ -577,24 +510,13 @@ class OnbAddressScreen extends StatelessWidget {
     Get.toNamed(
       AppRoutes.typeRequestScreen,
     );
-
-    // print('run here');
-
     // Navigator.pop(context);
   }
 
-  /// Navigates to the onbOderboxScreen when the action is triggered.
   onTapBtnArrowLeft(context) {
-    // print('left');
 
     //NavigationBar.pop();
 
-    //
-    // print(onbAddressController.fullNameStringList.length > 0);
-    // print(onbAddressController.phoneNumberStringList.length > 0);
-    // print(onbAddressController.addressStringList.length > 0);
-
-    //
     saveDataForAddressPage();
     //
     // Navigator.pop(context);
@@ -606,7 +528,6 @@ class OnbAddressScreen extends StatelessWidget {
 
   /// Navigates to the onbCheckingAndPaymentScreen when the action is triggered.
   onTapBtnArrowRight(context) {
-    // print('right');
 
     // Get.toNamed(
     //   AppRoutes.onbCheckingAndPaymentScreen,
@@ -629,27 +550,12 @@ class OnbAddressScreen extends StatelessWidget {
   }
 
   saveDataForAddressPage() {
-    // if (onbAddressController.dateTimeList.length > 0) {
-    //   print(onbAddressController.dateTimeList.last);
-    // }
-
     if (onbAddressController.fullNameStringList.length > 0 &&
         onbAddressController.phoneNumberStringList.length > 0 &&
         onbAddressController.addressStringList.length > 0 &&
-        // onbAddressController.dateTimeList.length > 0
         onbAddressController.dateTimeList.length > 0 &&
         onbAddressController.districtIdStringList.length > 0 &&
         onbAddressController.towardCodeStringList.length > 0) {
-      print('run');
-      // print(onbAddressController.fullNameStringList.length);
-
-      // print(onbAddressController.fullNameStringList.last);
-      // print(onbAddressController.phoneNumberStringList.last);
-      // print(onbAddressController.districtIdStringList.last);
-      // print(onbAddressController.dateTimeList.last);
-      // print(onbAddressController.addressStringList.last);
-      // print(onbAddressController.towardCodeStringList.last);
-
       Address newAddress = Address(
         name: onbAddressController.fullNameStringList.last,
         phoneNumber: onbAddressController.phoneNumberStringList.last,

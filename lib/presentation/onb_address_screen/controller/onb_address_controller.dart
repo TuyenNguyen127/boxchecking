@@ -1,4 +1,4 @@
-import 'package:lastapp/presentation/onb_address_screen/models/address.dart';
+import 'package:lastapp/model/address.dart';
 
 import '../../../core/app_export.dart';
 import '../models/onb_address_model.dart';
@@ -21,17 +21,11 @@ class OnbAddressController extends GetxController {
   RxList<String> towardCodeStringList = <String>[].obs;
   TextEditingController towardCodeController = TextEditingController();
 
-  // TextEditingController addressController1 = TextEditingController();
-
   RxList<String> districtIdStringList = <String>[].obs;
   TextEditingController districtIdController = TextEditingController();
 
-  // RxList<String> typeStringList = <String>[].obs;
-  // TextEditingController typeController = TextEditingController();
-
   RxList<DateTime> dateTimeList = <DateTime>[].obs;
   Rx<DateTime> dateController = DateTime.now().obs;
-  // Rx<OnbAddressModel> onbAddressModelObj = OnbAddressModel().obs;
 
   RxList<Address> tuyenListAddress = <Address>[].obs;
   late Address newAddress;

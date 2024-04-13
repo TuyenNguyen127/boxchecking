@@ -1,17 +1,43 @@
-import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
+import 'dart:convert';
+
+import 'package:lastapp/model/OrderGet.dart';
+import 'package:lastapp/model/address.dart';
+import 'package:lastapp/model/boxOrder.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
-import 'package:lastapp/widgets/app_bar/appbar_title.dart';
-import 'package:another_stepper/widgets/another_stepper.dart';
-import 'package:another_stepper/dto/stepper_data.dart';
 import 'package:lastapp/widgets/custom_checkbox_button.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
-import 'controller/send_box_checking_and_payment_controller.dart';
+import '../send_box_address_screen/controller/send_box_address_controller.dart';
+import '../send_box_choose_box_screen/controller/send_box_choose_box_controller.dart';
+import 'package:http/http.dart' as http;
 
-class SendBoxCheckingAndPaymentScreen
-    extends GetWidget<SendBoxCheckingAndPaymentController> {
-  const SendBoxCheckingAndPaymentScreen({Key? key}) : super(key: key);
+class SendBoxCheckingAndPaymentScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return MainCheckingAndPayment();
+  }
+}
+
+class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
+  SendBoxAddressController addressController =
+      Get.put(SendBoxAddressController());
+  SendBoxChooseBoxController chooseController =
+      Get.put(SendBoxChooseBoxController());
+
+  bool checkTerms = false;
+  List<OrderGet> listOrders = <OrderGet>[];
+
+  double heightItems = 0.v;
+
+  @override
+  void initState() {
+    for (var element in chooseController.listOrders) {
+      heightItems += element.boxs.length * 130.v;
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,25 +59,33 @@ class SendBoxCheckingAndPaymentScreen
                 ),
               ),
               //
+
               Positioned(
                 top: 100.v,
-                child: _buildContent(),
+                child: _buildFakeBackground(),
               ),
-              //
+
               Positioned(
-                bottom: 100.v,
-                child: _buildAddress(),
-              ),
-              //
-              Positioned(
-                bottom: 120.v,
-                child: _buildAgreethetermsofuse(),
+                top: 100.v,
+                child: _buildContentPageCheckingAndPayment(),
               ),
               //
               _buildArrowRightLeft(),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildFakeBackground() {
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 20.v),
+        decoration: AppDecoration.fillPrimary
+            .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
+        height: SizeUtils.height,
+        width: SizeUtils.width,
       ),
     );
   }
@@ -184,170 +218,133 @@ class SendBoxCheckingAndPaymentScreen
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContentPageCheckingAndPayment() {
     return Container(
-      width: SizeUtils.width,
-      height: SizeUtils.height,
-      padding: EdgeInsets.symmetric(vertical: 20.v),
+      padding: EdgeInsets.symmetric(horizontal: 20.v, vertical: 10.v),
       decoration: AppDecoration.fillPrimary
           .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          //
-          Text("Request Data", style: CustomTextStyles.titleLargeGray800),
-          //
-          SizedBox(height: 10.v),
-          Divider(),
-          SizedBox(height: 10.v),
-          //
-          _buildPackageRequirementsSection(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPackageRequirementsSection() {
-    return Container(
-      height: 280.v,
-      padding: EdgeInsets.only(left: 25.h),
+      height: SizeUtils.height - 250.v,
+      width: SizeUtils.width,
       child: SingleChildScrollView(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             //
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Packaging requirements",
-                style: CustomTextStyles.labelLargeBold,
-              ),
-            ),
+            Text("Request Data", style: CustomTextStyles.titleLargeGray800),
+            //
+            SizedBox(height: 10.v),
+            Divider(),
             SizedBox(height: 10.v),
             //
-            _buildPackageRequirementsItem(
-              "msg_id_33589549623491_001".tr,
-              "box",
-              "msg_10xquan_jean_10xao".tr,
-              50,
-              100,
-              100,
-              "msg_washing_keeping".tr,
+            Container(
+              height: SizeUtils.height - 350.v,
+              decoration: AppDecoration.fillPrimary
+                  .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    //
+                    _buildPackageRequirementsSection(),
+                    //
+                    SizedBox(height: 10.v),
+                    //Divider(),
+                    SizedBox(height: 10.v),
+                    //
+                    _buildAddress(),
+                    //
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildAgreethetermsofuse(),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-            SizedBox(height: 30.v),
-            //
-            _buildPackageRequirementsItem(
-              "msg_id_33589549623491_002".tr,
-              "box",
-              "msg_10xquan_jean_10xao".tr,
-              50,
-              100,
-              100,
-              "msg_washing_keeping".tr,
-            ),
-            SizedBox(height: 30.v),
-            //
-            _buildPackageRequirementsItem(
-              "msg_id_33589549623491_001".tr,
-              "box",
-              "msg_10xquan_jean_10xao".tr,
-              50,
-              100,
-              100,
-              "msg_washing_keeping".tr,
-            ),
-            SizedBox(height: 30.v),
-            //
-            _buildPackageRequirementsItem(
-              "msg_id_33589549623491_001".tr,
-              "box",
-              "msg_10xquan_jean_10xao".tr,
-              50,
-              100,
-              100,
-              "msg_washing_keeping".tr,
-            ),
-            //
-            //
-            // Align(
-            //   alignment: Alignment.centerLeft,
-            //   child: Padding(
-            //     padding: EdgeInsets.only(left: 41.h),
-            //     child: Text(
-            //       "msg_id_33589549623491_002".tr,
-            //       style: CustomTextStyles.labelLargeGreen600,
-            //     ),
-            //   ),
-            // ),
-            // SizedBox(height: 10.v),
-            // Padding(
-            //   padding: EdgeInsets.only(left: 41.h, right: 32.h),
-            //   child: _buildItems(
-            //     items: "lbl_model".tr,
-            //     xQuanJeanxAo: "msg_box_50x100x1002".tr,
-            //   ),
-            // ),
-            // SizedBox(height: 10.v),
-            // Padding(
-            //   padding: EdgeInsets.only(left: 41.h, right: 32.h),
-            //   child: _buildItems(
-            //     items: "lbl_items".tr,
-            //     xQuanJeanxAo: "msg_10xquan_jean_10xao".tr,
-            //   ),
-            // ),
-            // SizedBox(height: 10.v),
-            // Padding(
-            //   padding: EdgeInsets.only(left: 41.h, right: 35.h),
-            //   child: _buildServices(
-            //     services: "lbl_services2".tr,
-            //     washingKeeping: "msg_washing_keeping".tr,
-            //   ),
-            // ),
-            // SizedBox(height: 10.v),
-            // Divider(),
-            // SizedBox(height: 10.v),
-            // Align(
-            //   alignment: Alignment.centerLeft,
-            //   child: Padding(
-            //     padding: EdgeInsets.only(left: 26.h),
-            //     child: Text("lbl_address".tr,
-            //         style: CustomTextStyles.labelLargeBold),
-            //   ),
-            // ),
-            // SizedBox(height: 10.v),
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 36.h),
-            //   child: _buildItems(
-            //     items: "lbl_full_name2".tr,
-            //     xQuanJeanxAo: "lbl_long_do".tr,
-            //   ),
-            // ),
-            // SizedBox(height: 10.v),
-            // _buildPhone(),
-            // SizedBox(height: 10.v),
-            // Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 36.h),
-            //   child: _buildItems(
-            //     items: "lbl_address".tr,
-            //     xQuanJeanxAo: "msg_tay_mo_nam_tu_liem".tr,
-            //   ),
-            // ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildPackageRequirementsItem(String id_item, String model,
-      String nameItem, int size1, int size2, int size3, String services) {
+  Widget _buildPackageRequirementsSection() {
+    return Column(
+      children: [
+        //
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Packaging requirements",
+            style: CustomTextStyles.labelLargeBold,
+          ),
+        ),
+        SizedBox(height: 10.v),
+        //
+        Container(
+          height: heightItems > 150.v ? heightItems : 150.v,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: chooseController.listOrders.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      height: chooseController.listOrders[index].boxs.length *
+                          130.v,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: 0.h, right: 10.h, bottom: 10.h),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Order ID - " +
+                                      chooseController.listOrders[index].id
+                                          .toString(),
+                                  style: CustomTextStyles.labelLargeBold,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: chooseController
+                                  .listOrders[index].boxs.length,
+                              itemBuilder: (context, i) {
+                                return _buildPackageRequirementsItem(
+                                    chooseController.listOrders[index].boxs[i]);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPackageRequirementsItem(boxOrder) {
     return Column(
       children: [
         //
         Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: EdgeInsets.only(left: 10.h),
+            padding: EdgeInsets.only(left: 15.h),
             child: Text(
-              id_item.toString(),
+              'Box ID - ' + boxOrder.id.toString(),
               style: CustomTextStyles.labelLargeGreen600,
             ),
           ),
@@ -356,13 +353,13 @@ class SendBoxCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.only(left: 15.h, right: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               //
               Text(
-                "Model:",
+                "Dimension:",
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.black900),
               ),
@@ -371,24 +368,7 @@ class SendBoxCheckingAndPaymentScreen
                 text: TextSpan(
                   style: theme.textTheme.bodySmall!
                       .copyWith(color: appTheme.black900),
-                  text: '${model} | ',
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: '${size1} x ',
-                      style: theme.textTheme.bodySmall!
-                          .copyWith(color: appTheme.black900),
-                    ),
-                    TextSpan(
-                      text: '${size2} x ',
-                      style: theme.textTheme.bodySmall!
-                          .copyWith(color: appTheme.black900),
-                    ),
-                    TextSpan(
-                      text: '${size3}',
-                      style: theme.textTheme.bodySmall!
-                          .copyWith(color: appTheme.black900),
-                    ),
-                  ],
+                  text: boxOrder.dimension,
                 ),
               ),
             ],
@@ -398,7 +378,7 @@ class SendBoxCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.only(left: 15.h, right: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -410,35 +390,10 @@ class SendBoxCheckingAndPaymentScreen
               ),
               //
               Text(
-                nameItem,
+                boxOrder.items,
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.black900),
               ),
-              //
-              // RichText(
-              //   text: TextSpan(
-              //     style: theme.textTheme.bodySmall!
-              //         .copyWith(color: appTheme.black900),
-              //     text: '${object} | ',
-              //     children: <TextSpan>[
-              //       TextSpan(
-              //         text: '${size1} x ',
-              //         style: theme.textTheme.bodySmall!
-              //             .copyWith(color: appTheme.black900),
-              //       ),
-              //       TextSpan(
-              //         text: '${size2} x ',
-              //         style: theme.textTheme.bodySmall!
-              //             .copyWith(color: appTheme.black900),
-              //       ),
-              //       TextSpan(
-              //         text: '${size3}',
-              //         style: theme.textTheme.bodySmall!
-              //             .copyWith(color: appTheme.black900),
-              //       ),
-              //     ],
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -446,7 +401,7 @@ class SendBoxCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.only(left: 15.h, right: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -458,13 +413,14 @@ class SendBoxCheckingAndPaymentScreen
               ),
               //
               Text(
-                services,
+                boxOrder.services,
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.black900),
               ),
             ],
           ),
         ),
+        SizedBox(height: 10.v),
       ],
     );
   }
@@ -472,7 +428,7 @@ class SendBoxCheckingAndPaymentScreen
   Widget _buildAddress() {
     return Container(
       width: SizeUtils.width,
-      height: 200.v,
+      height: 220.v,
       child: Column(
         children: [
           //
@@ -481,7 +437,7 @@ class SendBoxCheckingAndPaymentScreen
           SizedBox(height: 10.v),
           //
           Container(
-            padding: EdgeInsets.only(left: 25.h),
+            padding: EdgeInsets.only(left: 0.h),
             child: Column(
               children: [
                 //
@@ -494,14 +450,7 @@ class SendBoxCheckingAndPaymentScreen
                 ),
                 SizedBox(height: 10.v),
                 //
-                _buildAddressItem("Long Do", "0123456789",
-                    "Tay Mo, Nam Tu Liem, Ha Noi, Vietnam"),
-                // //
-                // _buildAddressItem("Long Do", "0123456789",
-                //     "Tay Mo, Nam Tu Liem, Ha Noi, Vietnam"),
-                // //
-                // _buildAddressItem("Long Do", "0123456789",
-                //     "Tay Mo, Nam Tu Liem, Ha Noi, Vietnam"),
+                _buildAddressItem(addressController.tuyenListAddress[0]),
               ],
             ),
           ),
@@ -510,13 +459,12 @@ class SendBoxCheckingAndPaymentScreen
     );
   }
 
-  Widget _buildAddressItem(
-      String fullName, String phoneNumber, String address) {
+  Widget _buildAddressItem(Address ar) {
     return Column(
       children: [
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -528,7 +476,7 @@ class SendBoxCheckingAndPaymentScreen
               ),
               //
               Text(
-                fullName,
+                ar.name,
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.black900),
               ),
@@ -539,7 +487,7 @@ class SendBoxCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -551,7 +499,7 @@ class SendBoxCheckingAndPaymentScreen
               ),
               //
               Text(
-                phoneNumber,
+                ar.phoneNumber,
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.black900),
               ),
@@ -562,7 +510,7 @@ class SendBoxCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -574,33 +522,74 @@ class SendBoxCheckingAndPaymentScreen
               ),
               //
               Text(
-                address,
+                ar.address,
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.black900),
               ),
             ],
           ),
         ),
-        SizedBox(height: 30.v),
+        SizedBox(height: 10.v),
+        Padding(
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              //
+              Text(
+                "ToWard Code:",
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+              //
+              Text(
+                '${ar.towardCode}',
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 10.v),
+        Padding(
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              //
+              Text(
+                "District ID:",
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+              //
+              Text(
+                '${ar.districtId}',
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
 
   /// Section Widget
   Widget _buildAgreethetermsofuse() {
-    return Obx(
-      () => CustomCheckboxButton(
-        text1: "Agree the",
-        color1: 0xff000000,
-        text2: "term of use",
-        color2: 0xff309cff,
-        text3: "*",
-        color3: 0xffff0003,
-        value: controller.agreethetermsofuse.value,
-        onChange: (value) {
-          controller.agreethetermsofuse.value = value;
-        },
-      ),
+    return CustomCheckboxButton(
+      text1: "Agree the",
+      color1: 0xff000000,
+      text2: "term of use",
+      color2: 0xff309cff,
+      text3: "*",
+      color3: 0xffff0003,
+      value: checkTerms,
+      onChange: (value) {
+        setState(() {
+          checkTerms = value;
+        });
+      },
     );
   }
 
@@ -611,7 +600,7 @@ class SendBoxCheckingAndPaymentScreen
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // 
+          //
           CustomIconButton(
             height: 60.adaptSize,
             width: 60.adaptSize,
@@ -623,28 +612,7 @@ class SendBoxCheckingAndPaymentScreen
               imagePath: ImageConstant.imgArrowRightOnerrorcontainer,
             ),
           ),
-          // 
-          // Obx( () =>
-          //     CustomIconButton(
-          //     height: 60.adaptSize,
-          //     width: 60.adaptSize,
-          //     onTap: () {
-          //       print(controller.agreethetermsofuse.value);
-                
-          //       // if (controller.agreethetermsofuse.value) {
-          //       //   onTapBtnArrowRight();
-          //       // }
-          //       // else {
-          //       //   print('dit ba');
-          //       // }
-          //     },
-          //     padding: EdgeInsets.all(15.h),
-          //     child: CustomImageView(
-          //       imagePath: ImageConstant.imgArrowRight,
-          //     ),
-          //   ),
-          // ),
-          // 
+
           CustomIconButton(
             height: 60.adaptSize,
             width: 60.adaptSize,
@@ -677,8 +645,42 @@ class SendBoxCheckingAndPaymentScreen
 
   /// Navigates to the homeContainerScreen when the action is triggered.
   onTapBtnArrowRight() {
-    Get.toNamed(
-      AppRoutes.homeContainerScreen,
-    );
+    if (checkTerms) createRequestSendBox();
+    // Get.toNamed(
+    //   AppRoutes.homeContainerScreen,
+    // );
+  }
+
+  Future<void> createRequestSendBox() async {
+    try {
+      var uri = Uri.https(
+          '529d-118-70-128-84.ngrok-free.app', '/api/Order/OrderToWareHouse');
+      final response = await http.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'ngrok-skip-browser-warning': '69420',
+        },
+        body: jsonEncode(<String, dynamic>{
+          "name": "tuyen",
+          "phoneNumber": "0365004062",
+          "address": "Cau Giay",
+          "date": "2024-04-07T05:04:47.315Z",
+          "toWardCode": "12345",
+          "toDistrictId": 1144,
+          "orderId": [
+            1
+          ]
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print('buuuu');
+      } else {
+        throw Exception('Failed to create album.');
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }

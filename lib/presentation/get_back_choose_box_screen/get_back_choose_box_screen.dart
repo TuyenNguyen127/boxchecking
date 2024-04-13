@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:lastapp/model/OrderGet.dart';
+import 'package:lastapp/model/boxOrder.dart';
 import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/app_bar/appbar_title.dart';
@@ -8,10 +12,61 @@ import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'controller/get_back_choose_box_controller.dart';
+import 'package:http/http.dart' as http;
 
-class GetBackChooseBoxScreen extends GetWidget<GetBackChooseBoxController> {
-  const GetBackChooseBoxScreen({Key? key}) : super(key: key);
+class GetBackChooseBoxScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return MainGetBackBox();
+  }
+}
 
+class MainGetBackBox extends State<GetBackChooseBoxScreen> with TickerProviderStateMixin {
+
+  GetBackChooseBoxController getBackChooseBoxController = Get.put(GetBackChooseBoxController());
+
+  List<OrderGet> listOrders = <OrderGet>[];
+  bool checkAll = false;
+
+  Future<void> requestOrder() async {
+    try {
+      var uri = Uri.https('529d-118-70-128-84.ngrok-free.app',
+          '/api/Order/GetListOrderByUserId', {'userId': '1', 'statusId': '4'});
+      final response = await http.get(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "ngrok-skip-browser-warning": "69420",
+        },
+      );
+      if (response.statusCode == 200) {
+        List<OrderGet> orders = [];
+
+        List<dynamic> jsonList = jsonDecode(response.body);
+        orders = jsonList.map((json) => OrderGet.fromJson(json)).toList();
+
+        setState(() {
+          listOrders = orders;
+          for (var element in orders) {
+            getBackChooseBoxController.listOrders.add(element);
+          }
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        throw Exception('Failed to make API request.');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    if (getBackChooseBoxController.listOrders.length == 0) requestOrder();
+    else listOrders = getBackChooseBoxController.listOrders;
+    super.initState();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -34,7 +89,7 @@ class GetBackChooseBoxScreen extends GetWidget<GetBackChooseBoxController> {
               //
               Positioned(
                 top: 100.v,
-                child: _buildBodySection(),
+                child: _buildBodySection(context),
               ),
               //
               Positioned(
@@ -191,7 +246,33 @@ class GetBackChooseBoxScreen extends GetWidget<GetBackChooseBoxController> {
   }
 
   /// Section Widget
-  Widget _buildBodySection() {
+
+  Widget _buildBoxSearch() {
+    return Padding(
+      padding: EdgeInsets.only(left: 0.h, right: 0.h, top: 20.h),
+      child: CustomDropDown(
+        icon: Container(
+          margin: EdgeInsets.fromLTRB(30.h, 19.v, 21.h, 19.v),
+          child: CustomImageView(
+            imagePath: ImageConstant.imgSave,
+            height: 12.v,
+            width: 19.h,
+          ),
+        ),
+        hintStyle: TextStyle(),
+        hintText: "lbl_search_by_id".tr,
+        alignment: Alignment.center,
+        // items:
+        //     controller.getBackChooseBoxModelObj.value.dropdownItemList!.value,
+        // contentPadding: EdgeInsets.only(left: 20.h, top: 15.v, bottom: 15.v),
+        // onChanged: (value) {
+        //   controller.onSelected(value);
+        // },
+      ),
+    );
+  }
+
+  Widget _buildBodySection(context) {
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
@@ -224,51 +305,134 @@ class GetBackChooseBoxScreen extends GetWidget<GetBackChooseBoxController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //
-          _buildBoxSearch(),
+          //_buildBoxSearch(),
           SizedBox(height: 15.v),
           //
-          Padding(
-            padding: EdgeInsets.only(left: 0.h),
-            child: CustomDropDown(
-              width: 95.h,
-              hintText: "lbl_14_days_ago".tr,
-              items: controller
-                  .getBackChooseBoxModelObj.value.dropdownItemList1!.value,
-              onChanged: (value) {
-                controller.onSelected1(value);
-              },
-            ),
-          ),
+          // Padding(
+          //   padding: EdgeInsets.only(left: 0.h),
+          //   child: CustomDropDown(
+          //     width: 95.h,
+          //     hintText: "lbl_14_days_ago".tr,
+          //     items: sendBoxChooseBoxController
+          //         .sendBoxChooseBoxModelObj.value.dropdownItemList1!.value,
+          //     onChanged: (value) {
+          //       sendBoxChooseBoxController.onSelected1(value);
+          //     },
+          //   ),
+          // ),
           SizedBox(height: 25.v),
-          //
-          _buildItemByID(),
+          _buildListOrder(context),
         ],
       ),
     );
   }
 
-  Widget _buildBoxSearch() {
-    return Padding(
-      padding: EdgeInsets.only(left: 0.h, right: 0.h, top: 20.h),
-      child: CustomDropDown(
-        icon: Container(
-          margin: EdgeInsets.fromLTRB(30.h, 19.v, 21.h, 19.v),
-          child: CustomImageView(
-            imagePath: ImageConstant.imgSave,
-            height: 12.v,
-            width: 19.h,
+  Widget _buildListOrder(context) {
+    return Column(
+      children: [
+        CheckboxListTile(
+          controlAffinity: ListTileControlAffinity.leading,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 12.h),
+                child: Text('${checkAll ? 'Unselect all' : 'Select all'}',
+                    style: CustomTextStyles.titleSmallBlack900Medium),
+              ),
+              // CustomImageView(
+              //   imagePath: ImageConstant.imgBookmark,
+              //   height: 13.v,
+              //   width: 11.h,
+              //   margin: EdgeInsets.only(left: 6.h, top: 3.v, bottom: 3.v),
+              // ),
+            ],
+          ),
+          value: checkAll,
+          onChanged: (value) => setState(() {
+            checkAll = value!;
+            listOrders.forEach((element) {
+              element.checked = value!;
+              element.boxs.forEach((e) {
+                e.selected = value!;
+              });
+            });
+          }),
+        ),
+        SizedBox(height: 12.v),
+        Container(
+          height: 600.v,
+          decoration: AppDecoration.outlineBluegray300,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: listOrders.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        CheckboxListTile(
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 12.h),
+                                child: Text("lbl_id".tr,
+                                    style: CustomTextStyles
+                                        .titleSmallBlack900Medium),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 5.h),
+                                child: Text(listOrders[index].id.toString(),
+                                    style: CustomTextStyles
+                                        .titleSmallBlack900Medium),
+                              ),
+                              CustomImageView(
+                                imagePath: ImageConstant.imgBookmark,
+                                height: 13.v,
+                                width: 11.h,
+                                margin: EdgeInsets.only(
+                                    left: 6.h, top: 3.v, bottom: 3.v),
+                              ),
+                            ],
+                          ),
+                          value: listOrders[index].checked,
+                          onChanged: (value) => setState(() {
+                            if (value == false) checkAll = false;
+                            listOrders[index].checked = value!;
+                            listOrders[index].boxs.forEach((element) {
+                              element.selected = value!;
+                            });
+                          }),
+                        ),
+                        SizedBox(height: 12.v),
+                        Container(
+                          height: listOrders[index].boxs.length * 150.v,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: listOrders[index].boxs.length,
+                                  itemBuilder: (context, i) {
+                                    return _buildItem(listOrders[index].boxs[i]);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
-        hintStyle: TextStyle(),
-        hintText: "lbl_search_by_id".tr,
-        alignment: Alignment.center,
-        items:
-            controller.getBackChooseBoxModelObj.value.dropdownItemList!.value,
-        contentPadding: EdgeInsets.only(left: 20.h, top: 15.v, bottom: 15.v),
-        onChanged: (value) {
-          controller.onSelected(value);
-        },
-      ),
+      
+      ],
     );
   }
 
@@ -307,64 +471,57 @@ class GetBackChooseBoxScreen extends GetWidget<GetBackChooseBoxController> {
         SizedBox(height: 12.v),
 
         //
-        Container(
-          height: 500.v,
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                _buildItem(
-                    "msg_33589549623491_001".tr,
-                    "10x Quan jeans; 10x Ao so mi; 10x That lung da",
-                    "msg_hang_on_washing".tr,
-                    "lbl_box_50x50x100".tr,
-                    "20/12/2023",
-                    200000),
-                _buildItem(
-                    "msg_33589549623491_002".tr,
-                    "10x Quan jeans; 10x Ao so mi; 10x That lung da",
-                    "msg_hang_on_washing".tr,
-                    "msg_box_50x100x100".tr,
-                    "20/12/2023",
-                    200000),
-                _buildItem(
-                    "msg_33589549623491_002".tr,
-                    "10x Quan jeans; 10x Ao so mi; 10x That lung da",
-                    "msg_hang_on_washing".tr,
-                    "msg_box_50x100x100".tr,
-                    "20/12/2023",
-                    200000),
-                _buildItem(
-                    "msg_33589549623491_002".tr,
-                    "10x Quan jeans; 10x Ao so mi; 10x That lung da",
-                    "msg_hang_on_washing".tr,
-                    "msg_box_50x100x100".tr,
-                    "20/12/2023",
-                    200000),
-                _buildItem(
-                    "msg_33589549623491_002".tr,
-                    "10x Quan jeans; 10x Ao so mi; 10x That lung da",
-                    "msg_hang_on_washing".tr,
-                    "msg_box_50x100x100".tr,
-                    "20/12/2023",
-                    200000),
-              ],
-            ),
-          ),
-        ),
+        // Container(
+        //   height: 500.v,
+        //   child: SingleChildScrollView(
+        //     physics: BouncingScrollPhysics(),
+        //     child: Column(
+        //       children: [
+        //         _buildItem(
+        //             "msg_33589549623491_001".tr,
+        //             "10x Quan jeans; 10x Ao so mi; 10x That lung da",
+        //             "msg_hang_on_washing".tr,
+        //             "lbl_box_50x50x100".tr,
+        //             "20/12/2023",
+        //             200000),
+        //         _buildItem(
+        //             "msg_33589549623491_002".tr,
+        //             "10x Quan jeans; 10x Ao so mi; 10x That lung da",
+        //             "msg_hang_on_washing".tr,
+        //             "msg_box_50x100x100".tr,
+        //             "20/12/2023",
+        //             200000),
+        //         _buildItem(
+        //             "msg_33589549623491_002".tr,
+        //             "10x Quan jeans; 10x Ao so mi; 10x That lung da",
+        //             "msg_hang_on_washing".tr,
+        //             "msg_box_50x100x100".tr,
+        //             "20/12/2023",
+        //             200000),
+        //         _buildItem(
+        //             "msg_33589549623491_002".tr,
+        //             "10x Quan jeans; 10x Ao so mi; 10x That lung da",
+        //             "msg_hang_on_washing".tr,
+        //             "msg_box_50x100x100".tr,
+        //             "20/12/2023",
+        //             200000),
+        //         _buildItem(
+        //             "msg_33589549623491_002".tr,
+        //             "10x Quan jeans; 10x Ao so mi; 10x That lung da",
+        //             "msg_hang_on_washing".tr,
+        //             "msg_box_50x100x100".tr,
+        //             "20/12/2023",
+        //             200000),
+        //       ],
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
 
   /// Section Widget
-  Widget _buildItem(
-    id_item,
-    textItem,
-    textService,
-    amountItem,
-    startDate,
-    total,
-  ) {
+  Widget _buildItem(boxOrder) {
     return Container(
       padding: EdgeInsets.fromLTRB(5.h, 10.v, 10.h, 10.v),
       decoration: AppDecoration.outlineBluegray300,
@@ -372,15 +529,6 @@ class GetBackChooseBoxScreen extends GetWidget<GetBackChooseBoxController> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 20.adaptSize,
-            width: 20.adaptSize,
-            margin: EdgeInsets.only(top: 30.v, bottom: 40.v),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary,
-              border: Border.all(color: appTheme.black900, width: 2.h),
-            ),
-          ),
           //
           Expanded(
             child: Container(
@@ -392,7 +540,7 @@ class GetBackChooseBoxScreen extends GetWidget<GetBackChooseBoxController> {
                   children: [
                     _buildId(
                       iD: "lbl_id".tr,
-                      widget: id_item,
+                      widget: boxOrder.id.toString(),
                     ),
                     SizedBox(height: 10.v),
                     //
@@ -400,7 +548,7 @@ class GetBackChooseBoxScreen extends GetWidget<GetBackChooseBoxController> {
                       padding: EdgeInsets.only(left: 1.h),
                       child: _buildContentItem(
                         imageService: ImageConstant.imgThumbsUp,
-                        text: textItem,
+                        text: boxOrder.items,
                         textStyleService: CustomTextStyles.labelLargeGray80002
                             .copyWith(color: appTheme.gray80002),
                       ),
@@ -411,7 +559,7 @@ class GetBackChooseBoxScreen extends GetWidget<GetBackChooseBoxController> {
                       padding: EdgeInsets.only(left: 1.h),
                       child: _buildContentItem(
                         imageService: ImageConstant.imgThumbsUp,
-                        text: textService,
+                        text: boxOrder.services,
                         textStyleService: CustomTextStyles
                             .labelLargeLightblue800
                             .copyWith(color: appTheme.lightBlue800),
@@ -423,28 +571,28 @@ class GetBackChooseBoxScreen extends GetWidget<GetBackChooseBoxController> {
                       padding: EdgeInsets.only(left: 1.h),
                       child: _buildContentItem(
                         imageService: ImageConstant.imgThumbsUpBlueGray300,
-                        text: amountItem,
+                        text: boxOrder.dimension,
                         textStyleService: CustomTextStyles.labelLargeOrangeA700,
                       ),
                     ),
                     SizedBox(height: 10.v),
                     //
-                    Padding(
-                      padding: EdgeInsets.only(left: 1.h),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Start at: ",
-                            style: CustomTextStyles.labelLargeBluegray300,
-                          ),
-                          Text(
-                            startDate,
-                            style: CustomTextStyles.labelLargeBluegray300,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10.v),
+                    // Padding(
+                    //   padding: EdgeInsets.only(left: 1.h),
+                    //   child: Row(
+                    //     children: [
+                    //       Text(
+                    //         "Start at: ",
+                    //         style: CustomTextStyles.labelLargeBluegray300,
+                    //       ),
+                    //       Text(
+                    //         boxOrder.,
+                    //         style: CustomTextStyles.labelLargeBluegray300,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    // SizedBox(height: 10.v),
                     //
                     Align(
                       alignment: Alignment.centerRight,
@@ -454,11 +602,11 @@ class GetBackChooseBoxScreen extends GetWidget<GetBackChooseBoxController> {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: "Total: ",
+                                text: "Price: ",
                                 style: theme.textTheme.titleSmall,
                               ),
                               TextSpan(
-                                text: total.toString(),
+                                text: boxOrder.price.toString() + 'VND',
                                 style: theme.textTheme.titleSmall,
                               ),
                             ],

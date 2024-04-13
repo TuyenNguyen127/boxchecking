@@ -1,17 +1,70 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:js';
 
-import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:lastapp/core/app_export.dart';
+import 'package:lastapp/model/OrderGet.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
-import 'package:lastapp/widgets/app_bar/appbar_title.dart';
-import 'package:another_stepper/widgets/another_stepper.dart';
-import 'package:another_stepper/dto/stepper_data.dart';
 import 'package:lastapp/widgets/custom_drop_down.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
-import 'package:lastapp/core/app_export.dart';
-import 'controller/send_box_choose_box_controller.dart';
 
-class SendBoxChooseBoxScreen extends GetWidget<SendBoxChooseBoxController> {
-  const SendBoxChooseBoxScreen({Key? key}) : super(key: key);
+import 'controller/send_box_choose_box_controller.dart';
+import '../../model/boxOrder.dart';
+import 'package:http/http.dart' as http;
+
+class SendBoxChooseBoxScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return MainSendBox();
+  }
+}
+
+class MainSendBox extends State<SendBoxChooseBoxScreen> with TickerProviderStateMixin {
+  
+  SendBoxChooseBoxController sendBoxChooseBoxController = Get.put(SendBoxChooseBoxController());
+
+  List<OrderGet> listOrders = <OrderGet>[];
+  bool checkAll = false;
+
+  Future<void> requestOrder() async {
+    try {
+      var uri = Uri.https('529d-118-70-128-84.ngrok-free.app',
+          '/api/Order/GetListOrderByUserId', {'userId': '1', 'statusId': '4'});
+      final response = await http.get(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "ngrok-skip-browser-warning": "69420",
+        },
+      );
+      if (response.statusCode == 200) {
+        List<OrderGet> orders = [];
+
+        List<dynamic> jsonList = jsonDecode(response.body);
+        orders = jsonList.map((json) => OrderGet.fromJson(json)).toList();
+
+        setState(() {
+          listOrders = orders;
+          for (var element in orders) {
+            sendBoxChooseBoxController.listOrders.add(element);
+          }
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        throw Exception('Failed to make API request.');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    if (sendBoxChooseBoxController.listOrders.length == 0) requestOrder();
+    else listOrders = sendBoxChooseBoxController.listOrders;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +278,7 @@ class SendBoxChooseBoxScreen extends GetWidget<SendBoxChooseBoxController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //
-          _buildBoxSearch(),
+          //_buildBoxSearch(),
           SizedBox(height: 15.v),
           //
           Padding(
@@ -233,119 +286,146 @@ class SendBoxChooseBoxScreen extends GetWidget<SendBoxChooseBoxController> {
             child: CustomDropDown(
               width: 95.h,
               hintText: "lbl_14_days_ago".tr,
-              items: controller
+              items: sendBoxChooseBoxController
                   .sendBoxChooseBoxModelObj.value.dropdownItemList1!.value,
               onChanged: (value) {
-                controller.onSelected1(value);
+                sendBoxChooseBoxController.onSelected1(value);
               },
             ),
           ),
           SizedBox(height: 25.v),
-          //
-          _buildItemByID(),
+          _buildListOrder(context),
         ],
       ),
     );
   }
 
-  Widget _buildBoxSearch() {
-    return Padding(
-      padding: EdgeInsets.only(left: 0.h, right: 0.h, top: 20.h),
-      child: CustomDropDown(
-        icon: Container(
-          margin: EdgeInsets.fromLTRB(30.h, 19.v, 21.h, 19.v),
-          child: CustomImageView(
-            imagePath: ImageConstant.imgSave,
-            height: 12.v,
-            width: 19.h,
-          ),
-        ),
-        hintStyle: TextStyle(),
-        hintText: "lbl_search_by_id".tr,
-        alignment: Alignment.center,
-        items:
-            controller.sendBoxChooseBoxModelObj.value.dropdownItemList!.value,
-        contentPadding: EdgeInsets.only(left: 20.h, top: 15.v, bottom: 15.v),
-        onChanged: (value) {
-          controller.onSelected(value);
-        },
-      ),
-    );
-  }
+  // Widget _buildBoxSearch() {
+  //   return Padding(
+  //     padding: EdgeInsets.only(left: 0.h, right: 0.h, top: 20.h),
+  //     child: CustomDropDown(
+  //       icon: Container(
+  //         margin: EdgeInsets.fromLTRB(30.h, 19.v, 21.h, 19.v),
+  //         child: CustomImageView(
+  //           imagePath: ImageConstant.imgSave,
+  //           height: 12.v,
+  //           width: 19.h,
+  //         ),
+  //       ),
+  //       hintStyle: TextStyle(),
+  //       hintText: "lbl_search_by_id".tr,
+  //       alignment: Alignment.center,
+  //       items:
+  //           controller.sendBoxChooseBoxModelObj.value.dropdownItemList!.value,
+  //       contentPadding: EdgeInsets.only(left: 20.h, top: 15.v, bottom: 15.v),
+  //       onChanged: (value) {
+  //         controller.onSelected(value);
+  //       },
+  //     ),
+  //   );
+  // }
 
-  Widget _buildItemByID() {
+  Widget _buildListOrder(context) {
     return Column(
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 20.adaptSize,
-              width: 20.adaptSize,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary,
-                border: Border.all(color: appTheme.black900, width: 2.h),
+        CheckboxListTile(
+          controlAffinity: ListTileControlAffinity.leading,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 12.h),
+                child: Text('${checkAll ? 'Unselect all' : 'Select all'}',
+                    style: CustomTextStyles.titleSmallBlack900Medium),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 12.h),
-              child: Text("lbl_id".tr,
-                  style: CustomTextStyles.titleSmallBlack900Medium),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 5.h),
-              child: Text("lbl_33589549623491".tr,
-                  style: CustomTextStyles.titleSmallBlack900Medium),
-            ),
-            CustomImageView(
-              imagePath: ImageConstant.imgBookmark,
-              height: 13.v,
-              width: 11.h,
-              margin: EdgeInsets.only(left: 6.h, top: 3.v, bottom: 3.v),
-            ),
-          ],
+              // CustomImageView(
+              //   imagePath: ImageConstant.imgBookmark,
+              //   height: 13.v,
+              //   width: 11.h,
+              //   margin: EdgeInsets.only(left: 6.h, top: 3.v, bottom: 3.v),
+              // ),
+            ],
+          ),
+          value: checkAll,
+          onChanged: (value) => setState(() {
+            checkAll = value!;
+            listOrders.forEach((element) {
+              element.checked = value!;
+              element.boxs.forEach((e) {
+                e.selected = value!;
+              });
+            });
+          }),
         ),
         SizedBox(height: 12.v),
-
-        //
         Container(
-          height: 500.v,
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                _buildItem(
-                  "msg_33589549623491_001".tr,
-                  "10x Quan jeans; 10x Ao so mi; 10x That lung da",
-                  "msg_hang_on_washing".tr,
-                  "lbl_box_50x50x100".tr,
+          height: 600.v,
+          decoration: AppDecoration.outlineBluegray300,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: listOrders.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        CheckboxListTile(
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 12.h),
+                                child: Text("lbl_id".tr,
+                                    style: CustomTextStyles
+                                        .titleSmallBlack900Medium),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 5.h),
+                                child: Text(listOrders[index].id.toString(),
+                                    style: CustomTextStyles
+                                        .titleSmallBlack900Medium),
+                              ),
+                              CustomImageView(
+                                imagePath: ImageConstant.imgBookmark,
+                                height: 13.v,
+                                width: 11.h,
+                                margin: EdgeInsets.only(
+                                    left: 6.h, top: 3.v, bottom: 3.v),
+                              ),
+                            ],
+                          ),
+                          value: listOrders[index].checked,
+                          onChanged: (value) => setState(() {
+                            if (value == false) checkAll = false;
+                            listOrders[index].checked = value!;
+                            listOrders[index].boxs.forEach((element) {
+                              element.selected = value!;
+                            });
+                          }),
+                        ),
+                        SizedBox(height: 12.v),
+                        Container(
+                          height: listOrders[index].boxs.length * 150.v,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: listOrders[index].boxs.length,
+                                  itemBuilder: (context, i) {
+                                    return _buildItem(listOrders[index].boxs[i]);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
-                _buildItem(
-                  "msg_33589549623491_002".tr,
-                  "10x Quan jeans; 10x Ao so mi; 10x That lung da",
-                  "msg_hang_on_washing".tr,
-                  "msg_box_50x100x100".tr,
-                ),
-                _buildItem(
-                  "msg_33589549623491_002".tr,
-                  "10x Quan jeans; 10x Ao so mi; 10x That lung da",
-                  "msg_hang_on_washing".tr,
-                  "msg_box_50x100x100".tr,
-                ),
-                _buildItem(
-                  "msg_33589549623491_002".tr,
-                  "10x Quan jeans; 10x Ao so mi; 10x That lung da",
-                  "msg_hang_on_washing".tr,
-                  "msg_box_50x100x100".tr,
-                ),
-                _buildItem(
-                  "msg_33589549623491_002".tr,
-                  "10x Quan jeans; 10x Ao so mi; 10x That lung da",
-                  "msg_hang_on_washing".tr,
-                  "msg_box_50x100x100".tr,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
@@ -353,80 +433,54 @@ class SendBoxChooseBoxScreen extends GetWidget<SendBoxChooseBoxController> {
   }
 
   /// Section Widget
-  Widget _buildItem(
-    id_item,
-    textItem,
-    textService,
-    amountItem,
-  ) {
+  Widget _buildItem(BoxOrder boxOrder) {
     return Container(
       padding: EdgeInsets.fromLTRB(5.h, 10.v, 10.h, 10.v),
       decoration: AppDecoration.outlineBluegray300,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 20.adaptSize,
-            width: 20.adaptSize,
-            margin: EdgeInsets.only(top: 30.v, bottom: 40.v),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary,
-              border: Border.all(color: appTheme.black900, width: 2.h),
+      width: SizeUtils.width - 150.adaptSize,
+      child: Padding(
+        padding: EdgeInsets.only(left: 9.h, bottom: 1.v),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildId(
+              iD: "lbl_id".tr,
+              widget: boxOrder.id.toString(),
             ),
-          ),
-          //
-          Expanded(
-            child: Container(
-              width: SizeUtils.width - 20.h - 50.adaptSize - 20.adaptSize,
-              child: Padding(
-                padding: EdgeInsets.only(left: 9.h, bottom: 1.v),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildId(
-                      iD: "lbl_id".tr,
-                      widget: id_item,
-                    ),
-                    SizedBox(height: 10.v),
-                    //
-                    Padding(
-                      padding: EdgeInsets.only(left: 1.h),
-                      child: _buildContentItem(
-                        imageService: ImageConstant.imgThumbsUp,
-                        text: textItem,
-                        textStyleService: CustomTextStyles.labelLargeGray80002
-                            .copyWith(color: appTheme.gray80002),
-                      ),
-                    ),
-                    SizedBox(height: 10.v),
-                    //
-                    Padding(
-                      padding: EdgeInsets.only(left: 1.h),
-                      child: _buildContentItem(
-                        imageService: ImageConstant.imgThumbsUp,
-                        text: textService,
-                        textStyleService: CustomTextStyles
-                            .labelLargeLightblue800
-                            .copyWith(color: appTheme.lightBlue800),
-                      ),
-                    ),
-                    SizedBox(height: 10.v),
-                    //
-                    Padding(
-                      padding: EdgeInsets.only(left: 1.h),
-                      child: _buildContentItem(
-                        imageService: ImageConstant.imgThumbsUpBlueGray300,
-                        text: amountItem,
-                        textStyleService: CustomTextStyles.labelLargeOrangeA700,
-                      ),
-                    ),
-                  ],
-                ),
+            SizedBox(height: 10.v),
+            //
+            Padding(
+              padding: EdgeInsets.only(left: 1.h),
+              child: _buildContentItem(
+                imageService: ImageConstant.imgThumbsUp,
+                text: boxOrder.items,
+                textStyleService: CustomTextStyles.labelLargeGray80002
+                    .copyWith(color: appTheme.gray80002),
               ),
             ),
-          ),
-        ],
+            SizedBox(height: 10.v),
+            //
+            Padding(
+              padding: EdgeInsets.only(left: 1.h),
+              child: _buildContentItem(
+                imageService: ImageConstant.imgThumbsUp,
+                text: boxOrder.services,
+                textStyleService: CustomTextStyles.labelLargeLightblue800
+                    .copyWith(color: appTheme.lightBlue800),
+              ),
+            ),
+            SizedBox(height: 10.v),
+            //
+            Padding(
+              padding: EdgeInsets.only(left: 1.h),
+              child: _buildContentItem(
+                imageService: ImageConstant.imgThumbsUpBlueGray300,
+                text: boxOrder.dimension,
+                textStyleService: CustomTextStyles.labelLargeOrangeA700,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

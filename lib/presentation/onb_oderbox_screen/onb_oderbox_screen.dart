@@ -1,15 +1,17 @@
+import 'package:flutter/material.dart' as flutter;
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lastapp/core/app_export.dart';
+import 'package:lastapp/presentation/onb_oderbox_screen/models/new_box_day.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/custom_drop_down.dart';
 import 'package:lastapp/widgets/custom_elevated_button.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
-import 'package:flutter/material.dart';
-import 'package:lastapp/core/app_export.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+
+import './models/new_box.dart';
 import 'controller/onb_oderbox_controller.dart';
 import 'models/subject_model.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart' as flutter;
-import './models/new_box.dart';
 
 class OnbOderboxScreen extends StatelessWidget {
   OnbOderboxScreen({Key? key}) : super(key: key);
@@ -322,6 +324,7 @@ class OnbOderboxScreen extends StatelessWidget {
 
                 data.add(_new.toJson());
                 print(data);
+                oderBoxController.init();
                 //_currentList.add(_new);
                 oderBoxController.addNewOrderBox(typeBox, modelBox, service);
               }),
@@ -443,6 +446,24 @@ class OnbOderboxScreen extends StatelessWidget {
                             oderBoxController.khueListOrders[index], index);
                       },
                     ),
+                    // child: ListView.builder(
+                    //   itemCount: oderBoxController.tuyenList.length,
+                    //   itemBuilder: (context, index) {
+                    //     return CheckboxListTile(
+                    //       controlAffinity: ListTileControlAffinity.leading,
+                    //       title: Row(
+                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //         children: [
+                    //           Text(oderBoxController.tuyenList[index].services),
+                    //         ],
+                    //       ),
+                    //       value: oderBoxController.tuyenList[index].selected,
+                    //       onChanged: (value) => {
+                    //         oderBoxController.tuyenList[index].selected = value
+                    //       },
+                    //     );
+                    //   },
+                    // ),
                   ),
                   //
                 ],

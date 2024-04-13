@@ -1,3 +1,5 @@
+import 'package:lastapp/model/OrderGet.dart';
+
 import '../../../core/app_export.dart';
 import '../models/get_back_choose_box_model.dart';
 
@@ -9,6 +11,8 @@ class GetBackChooseBoxController extends GetxController {
   Rx<GetBackChooseBoxModel> getBackChooseBoxModelObj =
       GetBackChooseBoxModel().obs;
 
+  RxList<OrderGet> listOrders = <OrderGet>[].obs;
+  
   SelectionPopupModel? selectedDropDownValue;
 
   SelectionPopupModel? selectedDropDownValue1;

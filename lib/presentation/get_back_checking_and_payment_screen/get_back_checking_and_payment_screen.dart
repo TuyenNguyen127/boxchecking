@@ -1,17 +1,49 @@
-import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
+import 'dart:convert';
+
+import 'package:lastapp/model/OrderGet.dart';
+import 'package:lastapp/model/address.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
-import 'package:lastapp/widgets/app_bar/appbar_title.dart';
-import 'package:another_stepper/widgets/another_stepper.dart';
-import 'package:another_stepper/dto/stepper_data.dart';
 import 'package:lastapp/widgets/custom_checkbox_button.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
+import '../get_back_address_screen/controller/get_back_address_controller.dart';
+import '../get_back_choose_box_screen/controller/get_back_choose_box_controller.dart';
 import 'controller/get_back_checking_and_payment_controller.dart';
+import 'package:http/http.dart' as http;
 
-class GetBackCheckingAndPaymentScreen
-    extends GetWidget<GetBackCheckingAndPaymentController> {
-  const GetBackCheckingAndPaymentScreen({Key? key}) : super(key: key);
+class GetBackCheckingAndPaymentScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return MainCheckingAndPayment();
+  }
+}
+
+class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
+  GetBackAddressController addressController =
+      Get.put(GetBackAddressController());
+  GetBackChooseBoxController chooseController =
+      Get.put(GetBackChooseBoxController());
+
+  bool checkTerms = false;
+  List<OrderGet> listOrders = <OrderGet>[];
+  List<int> idList = [];
+
+  double heightItems = 0.v;
+  int total = 0;
+
+  @override
+  void initState() {
+    for (var element in chooseController.listOrders) {
+      heightItems += element.boxs.length * 160.v;
+      for (var e in element.boxs) {
+        total += e.price;
+      }
+      idList.add(element.id);
+    }
+    print(idList);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,18 +67,18 @@ class GetBackCheckingAndPaymentScreen
               //
               Positioned(
                 top: 100.v,
-                child: _buildContent(),
+                child: _buildContentPageCheckingAndPayment(),
               ),
               //
-              Positioned(
-                bottom: 60.v,
-                child: _buildAddress(),
-              ),
-              //
-              Positioned(
-                bottom: 120.v,
-                child: _buildAgreethetermsofuse(),
-              ),
+              // Positioned(
+              //   bottom: 60.v,
+              //   child: _buildAddress(),
+              // ),
+              // //
+              // Positioned(
+              //   bottom: 120.v,
+              //   child: _buildAgreethetermsofuse(),
+              // ),
               //
               _buildArrowRightLeft(),
             ],
@@ -184,187 +216,155 @@ class GetBackCheckingAndPaymentScreen
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContentPageCheckingAndPayment() {
     return Container(
-      width: SizeUtils.width,
-      height: SizeUtils.height,
-      padding: EdgeInsets.symmetric(vertical: 20.v),
+      padding: EdgeInsets.symmetric(horizontal: 20.v, vertical: 10.v),
       decoration: AppDecoration.fillPrimary
           .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          //
-          Text("Request Data", style: CustomTextStyles.titleLargeGray800),
-          //
-          SizedBox(height: 10.v),
-          Divider(),
-          SizedBox(height: 10.v),
-          //
-          Expanded(
-            child: Container(
-              width: SizeUtils.width,
-              child: Column(
-                children: [
-                  //
-                  _buildPackageRequirementsSection(),
-                  //
-                  SizedBox(height: 10.v),
-                  //
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40.v),
-                    child: Column(
-                      children: [
-                        //
-                        Divider(),
-                        SizedBox(height: 20.v),
-                        //
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 3.h),
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Total: ",
-                                    style: theme.textTheme.titleSmall,
-                                  ),
-                                  TextSpan(
-                                    text: "200000",
-                                    style: theme.textTheme.titleSmall,
-                                  ),
-                                ],
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPackageRequirementsSection() {
-    return Container(
-      height: 280.v,
-      padding: EdgeInsets.only(left: 25.h),
+      height: SizeUtils.height - 250.v,
+      width: SizeUtils.width,
       child: SingleChildScrollView(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             //
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Packaging requirements",
-                style: CustomTextStyles.labelLargeBold,
-              ),
-            ),
+            Text("Request Data", style: CustomTextStyles.titleLargeGray800),
+            //
+            SizedBox(height: 10.v),
+            Divider(),
             SizedBox(height: 10.v),
             //
-            _buildPackageRequirementsItem(
-              "msg_id_33589549623491_001".tr,
-              "box",
-              "msg_10xquan_jean_10xao".tr,
-              50,
-              100,
-              100,
-              20,
-              "msg_washing_keeping".tr,
-              200000,
+            Container(
+              height: SizeUtils.height - 350.v,
+              decoration: AppDecoration.fillPrimary
+                  .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    //
+                    _buildPackageRequirementsSection(),
+                    //
+                    SizedBox(height: 10.v),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 0.v),
+                      child: Column(
+                        children: [
+                          //
+                          Divider(),
+                          SizedBox(height: 20.v),
+                          //
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 3.h),
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "Total: ",
+                                      style: theme.textTheme.titleSmall,
+                                    ),
+                                    TextSpan(
+                                      text: '${total} VND',
+                                      style: theme.textTheme.titleSmall,
+                                    ),
+                                  ],
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10.v),
+                    //
+                    _buildAddress(),
+                    //
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildAgreethetermsofuse(),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-            SizedBox(height: 30.v),
-            //
-            _buildPackageRequirementsItem(
-              "msg_id_33589549623491_002".tr,
-              "box",
-              "msg_10xquan_jean_10xao".tr,
-              50,
-              100,
-              100,
-              20,
-              "msg_washing_keeping".tr,
-              200000,
-            ),
-            SizedBox(height: 30.v),
-            //
-            _buildPackageRequirementsItem(
-              "msg_id_33589549623491_001".tr,
-              "box",
-              "msg_10xquan_jean_10xao".tr,
-              50,
-              100,
-              100,
-              20,
-              "msg_washing_keeping".tr,
-              200000,
-            ),
-            SizedBox(height: 30.v),
-            //
-            _buildPackageRequirementsItem(
-              "msg_id_33589549623491_001".tr,
-              "box",
-              "msg_10xquan_jean_10xao".tr,
-              50,
-              100,
-              100,
-              20,
-              "msg_washing_keeping".tr,
-              200000,
-            ),
-            // //
-            // SizedBox(height: 10.v),
-            // //
-            // Divider(
-            //   color: Colors.black38,
-            // ),
-            // SizedBox(height: 10.v),
-            // //
-            // Align(
-            //   alignment: Alignment.centerRight,
-            //   child: Padding(
-            //     padding: EdgeInsets.only(right: 3.h),
-            //     child: RichText(
-            //       text: TextSpan(
-            //         children: [
-            //           TextSpan(
-            //             text: "Total: ",
-            //             style: theme.textTheme.titleSmall,
-            //           ),
-            //           TextSpan(
-            //             text: "200000",
-            //             style: theme.textTheme.titleSmall,
-            //           ),
-            //         ],
-            //       ),
-            //       textAlign: TextAlign.left,
-            //     ),
-            //   ),
-            // ),
-            //
           ],
         ),
       ),
     );
   }
 
-  Widget _buildPackageRequirementsItem(
-      String id_item,
-      String model,
-      String nameItem,
-      int size1,
-      int size2,
-      int size3,
-      int weight,
-      String services,
-      int priceEachItem) {
+  Widget _buildPackageRequirementsSection() {
+    return Column(
+      children: [
+        //
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Packaging requirements",
+            style: CustomTextStyles.labelLargeBold,
+          ),
+        ),
+        SizedBox(height: 10.v),
+        //
+        Container(
+          height: heightItems > 150.v ? heightItems : 150.v,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: chooseController.listOrders.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      height: chooseController.listOrders[index].boxs.length *
+                          155.v,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: 0.h, right: 10.h, bottom: 10.h),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Order ID - " +
+                                      chooseController.listOrders[index].id
+                                          .toString(),
+                                  style: CustomTextStyles.labelLargeBold,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: chooseController
+                                  .listOrders[index].boxs.length,
+                              itemBuilder: (context, i) {
+                                return _buildPackageRequirementsItem(
+                                    chooseController.listOrders[index].boxs[i]);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPackageRequirementsItem(boxOrder) {
     return Column(
       children: [
         //
@@ -373,7 +373,7 @@ class GetBackCheckingAndPaymentScreen
           child: Padding(
             padding: EdgeInsets.only(left: 10.h),
             child: Text(
-              id_item.toString(),
+              'ID - ${boxOrder.id}',
               style: CustomTextStyles.labelLargeGreen600,
             ),
           ),
@@ -382,13 +382,13 @@ class GetBackCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               //
               Text(
-                "Model:",
+                "Dimension:",
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.black900),
               ),
@@ -397,29 +397,7 @@ class GetBackCheckingAndPaymentScreen
                 text: TextSpan(
                   style: theme.textTheme.bodySmall!
                       .copyWith(color: appTheme.amber900),
-                  text: '${model.capitalizeFirst} | ',
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: '${size1} x ',
-                      style: theme.textTheme.bodySmall!
-                          .copyWith(color: appTheme.amber900),
-                    ),
-                    TextSpan(
-                      text: '${size2} x ',
-                      style: theme.textTheme.bodySmall!
-                          .copyWith(color: appTheme.amber900),
-                    ),
-                    TextSpan(
-                      text: '${size3}',
-                      style: theme.textTheme.bodySmall!
-                          .copyWith(color: appTheme.amber900),
-                    ),
-                    TextSpan(
-                      text: ' | ${weight}kg',
-                      style: theme.textTheme.bodySmall!
-                          .copyWith(color: appTheme.amber900),
-                    ),
-                  ],
+                  text: '${boxOrder.dimension} | ${boxOrder.weight / 1000}kg',
                 ),
               ),
             ],
@@ -429,7 +407,7 @@ class GetBackCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -441,7 +419,7 @@ class GetBackCheckingAndPaymentScreen
               ),
               //
               Text(
-                nameItem,
+                boxOrder.items,
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.black900),
               ),
@@ -452,7 +430,7 @@ class GetBackCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -464,7 +442,7 @@ class GetBackCheckingAndPaymentScreen
               ),
               //
               Text(
-                services,
+                boxOrder.services,
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.blue500),
               ),
@@ -475,25 +453,27 @@ class GetBackCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               //
               Text(
-                "Services:",
+                "Price:",
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.black900),
               ),
               //
               Text(
-                priceEachItem.toString(),
+                '${boxOrder.price} VND',
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.redA200),
               ),
             ],
           ),
         ),
+
+        SizedBox(height: 10.v),
       ],
     );
   }
@@ -501,7 +481,7 @@ class GetBackCheckingAndPaymentScreen
   Widget _buildAddress() {
     return Container(
       width: SizeUtils.width,
-      height: 200.v,
+      height: 220.v,
       child: Column(
         children: [
           //
@@ -510,7 +490,7 @@ class GetBackCheckingAndPaymentScreen
           SizedBox(height: 10.v),
           //
           Container(
-            padding: EdgeInsets.only(left: 25.h),
+            padding: EdgeInsets.only(left: 10.h),
             child: Column(
               children: [
                 //
@@ -523,14 +503,7 @@ class GetBackCheckingAndPaymentScreen
                 ),
                 SizedBox(height: 10.v),
                 //
-                _buildAddressItem("Long Do", "0123456789",
-                    "Tay Mo, Nam Tu Liem, Ha Noi, Vietnam"),
-                // //
-                // _buildAddressItem("Long Do", "0123456789",
-                //     "Tay Mo, Nam Tu Liem, Ha Noi, Vietnam"),
-                // //
-                // _buildAddressItem("Long Do", "0123456789",
-                //     "Tay Mo, Nam Tu Liem, Ha Noi, Vietnam"),
+                _buildAddressItem(addressController.tuyenListAddress[0]),
               ],
             ),
           ),
@@ -539,13 +512,12 @@ class GetBackCheckingAndPaymentScreen
     );
   }
 
-  Widget _buildAddressItem(
-      String fullName, String phoneNumber, String address) {
+  Widget _buildAddressItem(Address ar) {
     return Column(
       children: [
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -557,7 +529,7 @@ class GetBackCheckingAndPaymentScreen
               ),
               //
               Text(
-                fullName,
+                ar.name,
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.black900),
               ),
@@ -568,7 +540,7 @@ class GetBackCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -580,7 +552,7 @@ class GetBackCheckingAndPaymentScreen
               ),
               //
               Text(
-                phoneNumber,
+                ar.phoneNumber,
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.black900),
               ),
@@ -591,7 +563,7 @@ class GetBackCheckingAndPaymentScreen
 
         //
         Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 40.h),
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -603,33 +575,74 @@ class GetBackCheckingAndPaymentScreen
               ),
               //
               Text(
-                address,
+                ar.address,
                 style: theme.textTheme.bodySmall!
                     .copyWith(color: appTheme.black900),
               ),
             ],
           ),
         ),
-        SizedBox(height: 30.v),
+        SizedBox(height: 10.v),
+        Padding(
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              //
+              Text(
+                "ToWard Code:",
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+              //
+              Text(
+                '${ar.towardCode}',
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 10.v),
+        Padding(
+          padding: EdgeInsets.only(left: 10.h, right: 10.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              //
+              Text(
+                "District ID:",
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+              //
+              Text(
+                '${ar.districtId}',
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: appTheme.black900),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
 
   /// Section Widget
   Widget _buildAgreethetermsofuse() {
-    return Obx(
-      () => CustomCheckboxButton(
-        text1: "Agree the",
-        color1: 0xff000000,
-        text2: "term of use",
-        color2: 0xff309cff,
-        text3: "*",
-        color3: 0xffff0003,
-        value: controller.agreethetermsofuse.value,
-        onChange: (value) {
-          controller.agreethetermsofuse.value = value;
-        },
-      ),
+    return CustomCheckboxButton(
+      text1: "Agree the",
+      color1: 0xff000000,
+      text2: "term of use",
+      color2: 0xff309cff,
+      text3: "*",
+      color3: 0xffff0003,
+      value: checkTerms,
+      onChange: (value) {
+        setState(() {
+          checkTerms = value;
+        });
+      },
     );
   }
 
@@ -682,9 +695,46 @@ class GetBackCheckingAndPaymentScreen
   }
 
   /// Navigates to the homeContainerScreen when the action is triggered.
-  onTapBtnArrowRight() {
-    Get.toNamed(
-      AppRoutes.homeContainerScreen,
-    );
+  onTapBtnArrowRight() async {
+    if (checkTerms)
+      await createRequestSendBox().then((value) {
+        // Get.toNamed(
+        //   AppRoutes.homeContainerScreen,
+        // );
+      });
+  }
+
+  Future<void> createRequestSendBox() async {
+    try {
+      var uri =
+          Uri.https('529d-118-70-128-84.ngrok-free.app', '/api/Order/GetBack');
+      final response = await http.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'ngrok-skip-browser-warning': '69420',
+        },
+        body: jsonEncode(<String, dynamic>
+        {
+          "name": addressController.tuyenListAddress[0].name ?? '',
+          "phoneNumber":
+              addressController.tuyenListAddress[0].phoneNumber ?? '',
+          "address": addressController.tuyenListAddress[0].address ?? '',
+          "date": "2024-04-07T05:04:47.315Z",
+          "toWardCode": '510102' ,//addressController.tuyenListAddress[0].towardCode ?? '', 
+          "toDistrictId": addressController.tuyenListAddress[0].districtId ?? 0,
+          "orderId": idList
+        }
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        print('Push thành công');
+      } else {
+        throw Exception('Failed to create album.');
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }
