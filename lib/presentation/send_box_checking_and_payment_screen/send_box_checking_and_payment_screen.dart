@@ -542,11 +542,11 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
                     .copyWith(color: appTheme.black900),
               ),
               //
-              Text(
-                '${ar.towardCode}',
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
+              // Text(
+              //   '${ar.towardCode}',
+              //   style: theme.textTheme.bodySmall!
+              //       .copyWith(color: appTheme.black900),
+              // ),
             ],
           ),
         ),
@@ -668,9 +668,7 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
           "date": "2024-04-07T05:04:47.315Z",
           "toWardCode": "12345",
           "toDistrictId": 1144,
-          "orderId": [
-            1
-          ]
+          "orderId": [1]
         }),
       );
 

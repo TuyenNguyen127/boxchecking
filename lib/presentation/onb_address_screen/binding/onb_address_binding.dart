@@ -8,6 +8,6 @@ import 'package:get/get.dart';
 class OnbAddressBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => OnbAddressController());
+    // Get.lazyPut(() => OnbAddressController());
   }
 }
