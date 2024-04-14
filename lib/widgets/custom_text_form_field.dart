@@ -25,7 +25,7 @@ class CustomTextFormField extends StatelessWidget {
     this.borderDecoration,
     this.fillColor,
     this.filled = true,
-    this.validator,
+    // this.validator,
     this.onChanged,
     this.initialValue,
   }) : super(
@@ -74,7 +74,7 @@ class CustomTextFormField extends StatelessWidget {
 
   final bool? filled;
 
-  final FormFieldValidator<String>? validator;
+  // final FormFieldValidator<String>? validator;
 
   void Function(String)? onChanged;
 
@@ -106,7 +106,7 @@ class CustomTextFormField extends StatelessWidget {
           keyboardType: textInputType,
           maxLines: maxLines ?? 1,
           decoration: decoration,
-          validator: validator,
+          // validator: validator,
           onChanged: onChanged,
           initialValue: initialValue,
         ),

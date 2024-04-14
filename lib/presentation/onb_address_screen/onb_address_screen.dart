@@ -1,4 +1,4 @@
-import 'package:lastapp/model/address.dart';
+import 'package:flutter/services.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/core/utils/validation_functions.dart';
 import 'package:lastapp/widgets/custom_text_form_field.dart';
@@ -8,18 +8,49 @@ import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'controller/onb_address_controller.dart';
+import 'package:lastapp/model/address.dart';
+
+import 'models/option_item.dart';
+import '../../widgets/custom_select_drop_list.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 // ignore_for_file: must_be_immutable
-class OnbAddressScreen extends StatelessWidget {
+class OnbAddressScreen extends StatefulWidget {
   OnbAddressScreen({Key? key}) : super(key: key);
 
-  OnbAddressController onbAddressController = Get.put(OnbAddressController());
+  @override
+  State<OnbAddressScreen> createState() => _OnbAddressScreenState();
+}
+
+class _OnbAddressScreenState extends State<OnbAddressScreen> {
+  TextEditingController controller = TextEditingController();
+
+  // OnbAddressController onbAddressController = Get.put(OnbAddressController());
 
   Completer<GoogleMapController> googleMapController = Completer();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   late bool isPickedDate = false;
+
+  TextEditingController phoneNumberController = TextEditingController();
+  bool isErrorPhoneNumber = false;
+
+  TextEditingController fullNameController = TextEditingController();
+  bool isErrorFullname = false;
+
+  TextEditingController wardCodeController = TextEditingController();
+  bool isErrorWardCode = false;
+
+  TextEditingController districtController = TextEditingController();
+  bool isErrorDistrict = false;
+
+  TextEditingController cityController = TextEditingController();
+  bool isErrorCity = false;
+
+  TextEditingController addressController = TextEditingController();
+  bool isErrorAddress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +60,8 @@ class OnbAddressScreen extends StatelessWidget {
         appBar: _buildAppBarPageAddress(),
         //
         body: Container(
-          decoration: AppDecoration.fillGray,
+          // decoration: AppDecoration.fillGray,
+          decoration: AppDecoration.fillPrimary,
           width: SizeUtils.width,
           height: SizeUtils.height,
           child: Stack(
@@ -193,30 +225,13 @@ class OnbAddressScreen extends StatelessWidget {
     return SingleChildScrollView(
       child: Container(
         decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              offset: const Offset(
-                0.5,
-                0.5,
-              ),
-              blurRadius: 1.0,
-              spreadRadius: 0.5,
-            ), //BoxShadow
-            BoxShadow(
-              color: Colors.white,
-              offset: const Offset(0.0, 0.0),
-              blurRadius: 0.0,
-              spreadRadius: 0.0,
-            ), //BoxShadow
-          ],
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(30),
             topLeft: Radius.circular(30),
           ),
           color: theme.colorScheme.primary,
         ),
-        height: SizeUtils.height,
+        // height: SizeUtils.height,
         width: SizeUtils.width,
         padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 30.v),
         child: Column(
@@ -225,22 +240,23 @@ class OnbAddressScreen extends StatelessWidget {
           children: [
             //
             _buildFullName(),
-            SizedBox(height: 18.v),
+            SizedBox(height: 20.v),
             //
             _buildPhoneNumber(),
-            SizedBox(height: 18.v),
             //
-            _buildTime(),
-            SizedBox(height: 18.v),
+            SizedBox(height: 9.v),
             //
-            _buildAddress(),
-            SizedBox(height: 21.v),
+            _city(),
+            SizedBox(height: 2.v),
             //
-            _buildCity1(),
-            SizedBox(height: 18.v),
+            _district(),
+            SizedBox(height: 2.v),
             //
-            _wrapBuildDistrictView(),
-            SizedBox(height: 20.v),
+            _wardCode(),
+            SizedBox(height: 15.v),
+            //
+            _buildAddressView(),
+            SizedBox(height: 10.v),
             //
             //_buildMaps(),
           ],
@@ -251,135 +267,274 @@ class OnbAddressScreen extends StatelessWidget {
 
   /// Section Widget
   Widget _buildPhoneNumber() {
-    return CustomTextFormField(
-      controller: onbAddressController.phoneNumberController,
-      hintText: "lbl_phone_number".tr,
-      textInputType: TextInputType.phone,
-      validator: (value) {
-        if (!isValidPhone(value)) {
-          return "err_msg_please_enter_valid_phone_number".tr;
-        }
-        return null;
-      },
-      onChanged: (value) => setPhoneNumberToTempData(value),
+    return TextFormField(
+      showCursor: true,
+      cursorColor: Colors.black,
+      controller: phoneNumberController,
+      style: TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.w400,
+      ),
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(left: 15.h),
+        hintText: 'Enter your phone number *',
+        hintStyle: TextStyle(
+          fontSize: 14,
+          color: Colors.grey,
+          fontWeight: FontWeight.w400,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.never,
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.grey,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.black,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.red,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      keyboardType: TextInputType.number,
     );
-  }
-
-  setPhoneNumberToTempData(value) {
-    value = value.toString();
-
-    if (value != '' || value != null) {
-      onbAddressController.addPhoneNumber(value);
-    }
   }
 
   /// Section Widget
   Widget _buildFullName() {
-    return CustomTextFormField(
-      controller: onbAddressController.fullNameController,
-      hintText: "lbl_full_name".tr,
-      validator: (value) {
-        if (!isText(value)) {
-          return "err_msg_please_enter_valid_text".tr;
-        }
-        return null;
-      },
-      onChanged: (value) => setFullnameToTempData(value),
-    );
-  }
-
-  setFullnameToTempData(value) {
-    value = value.toString();
-
-    if (value != '' || value != null) {
-      onbAddressController.addFullname(value);
-    }
-  }
-
-  /// Section Widget
-  Widget _buildAddress() {
-    return CustomTextFormField(
-      controller: onbAddressController.addressController,
-      hintText: "lbl_address2".tr,
-      suffix: Container(
-          margin: EdgeInsets.fromLTRB(30.h, 15.v, 24.h, 15.v),
-          child: CustomImageView(
-              imagePath: ImageConstant.imgLinkedinBlack900,
-              height: 20.v,
-              width: 14.h)),
-      suffixConstraints: BoxConstraints(maxHeight: 50.v),
-      contentPadding: EdgeInsets.only(left: 18.h, top: 15.v, bottom: 15.v),
-      onChanged: (value) => setAddressToTempData(value),
-    );
-  }
-
-  setAddressToTempData(value) {
-    value = value.toString();
-
-    if (value != '' || value != null) {
-      onbAddressController.addAddress(value);
-    }
-  }
-
-  /// Section Widget
-  Widget _buildTowardCodeView() {
-    return Expanded(
-      child: Padding(
-        padding: EdgeInsets.only(right: 5.h, bottom: 1.v),
-        child: CustomTextFormField(
-          controller: onbAddressController.towardCodeController,
-          hintText: 'Ward Code',
-          onChanged: (value) => setTowardCodeToTempData(value),
+    return TextFormField(
+      showCursor: true,
+      cursorColor: Colors.black,
+      controller: fullNameController,
+      style: TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.w400,
+      ),
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(left: 15.h),
+        hintText: 'Enter your full name *',
+        hintStyle: TextStyle(
+          fontSize: 14,
+          color: Colors.grey,
+          fontWeight: FontWeight.w400,
         ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.never,
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.grey,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.black,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.red,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      keyboardType: TextInputType.text,
+    );
+  }
+
+  /// Section Widget
+  Widget _buildAddressView() {
+    return TextFormField(
+      showCursor: true,
+      cursorColor: Colors.black,
+      controller: addressController,
+      style: TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.w400,
+      ),
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(left: 15.h),
+        hintText: 'Enter your address *',
+        hintStyle: TextStyle(
+          fontSize: 14,
+          color: Colors.grey,
+          fontWeight: FontWeight.w400,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.never,
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.grey,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.black,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.red,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      keyboardType: TextInputType.text,
+    );
+  }
+
+  // link tut call api async
+  // https://www.youtube.com/watch?v=PO24ydfdBv0
+
+  /// Section Widget
+  Widget _city() {
+    MyDropListModel cityListModel = MyDropListModel([
+      MyOptionItem(id: "1", name: "hai duong"),
+      MyOptionItem(id: "3", name: "vinh phuc"),
+    ]);
+
+    MyOptionItem cityOptionItemSelected =
+        MyOptionItem(name: "Select City/Province");
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 0),
+      child: Column(
+        children: <Widget>[
+          ///Simple DropDown
+          MySelectDropList(
+            paddingLeft: 0,
+            paddingRight: 0,
+            paddingTop: 0,
+            paddingBottom: 0,
+            containerPadding: EdgeInsets.only(left: 5.h),
+            borderColor: Colors.grey,
+            textSizeTitle: 14,
+            itemSelected: cityOptionItemSelected,
+            dropListModel: cityListModel,
+            showIcon: false,
+            showArrowIcon: true,
+            showBorder: true,
+            paddingDropItem:
+                const EdgeInsets.only(left: 20, top: 10, bottom: 10, right: 20),
+            suffixIcon: Icons.arrow_drop_down,
+            icon: const Icon(Icons.person, color: Colors.black),
+            onOptionSelected: (optionItem) {
+              cityOptionItemSelected = optionItem;
+              setState(() {
+                cityController.text = cityOptionItemSelected.name;
+              });
+            },
+          ),
+        ],
       ),
     );
   }
 
-  setTowardCodeToTempData(value) {
-    value = value.toString();
-
-    if (value != '' || value != null) {
-      onbAddressController.addTowardCode(value);
-    }
-  }
-
   /// Section Widget
-  Widget _buildCity1() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildTowardCodeView(),
-      ],
-    );
-  }
+  Widget _wardCode() {
+    MyDropListModel wardListModel = MyDropListModel([
+      MyOptionItem(id: "1", name: "hai duong"),
+      MyOptionItem(id: "3", name: "vinh phuc"),
+    ]);
 
-  /// Section Widget
-  Widget _buildDistrictView() {
-    return Expanded(
-      child: Padding(
-        padding: EdgeInsets.only(right: 5.h, bottom: 1.v),
-        child: CustomTextFormField(
-          controller: onbAddressController.districtIdController,
-          hintText: 'District Id',
-          onChanged: (value) => setDistrictIdToTempData(value),
-        ),
+    MyOptionItem wardOptionItemSelected = MyOptionItem(name: "Select Ward");
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 0),
+      child: Column(
+        children: <Widget>[
+          ///Simple DropDown
+          MySelectDropList(
+            paddingLeft: 0,
+            paddingRight: 0,
+            paddingTop: 0,
+            paddingBottom: 0,
+            containerPadding: EdgeInsets.only(left: 5.h),
+            borderColor: Colors.grey,
+            textSizeTitle: 14,
+            itemSelected: wardOptionItemSelected,
+            dropListModel: wardListModel,
+            showIcon: false,
+            showArrowIcon: true,
+            showBorder: true,
+            paddingDropItem:
+                const EdgeInsets.only(left: 20, top: 10, bottom: 10, right: 20),
+            suffixIcon: Icons.arrow_drop_down,
+            icon: const Icon(Icons.person, color: Colors.black),
+            onOptionSelected: (optionItem) {
+              wardOptionItemSelected = optionItem;
+              setState(() {
+                wardCodeController.text = wardOptionItemSelected.name;
+              });
+            },
+          ),
+        ],
       ),
     );
   }
 
-  setDistrictIdToTempData(value) {
-    value = value.toString();
-
-    if (value != '' || value != null) {
-      onbAddressController.addDistrictId(value);
-    }
-  }
-
   /// Section Widget
-  Widget _wrapBuildDistrictView() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [_buildDistrictView()]);
+  Widget _district() {
+    MyDropListModel districtListModel = MyDropListModel([
+      MyOptionItem(id: "1", name: "hai duong"),
+      MyOptionItem(id: "3", name: "vinh phuc"),
+    ]);
+
+    MyOptionItem districtOptionItemSelected =
+        MyOptionItem(name: "Select District");
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 0),
+      child: Column(
+        children: <Widget>[
+          ///Simple DropDown
+          MySelectDropList(
+            paddingLeft: 0,
+            paddingRight: 0,
+            paddingTop: 0,
+            paddingBottom: 0,
+            containerPadding: EdgeInsets.only(left: 5.h),
+            borderColor: Colors.grey,
+            textSizeTitle: 14,
+            itemSelected: districtOptionItemSelected,
+            dropListModel: districtListModel,
+            showIcon: false,
+            showArrowIcon: true,
+            showBorder: true,
+            paddingDropItem:
+                const EdgeInsets.only(left: 20, top: 10, bottom: 10, right: 20),
+            suffixIcon: Icons.arrow_drop_down,
+            icon: const Icon(Icons.person, color: Colors.black),
+            onOptionSelected: (optionItem) {
+              districtOptionItemSelected = optionItem;
+              setState(() {
+                districtController.text = districtOptionItemSelected.name;
+              });
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   /// Section Widget
@@ -436,75 +591,6 @@ class OnbAddressScreen extends StatelessWidget {
     );
   }
 
-  /// Section Widget
-  Widget _buildTime() {
-    return GestureDetector(
-      onTap: () {
-        onTapTime();
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 15.v),
-        decoration: AppDecoration.outlineGray500
-            .copyWith(borderRadius: BorderRadiusStyle.roundedBorder10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Obx(
-              () => Text(
-                // onbAddressController.onbAddressModelObj.value.date.value,
-                onbAddressController.dateController.value.toString(),
-                style: TextStyle(
-                  color: isPickedDate ? Colors.black : appTheme.black900,
-                ),
-              ),
-            ),
-            CustomImageView(
-              imagePath: ImageConstant.imgCalendarBlack900,
-              height: 15.v,
-              width: 13.h,
-              margin: EdgeInsets.only(top: 3.v, right: 6.h, bottom: 2.v),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> onTapTime() async {
-    DateTime? dateTime = await showDatePicker(
-      context: Get.context!,
-      initialDate:
-          // onbAddressController.onbAddressModelObj.value.selectedDate!.value,
-          onbAddressController.dateController.value,
-      firstDate: DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-      ),
-      lastDate: DateTime(
-        DateTime.now().year + 1,
-        DateTime.now().month,
-        DateTime.now().day,
-      ),
-    );
-
-    if (dateTime != null) {
-      isPickedDate = true;
-
-      onbAddressController.dateController.value = dateTime;
-
-      setDateToTempData(dateTime);
-    }
-  }
-
-  setDateToTempData(value) {
-    value = value.toString();
-
-    if (value != '' || value != null) {
-      onbAddressController.addDate(DateTime.parse(value));
-    }
-  }
-
   /// Navigates to the typeRequestScreen when the action is triggered.
   onTapVector() {
     Get.toNamed(
@@ -514,27 +600,117 @@ class OnbAddressScreen extends StatelessWidget {
   }
 
   onTapBtnArrowLeft(context) {
-
     //NavigationBar.pop();
 
-    saveDataForAddressPage();
+    // saveDataForAddressPage();
     //
     // Navigator.pop(context);
 
-    Get.toNamed(
-      AppRoutes.onbOderboxScreen,
-    );
+    // Get.toNamed(
+    //   AppRoutes.onbOderboxScreen,
+    // );
+
+    checkValidationData();
+  }
+
+  bool validateData() {
+    final phoneNumber = phoneNumberController.text;
+    final fullName = fullNameController.text;
+    final wardCode = wardCodeController.text;
+    final district = districtController.text;
+    final city = cityController.text;
+    final address = addressController.text;
+
+    if (fullName.isEmpty) {
+      print('loi fullName');
+      print(fullName);
+
+      setState(() {
+        isErrorFullname = true;
+      });
+    }
+
+    if (!(10 <= phoneNumber.toString().length &&
+            phoneNumber.toString().length <= 11) ||
+        phoneNumber.isEmpty) {
+      print('loi phoneNumber');
+      print(phoneNumber);
+
+      setState(() {
+        isErrorPhoneNumber = true;
+      });
+    }
+
+    if (wardCode.isEmpty || wardCode == null) {
+      print('trong ward');
+      print(wardCode);
+
+      setState(() {
+        isErrorWardCode = true;
+      });
+    }
+
+    if (district.isEmpty || district == null) {
+      print('trong district');
+      print(district);
+
+      setState(() {
+        isErrorDistrict = true;
+      });
+    }
+
+    if (city.isEmpty || city == null) {
+      print('trong city');
+      print(city);
+
+      setState(() {
+        isErrorCity = true;
+      });
+    }
+
+    if (address.isEmpty || address == null) {
+      print('trong address');
+      print(address);
+
+      setState(() {
+        isErrorAddress = true;
+      });
+    }
+
+    if (isErrorFullname ||
+        isErrorPhoneNumber ||
+        isErrorWardCode ||
+        isErrorDistrict ||
+        isErrorCity ||
+        isErrorAddress) {
+      return false;
+    } else {
+      print(fullName);
+      print(phoneNumber);
+      print(city);
+      print(district);
+      print(wardCode);
+      print(address);
+    }
+
+    return true;
+  }
+
+  void checkValidationData() {
+    if (validateData()) {
+      // cho sang trang tiep theo
+      print('qua duoc trang moi dooii dit con di cha may');
+    }
   }
 
   /// Navigates to the onbCheckingAndPaymentScreen when the action is triggered.
   onTapBtnArrowRight(context) {
-
     // Get.toNamed(
     //   AppRoutes.onbCheckingAndPaymentScreen,
     // );
 
     //
-    saveDataForAddressPage();
+    // saveDataForAddressPage();
     //
     // Navigator.pop(context);
     //
@@ -549,23 +725,23 @@ class OnbAddressScreen extends StatelessWidget {
     );
   }
 
-  saveDataForAddressPage() {
-    if (onbAddressController.fullNameStringList.length > 0 &&
-        onbAddressController.phoneNumberStringList.length > 0 &&
-        onbAddressController.addressStringList.length > 0 &&
-        onbAddressController.dateTimeList.length > 0 &&
-        onbAddressController.districtIdStringList.length > 0 &&
-        onbAddressController.towardCodeStringList.length > 0) {
-      Address newAddress = Address(
-        name: onbAddressController.fullNameStringList.last,
-        phoneNumber: onbAddressController.phoneNumberStringList.last,
-        date: onbAddressController.dateTimeList.last.toString(),
-        address: onbAddressController.addressStringList.last,
-        towardCode: onbAddressController.towardCodeStringList.toString(),
-        districtId: onbAddressController.districtIdStringList.last,
-      );
+  // saveDataForAddressPage() {
+  //   if (onbAddressController.fullNameStringList.length > 0 &&
+  //       onbAddressController.phoneNumberStringList.length > 0 &&
+  //       onbAddressController.addressStringList.length > 0 &&
+  //       onbAddressController.dateTimeList.length > 0 &&
+  //       onbAddressController.districtIdStringList.length > 0 &&
+  //       onbAddressController.towardCodeStringList.length > 0) {
+  //     Address newAddress = Address(
+  //       name: onbAddressController.fullNameStringList.last,
+  //       phoneNumber: onbAddressController.phoneNumberStringList.last,
+  //       date: onbAddressController.dateTimeList.last.toString(),
+  //       address: onbAddressController.addressStringList.last,
+  //       towardCode: onbAddressController.towardCodeStringList.toString(),
+  //       districtId: onbAddressController.districtIdStringList.last,
+  //     );
 
-      onbAddressController.addNewAddress(newAddress);
-    }
-  }
+  //     onbAddressController.addNewAddress(newAddress);
+  //   }
+  // }
 }
