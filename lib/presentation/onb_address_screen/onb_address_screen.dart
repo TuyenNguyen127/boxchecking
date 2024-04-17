@@ -1,19 +1,12 @@
-import 'package:flutter/services.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
-import 'package:lastapp/core/utils/validation_functions.dart';
-import 'package:lastapp/widgets/custom_text_form_field.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
-import 'controller/onb_address_controller.dart';
-import 'package:lastapp/model/address.dart';
 
 import 'models/option_item.dart';
 import '../../widgets/custom_select_drop_list.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 // ignore_for_file: must_be_immutable
 class OnbAddressScreen extends StatefulWidget {
@@ -52,6 +45,170 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
   TextEditingController addressController = TextEditingController();
   bool isErrorAddress = false;
 
+  MyDropListModel cityListModel = MyDropListModel([]);
+  MyDropListModel districtListModel = MyDropListModel([]);
+  MyDropListModel wardListModel = MyDropListModel([]);
+
+  MyOptionItem cityOptionItemSelected =
+      MyOptionItem(name: "Select City/Province", id: 0);
+  MyOptionItem wardOptionItemSelected =
+      MyOptionItem(name: "Select Ward", id: 0);
+  MyOptionItem districtOptionItemSelected =
+      MyOptionItem(name: "Select District", id: 0);
+  List<dynamic> data = [
+    // {
+    //   "name": '',
+    //   "id": 0,
+    //   "data": [
+    //     {
+    //       "name": '',
+    //       "id": 0,
+    //       "data": [
+    //         {
+    //           "name": '',
+    //           "id": 0,
+    //         }
+    //       ]
+    //     }
+    //   ]
+    // },
+    {
+      "name": "Ha Noi",
+      "id": 1442,
+      "data": [
+        // {
+        //   "name": '',
+        //   "id": 0,
+        //   "data": [
+        //     {
+        //       "name": '',
+        //       "id": 0,
+        //     }
+        //   ]
+        // },
+        {
+          "name": "Thanh Xuan 1",
+          "id": 122,
+          "data": [
+            {
+              "name": '',
+              "id": 0,
+            },
+            {"name": "Quan Nhan 1", "id": 1},
+            {"name": "Quan Nhan 2", "id": 2},
+            {"name": "Quan Nhan 3", "id": 3},
+          ]
+        },
+        {
+          "name": "Thanh Xuan 2",
+          "id": 123,
+          "data": [
+            {
+              "name": '',
+              "id": 0,
+            },
+            {"name": "Quan Nhan 6", "id": 4},
+            {"name": "Quan Nhan 4", "id": 5},
+            {"name": "Quan Nhan 5", "id": 6},
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vinh Phuc",
+      "id": 1022,
+      "data": [
+        {
+          "name": "Thanh Xuan 3",
+          "id": 1122,
+          "data": [
+            {"name": "Quan Nhan 5", "id": 1},
+            {"name": "Quan Nhan 6", "id": 2},
+            {"name": "Quan Nhan 7", "id": 3},
+          ]
+        },
+        {
+          "name": "Thanh Xuan 4",
+          "id": 1133,
+          "data": [
+            {"name": "Quan Nhan", "id": 1},
+            {"name": "Quan Nhan 1", "id": 2},
+            {"name": "Quan Nhan 2", "id": 3},
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hai Duong",
+      "id": 1033,
+      "data": [
+        {
+          "name": "Thanh Xuan 1",
+          "id": 112,
+          "data": [
+            {"name": "Quan Nhan", "id": 1},
+            {"name": "Quan Nhan 1", "id": 2},
+            {"name": "Quan Nhan 2", "id": 3},
+          ]
+        },
+        {
+          "name": "Thanh Xuan 2",
+          "id": 113,
+          "data": [
+            {"name": "Quan Nhan", "id": 1},
+            {"name": "Quan Nhan 1", "id": 2},
+            {"name": "Quan Nhan 2", "id": 3},
+          ]
+        }
+      ]
+    }
+  ];
+
+  @override
+  void initState() {
+    List<MyOptionItem> listItems = [];
+    for (var element in data) {
+      listItems.add(MyOptionItem(id: element['id'], name: element['name']));
+    }
+    cityListModel = MyDropListModel(listItems);
+    super.initState();
+  }
+
+  void selectDistrict(int id) {
+    setState(() {
+      List<MyOptionItem> listItems = [];
+      dynamic rs = findElementById(data, id);
+      dynamic result = findElementById(rs['data'], id);
+      for (var element in result['data']) {
+        listItems.add(MyOptionItem(id: element['id'], name: element['name']));
+      }
+      wardListModel = MyDropListModel(listItems);
+      wardOptionItemSelected = MyOptionItem(name: "Select Ward", id: 0);
+    });
+  }
+
+  void selectCity(int id) {
+    setState(() {
+      List<MyOptionItem> listItems = [];
+      dynamic result = findElementById(data, id);
+      for (var element in result['data']) {
+        listItems.add(MyOptionItem(id: element['id'], name: element['name']));
+      }
+      districtListModel = MyDropListModel(listItems);
+      districtOptionItemSelected = MyOptionItem(name: "Select District", id: 0);
+      wardOptionItemSelected = MyOptionItem(name: "Select Ward", id: 0);
+      wardListModel = MyDropListModel([]);
+    });
+  }
+
+  dynamic findElementById(List<dynamic> data, int id) {
+    for (var element in data)
+      if (element['id'] == id) {
+        return element;
+      }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -85,6 +242,84 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  String selectedCity = '';
+  String selectedDistrict = '';
+  String selectedWard = '';
+
+  Widget _buildAddressCode() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          child: DropdownButton<String>(
+            
+            value: selectedCity,
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedCity = newValue!;
+                selectedDistrict = ''; // Reset giá trị khi thay đổi city
+                selectedWard = ''; // Reset giá trị khi thay đổi city
+              });
+            },
+            items: data.map<DropdownMenuItem<String>>((dynamic item) {
+              return DropdownMenuItem<String>(
+                value: item["name"],
+                child: Text(item["name"]),
+              );
+            }).toList(),
+            hint: Text('Select a city'),
+          ),
+        ),
+        SizedBox(height: 20),
+        Center(
+          child: DropdownButton<String>(
+            value: selectedDistrict,
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedDistrict = newValue!;
+                selectedWard = ''; // Reset giá trị khi thay đổi district
+              });
+            },
+            items: (data.firstWhere(
+                        (element) => element['name'] == selectedCity)['data']
+                    as List<dynamic>)
+                .map<DropdownMenuItem<String>>((dynamic item) {
+              return DropdownMenuItem<String>(
+                value: item["name"],
+                child: Text(item["name"]),
+              );
+            }).toList(),
+            hint: Text('Select a district'),
+          ),
+        ),
+        SizedBox(height: 20),
+        Container(
+          child: DropdownButton<String>(
+            value: selectedWard,
+            onChanged: (String? newValue) {
+              setState(() {
+                selectedWard = newValue!;
+              });
+            },
+            items: ((data.firstWhere((element) =>
+                                element['name'] == selectedCity)['data']
+                            as List<dynamic>)
+                        .firstWhere((element) =>
+                            element['name'] == selectedDistrict)['data']
+                    as List<dynamic>)
+                .map<DropdownMenuItem<String>>((dynamic item) {
+              return DropdownMenuItem<String>(
+                value: item["name"],
+                child: Text(item["name"]),
+              );
+            }).toList(),
+            hint: Text('Select a ward'),
+          ),
+        ),
+      ],
     );
   }
 
@@ -258,7 +493,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
             _buildAddressView(),
             SizedBox(height: 10.v),
             //
-            //_buildMaps(),
+            _buildAddressCode()
           ],
         ),
       ),
@@ -408,14 +643,6 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
 
   /// Section Widget
   Widget _city() {
-    MyDropListModel cityListModel = MyDropListModel([
-      MyOptionItem(id: "1", name: "hai duong"),
-      MyOptionItem(id: "3", name: "vinh phuc"),
-    ]);
-
-    MyOptionItem cityOptionItemSelected =
-        MyOptionItem(name: "Select City/Province");
-
     return Padding(
       padding: const EdgeInsets.only(top: 0),
       child: Column(
@@ -440,6 +667,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
             icon: const Icon(Icons.person, color: Colors.black),
             onOptionSelected: (optionItem) {
               cityOptionItemSelected = optionItem;
+              selectCity(cityOptionItemSelected.id);
               setState(() {
                 cityController.text = cityOptionItemSelected.name;
               });
@@ -452,13 +680,6 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
 
   /// Section Widget
   Widget _wardCode() {
-    MyDropListModel wardListModel = MyDropListModel([
-      MyOptionItem(id: "1", name: "hai duong"),
-      MyOptionItem(id: "3", name: "vinh phuc"),
-    ]);
-
-    MyOptionItem wardOptionItemSelected = MyOptionItem(name: "Select Ward");
-
     return Padding(
       padding: const EdgeInsets.only(top: 0),
       child: Column(
@@ -495,14 +716,6 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
 
   /// Section Widget
   Widget _district() {
-    MyDropListModel districtListModel = MyDropListModel([
-      MyOptionItem(id: "1", name: "hai duong"),
-      MyOptionItem(id: "3", name: "vinh phuc"),
-    ]);
-
-    MyOptionItem districtOptionItemSelected =
-        MyOptionItem(name: "Select District");
-
     return Padding(
       padding: const EdgeInsets.only(top: 0),
       child: Column(
@@ -527,6 +740,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
             icon: const Icon(Icons.person, color: Colors.black),
             onOptionSelected: (optionItem) {
               districtOptionItemSelected = optionItem;
+              selectDistrict(districtOptionItemSelected.id);
               setState(() {
                 districtController.text = districtOptionItemSelected.name;
               });

@@ -6,19 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
 
 // ignore: must_be_immutable
-class RecivedItemWidget extends StatelessWidget {
-  RecivedItemWidget(
-    this.recivedItemModelObj, {
-    Key? key,
-  }) : super(
-          key: key,
-        );
+class RecivedItemWidget {
+  RecivedItemWidget(this.recivedItemModelObj);
 
   RecivedItemModel recivedItemModelObj;
 
-  var controller = Get.find<RecivedController>();
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: AppDecoration.fillPrimary,
@@ -32,11 +24,9 @@ class RecivedItemWidget extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.only(top: 3.v),
-                  child: Obx(
-                    () => Text(
-                      recivedItemModelObj.id!.value,
-                      style: CustomTextStyles.labelLargeBluegray300,
-                    ),
+                  child: Text(
+                    'ID',
+                    style: CustomTextStyles.labelLargeBluegray300,
                   ),
                 ),
                 Padding(
@@ -44,11 +34,9 @@ class RecivedItemWidget extends StatelessWidget {
                     left: 8.h,
                     top: 3.v,
                   ),
-                  child: Obx(
-                    () => Text(
-                      recivedItemModelObj.widget!.value,
-                      style: theme.textTheme.labelLarge,
-                    ),
+                  child: Text(
+                    '${recivedItemModelObj.id}',
+                    style: theme.textTheme.labelLarge,
                   ),
                 ),
                 CustomImageView(
@@ -70,11 +58,9 @@ class RecivedItemWidget extends StatelessWidget {
                   decoration: AppDecoration.fillAmber1001.copyWith(
                     borderRadius: BorderRadiusStyle.roundedBorder10,
                   ),
-                  child: Obx(
-                    () => Text(
-                      recivedItemModelObj.status!.value,
-                      style: CustomTextStyles.labelMediumBlack900,
-                    ),
+                  child: Text(
+                    '${recivedItemModelObj.status}',
+                    style: CustomTextStyles.labelMediumBlack900,
                   ),
                 ),
               ],
@@ -93,11 +79,9 @@ class RecivedItemWidget extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 11.h),
-                  child: Obx(
-                    () => Text(
-                      recivedItemModelObj.address!.value,
-                      style: CustomTextStyles.labelLargeTeal900,
-                    ),
+                  child: Text(
+                    '${recivedItemModelObj.address}',
+                    style: CustomTextStyles.labelLargeTeal900,
                   ),
                 ),
               ],
@@ -119,11 +103,9 @@ class RecivedItemWidget extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 9.h),
-                  child: Obx(
-                    () => Text(
-                      recivedItemModelObj.commodity!.value,
-                      style: CustomTextStyles.labelLargeGray80002,
-                    ),
+                  child: Text(
+                    '${recivedItemModelObj.dimension}',
+                    style: CustomTextStyles.labelLargeGray80002,
                   ),
                 ),
               ],
@@ -142,11 +124,9 @@ class RecivedItemWidget extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 8.h),
-                  child: Obx(
-                    () => Text(
-                      recivedItemModelObj.name!.value,
-                      style: theme.textTheme.labelLarge,
-                    ),
+                  child: Text(
+                    '${recivedItemModelObj.name}',
+                    style: theme.textTheme.labelLarge,
                   ),
                 ),
               ],
@@ -165,11 +145,9 @@ class RecivedItemWidget extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 8.h),
-                  child: Obx(
-                    () => Text(
-                      recivedItemModelObj.mobileNo!.value,
-                      style: CustomTextStyles.labelLargeBlueA700,
-                    ),
+                  child: Text(
+                    '${recivedItemModelObj.phoneNumber}',
+                    style: CustomTextStyles.labelLargeBlueA700,
                   ),
                 ),
               ],
@@ -188,11 +166,9 @@ class RecivedItemWidget extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 8.h),
-                  child: Obx(
-                    () => Text(
-                      recivedItemModelObj.nothing!.value,
-                      style: CustomTextStyles.labelLargeBluegray400,
-                    ),
+                  child: Text(
+                    '${recivedItemModelObj.note}',
+                    style: CustomTextStyles.labelLargeBluegray400,
                   ),
                 ),
               ],
@@ -202,73 +178,51 @@ class RecivedItemWidget extends StatelessWidget {
           Row(
             children: [
               GestureDetector(
-                onTap: ()=>{
-                  print('da an')
-                },
+                onTap: () => {print('da an')},
                 child: Container(
                   width: 143.h,
                   padding: EdgeInsets.symmetric(vertical: 9.v),
                   decoration: AppDecoration.outlineGray,
-                  child: 
-                  // Obx(
-                  //   () => 
-                    Center(
-                      child: Text(
-                        //recivedItemModelObj.callshipper!.value,
-                        'Call shipper',
-                        style: CustomTextStyles.labelLargePrimaryContainer,
-                      ),
+                  child: Center(
+                    child: Text(
+                      'Call shipper',
+                      style: CustomTextStyles.labelLargePrimaryContainer,
                     ),
-                  //),
+                  ),
                 ),
               ),
               Container(
                 width: 104.h,
                 padding: EdgeInsets.symmetric(vertical: 9.v),
                 decoration: AppDecoration.outlineGray,
-                child: 
-                // Obx(
-                //   () => 
-                  Center(
-                    child: Text(
-                      //recivedItemModelObj.editorder!.value,
-                      'Edit order',
-                      style: CustomTextStyles.labelLargePrimaryContainer,
-                    ),
+                child: Center(
+                  child: Text(
+                    'Edit order',
+                    style: CustomTextStyles.labelLargePrimaryContainer,
                   ),
-                // ),
+                ),
               ),
               Container(
                 width: 94.h,
                 padding: EdgeInsets.symmetric(vertical: 9.v),
                 decoration: AppDecoration.outlineGray,
-                child: 
-                // Obx(
-                //   () => 
-                  Center(
-                    child: Text(
-                      //recivedItemModelObj.revoke!.value,
-                      'Revoke',
-                      style: CustomTextStyles.labelLargePrimaryContainer,
-                    ),
+                child: Center(
+                  child: Text(
+                    'Revoke',
+                    style: CustomTextStyles.labelLargePrimaryContainer,
                   ),
-                //),
+                ),
               ),
               Container(
                 width: 43.h,
                 padding: EdgeInsets.symmetric(vertical: 9.v),
                 decoration: AppDecoration.outlineGray,
-                child: 
-                // Obx(
-                //   () => 
-                  Center(
-                    child: Text(
-                      //recivedItemModelObj.sixtySix!.value,
-                      '...',
-                      style: theme.textTheme.labelLarge,
-                    ),
+                child: Center(
+                  child: Text(
+                    '...',
+                    style: theme.textTheme.labelLarge,
                   ),
-                //),
+                ),
               ),
             ],
           ),

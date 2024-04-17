@@ -4,8 +4,8 @@ class MyDropListModel {
 }
 
 class MyOptionItem {
-  final String? id;
+  final int id;
   final String name;
 
-  MyOptionItem({this.id, required this.name});
+  MyOptionItem({required this.id, required this.name});
 }
