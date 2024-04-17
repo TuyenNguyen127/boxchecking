@@ -21,7 +21,7 @@ class OnbCheckingAndPaymentScreen
   static late bool isChecked = false;
 
   OnbOderboxController onb_controller = Get.put(OnbOderboxController());
-  OnbAddressController onbAddressController = Get.put(OnbAddressController());
+  // OnbAddressController onbAddressController = Get.put(OnbAddressController());
 
   @override
   Widget build(BuildContext context) {
@@ -484,8 +484,8 @@ class OnbCheckingAndPaymentScreen
     );
   }
 
-  Widget _buildAddressItem(
-      String fullName, String phoneNumber, String address, String date, String toWardCode, String districtId) {
+  Widget _buildAddressItem(String fullName, String phoneNumber, String address,
+      String date, String toWardCode, String districtId) {
     return Column(
       children: [
         //
@@ -654,14 +654,14 @@ class OnbCheckingAndPaymentScreen
             //     "Tay Mo, Nam Tu Liem, Ha Noi, Vietnam"),
 
             //
-            _buildAddressItem(
-              onbAddressController.tuyenListAddress[0].name.toString(),
-              onbAddressController.tuyenListAddress[0].phoneNumber.toString(),
-              onbAddressController.tuyenListAddress[0].address.toString(),
-              onbAddressController.tuyenListAddress[0].date.toString(),
-              onbAddressController.tuyenListAddress[0].towardCode.toString(),
-              onbAddressController.tuyenListAddress[0].districtId.toString(),
-            ),
+            // _buildAddressItem(
+            //   onbAddressController.tuyenListAddress[0].name.toString(),
+            //   onbAddressController.tuyenListAddress[0].phoneNumber.toString(),
+            //   onbAddressController.tuyenListAddress[0].address.toString(),
+            //   onbAddressController.tuyenListAddress[0].date.toString(),
+            //   onbAddressController.tuyenListAddress[0].towardCode.toString(),
+            //   onbAddressController.tuyenListAddress[0].districtId.toString(),
+            // ),
             //
           ],
         ),

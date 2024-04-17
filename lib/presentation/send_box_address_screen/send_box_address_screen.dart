@@ -18,7 +18,8 @@ import 'controller/send_box_address_controller.dart';
 class SendBoxAddressScreen extends StatelessWidget {
   SendBoxAddressScreen({Key? key}) : super(key: key);
 
-  SendBoxAddressController onbAddressController = Get.put(SendBoxAddressController());
+  SendBoxAddressController onbAddressController =
+      Get.put(SendBoxAddressController());
 
   Completer<GoogleMapController> googleMapController = Completer();
 
@@ -260,12 +261,12 @@ class SendBoxAddressScreen extends StatelessWidget {
       controller: onbAddressController.phoneNumberController,
       hintText: "lbl_phone_number".tr,
       textInputType: TextInputType.phone,
-      validator: (value) {
-        if (!isValidPhone(value)) {
-          return "err_msg_please_enter_valid_phone_number".tr;
-        }
-        return null;
-      },
+      // validator: (value) {
+      //   if (!isValidPhone(value)) {
+      //     return "err_msg_please_enter_valid_phone_number".tr;
+      //   }
+      //   return null;
+      // },
       onChanged: (value) => setPhoneNumberToTempData(value),
     );
   }
@@ -283,12 +284,12 @@ class SendBoxAddressScreen extends StatelessWidget {
     return CustomTextFormField(
       controller: onbAddressController.fullNameController,
       hintText: "lbl_full_name".tr,
-      validator: (value) {
-        if (!isText(value)) {
-          return "err_msg_please_enter_valid_text".tr;
-        }
-        return null;
-      },
+      // validator: (value) {
+      //   if (!isText(value)) {
+      //     return "err_msg_please_enter_valid_text".tr;
+      //   }
+      //   return null;
+      // },
       onChanged: (value) => setFullnameToTempData(value),
     );
   }
@@ -533,22 +534,22 @@ class SendBoxAddressScreen extends StatelessWidget {
   }
 
   saveDataForAddressPage() {
-    if (onbAddressController.fullNameStringList.length > 0 &&
-        onbAddressController.phoneNumberStringList.length > 0 &&
-        onbAddressController.addressStringList.length > 0 &&
-        onbAddressController.dateTimeList.length > 0 &&
-        onbAddressController.districtIdStringList.length > 0 &&
-        onbAddressController.towardCodeStringList.length > 0) {
-      Address newAddress = Address(
-        name: onbAddressController.fullNameStringList.last,
-        phoneNumber: onbAddressController.phoneNumberStringList.last,
-        date: onbAddressController.dateTimeList.last.toString(),
-        address: onbAddressController.addressStringList.last,
-        towardCode: onbAddressController.towardCodeStringList.toString(),
-        districtId: onbAddressController.districtIdStringList.last,
-      );
+    // if (onbAddressController.fullNameStringList.length > 0 &&
+    //     onbAddressController.phoneNumberStringList.length > 0 &&
+    //     onbAddressController.addressStringList.length > 0 &&
+    //     onbAddressController.dateTimeList.length > 0 &&
+    //     onbAddressController.districtIdStringList.length > 0 &&
+    //     onbAddressController.towardCodeStringList.length > 0) {
+    //   Address newAddress = Address(
+    //     name: onbAddressController.fullNameStringList.last,
+    //     phoneNumber: onbAddressController.phoneNumberStringList.last,
+    //     date: onbAddressController.dateTimeList.last.toString(),
+    //     address: onbAddressController.addressStringList.last,
+    //     towardCode: onbAddressController.towardCodeStringList.toString(),
+    //     districtId: onbAddressController.districtIdStringList.last,
+    //   );
 
-      onbAddressController.addNewAddress(newAddress);
-    }
+    //   onbAddressController.addNewAddress(newAddress);
+    // }
   }
 }

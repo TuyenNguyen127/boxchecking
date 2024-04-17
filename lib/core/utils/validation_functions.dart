@@ -5,6 +5,8 @@ bool isValidPhone(
 }) {
   bool isInputStringValid = false;
 
+  print('asds');
+
   if (!isRequired && (inputString == null ? true : inputString.isEmpty)) {
     isInputStringValid = true;
   }

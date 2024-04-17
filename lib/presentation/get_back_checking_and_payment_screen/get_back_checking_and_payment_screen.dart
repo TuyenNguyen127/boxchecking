@@ -595,11 +595,11 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
                     .copyWith(color: appTheme.black900),
               ),
               //
-              Text(
-                '${ar.towardCode}',
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
+              // Text(
+              //   '${ar.towardCode}',
+              //   style: theme.textTheme.bodySmall!
+              //       .copyWith(color: appTheme.black900),
+              // ),
             ],
           ),
         ),
@@ -714,18 +714,17 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
           'Content-Type': 'application/json; charset=UTF-8',
           'ngrok-skip-browser-warning': '69420',
         },
-        body: jsonEncode(<String, dynamic>
-        {
+        body: jsonEncode(<String, dynamic>{
           "name": addressController.tuyenListAddress[0].name ?? '',
           "phoneNumber":
               addressController.tuyenListAddress[0].phoneNumber ?? '',
           "address": addressController.tuyenListAddress[0].address ?? '',
           "date": "2024-04-07T05:04:47.315Z",
-          "toWardCode": '510102' ,//addressController.tuyenListAddress[0].towardCode ?? '', 
+          "toWardCode":
+              '510102', //addressController.tuyenListAddress[0].towardCode ?? '',
           "toDistrictId": addressController.tuyenListAddress[0].districtId ?? 0,
           "orderId": idList
-        }
-        ),
+        }),
       );
 
       if (response.statusCode == 200) {

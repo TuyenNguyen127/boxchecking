@@ -1,34 +1,33 @@
 class Address {
-  late String name;
   late String phoneNumber;
-  late String? date;
-  late String address;
-  late String? towardCode;
-  // late int? districtId;
-  late String? districtId;
+  late String name;
+  late int? wardCodeId; // xa, phuong
+  late int? districtId; // quan, huyen
+  late int? cityId; // tinh, tpho
+  late String address; // so nha
   Address({
-    required this.name,
     required this.phoneNumber,
-    this.date,
+    required this.name,
+    required this.wardCodeId,
+    required this.districtId,
+    required this.cityId,
     required this.address,
-    this.towardCode,
-    this.districtId,
   });
 
   Map<String, dynamic> toJson() => {
-        'name': name,
         'phoneNumber': phoneNumber,
+        'name': name,
+        'wardCode': wardCodeId,
+        'districtId': districtId,
+        'cityId': cityId,
         'address': address,
-        'date': date,
-        'towardCode': towardCode,
-        'districtId': districtId
       };
   factory Address.fromJson(Map<String, dynamic> json) => Address(
-        name: json["name"] ?? '',
         phoneNumber: json["phoneNumber"] ?? '',
-        address: json["address"] ?? '',
-        date: json["date"] ?? '',
-        towardCode: json["towardCode"] ?? '',
+        name: json["name"] ?? '',
+        wardCodeId: json["wardCode"] ?? '',
         districtId: json["districtId"] ?? '',
+        cityId: json["cityId"] ?? '',
+        address: json["address"] ?? '',
       );
 }
