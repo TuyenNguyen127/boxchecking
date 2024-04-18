@@ -41,6 +41,9 @@ class CustomTextStyles {
   static get labelLargeBluegray400 => theme.textTheme.labelLarge!.copyWith(
         color: appTheme.blueGray400,
       );
+  static get labelLargeGray0xFFA2AEBC => theme.textTheme.labelLarge!.copyWith(
+        color: appTheme.gray0xFFA2AEBC,
+      );
   static get labelLargeBold => theme.textTheme.labelLarge!.copyWith(
         fontSize: 13.fSize,
         fontWeight: FontWeight.w700,

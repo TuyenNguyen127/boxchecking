@@ -1,4 +1,3 @@
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:lastapp/widgets/app_bar/appbar_title.dart';
 import 'package:lastapp/widgets/custom_drop_down.dart';
@@ -6,152 +5,191 @@ import 'widgets/row1_item_widget.dart';
 import 'models/row1_item_model.dart';
 import 'widgets/seventytwo_item_widget.dart';
 import 'models/seventytwo_item_model.dart';
+import 'controller/operate_controller.dart';
+
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
-import 'controller/operate_controller.dart';
 import 'models/operate_model.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-class OperatePage extends StatelessWidget {
+class OperatePage extends StatefulWidget {
   OperatePage({Key? key})
       : super(
           key: key,
         );
 
-  OperateController controller = Get.put(OperateController(OperateModel().obs));
+  @override
+  State<OperatePage> createState() => _OperatePageState();
+}
+
+class _OperatePageState extends State<OperatePage> {
+  List<OperateItemModel> listOperates = <OperateItemModel>[];
+  List<OperateItemModel> displayListOperates = <OperateItemModel>[];
+
+  Map isTouch = {
+    'all': true,
+    'saving': false,
+    'received': false,
+    'transporting': false,
+  };
+
+  @override
+  void initState() {
+    add();
+    for (var element in listOperates) {
+      displayListOperates.add(element);
+    }
+
+    super.initState();
+  }
+
+  void filter(String status) {
+    setState(() {
+      displayListOperates.clear();
+      for (var element in listOperates) {
+        if (element.status.toLowerCase() == status.toLowerCase()) {
+          displayListOperates.add(element);
+        }
+      }
+      if (status.toLowerCase() == 'all')
+        for (var element in listOperates) {
+          displayListOperates.add(element);
+        }
+      isTouch.updateAll((key, value) => value = false);
+      isTouch.update((status), (value) => value = true);
+    });
+  }
+
+  void add() {
+    listOperates.addAll({
+      OperateItemModel(
+        id: 33589549623491,
+        status: 'Saving',
+        dimension: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
+        service: "Hang On, Washing",
+        model: "Box | 50x50x100 | 20kg",
+        pricePerDay: "10000",
+        startAt: "Start at: 20/12/2023",
+      ),
+      OperateItemModel(
+        id: 33589549623492,
+        status: 'received',
+        dimension: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
+        service: "Hang On, Washing",
+        model: "Box | 50x50x100 | 20kg",
+        pricePerDay: "10000",
+        startAt: "Start at: 20/12/2023",
+      ),
+      OperateItemModel(
+        id: 33589549623493,
+        status: 'transporting',
+        dimension: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
+        service: "Hang On, Washing",
+        model: "Box | 50x50x100 | 20kg",
+        pricePerDay: "10000",
+        startAt: "Start at: 20/12/2023",
+      ),
+      OperateItemModel(
+        id: 33589549623491,
+        status: 'Saving',
+        dimension: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
+        service: "Hang On, Washing",
+        model: "Box | 50x50x100 | 20kg",
+        pricePerDay: "10000",
+        startAt: "Start at: 20/12/2023",
+      ),
+      OperateItemModel(
+        id: 33589549623492,
+        status: 'received',
+        dimension: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
+        service: "Hang On, Washing",
+        model: "Box | 50x50x100 | 20kg",
+        pricePerDay: "10000",
+        startAt: "Start at: 20/12/2023",
+      ),
+      OperateItemModel(
+        id: 33589549623493,
+        status: 'transporting',
+        dimension: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
+        service: "Hang On, Washing",
+        model: "Box | 50x50x100 | 20kg",
+        pricePerDay: "10000",
+        startAt: "Start at: 20/12/2023",
+      ),
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: theme.colorScheme.primary,
-        // backgroundColor: Colors.transparent,
-        appBar: _buildAppBarOperatePage(),
+    // done (old version - not fixed, not sticky)
+    // return SafeArea(
+    //   child: Scaffold(
+    //     // backgroundColor: theme.colorScheme.primary,
+    //     backgroundColor: Colors.transparent,
+    //     appBar: _buildAppBarOperatePage(),
+    //     body: SizedBox(
+    //       width: SizeUtils.width,
+    //       //
+    //       child: Column(
+    //         children: [
+    //           //
+    //           _orderTitleView(),
+    //           //
+    //           // Expanded(
+    //           //   child: SingleChildScrollView(
+    //           //     child:
+    //           // _buildTop(),
+    //           _buildSectionInfoAboutOrders(),
+    //           SizedBox(height: 5.v),
+    //           //   ),
+    //           // ),
+    //           //
+    //           _buildStatusTab(),
+    //           //
+    //           Expanded(
+    //             child: SingleChildScrollView(
+    //               child: _buildListInfo(),
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // );
+
+    // new version with sticky tabs and hiding orders' info section
+    return Scaffold(
+      appBar: _buildAppBarOperatePage(),
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  //
+                  _orderTitleView(),
+                  //
+                  _buildSectionInfoAboutOrders(),
+                ],
+              ),
+            ),
+          ];
+        },
         body: SizedBox(
           width: SizeUtils.width,
-
+          //
           child: Column(
             children: [
               //
-              SizedBox(height: 5.v),
-              Container(
-                color: theme.colorScheme.primary,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.h,
-                  vertical: 11.v,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 4.v),
-                      child: Text(
-                        "lbl_orders".tr,
-                        style: CustomTextStyles.titleLargeBlack900,
-                      ),
-                    ),
-                    CustomDropDown(
-                      width: 100.h,
-                      hintText: "lbl_14_days_ago".tr,
-                      items: controller
-                          .operateModelObj.value.dropdownItemList!.value,
-                      onChanged: (value) {
-                        controller.onSelected(value);
-                      },
-                    ),
-                  ],
-                  // ),
-                ),
-              ),
-              // Expanded(
-              //   child: SingleChildScrollView(
-              //     child:
-              // _buildTop(),
-              _buildSectionInfo(),
-              //   ),
-              // ),
-              //
-              _buildStatus(),
+              _buildStatusTab(),
               //
               Expanded(
                 child: SingleChildScrollView(
-                  child: _buildSeventyTwo(),
+                  child: _buildListInfo(),
                 ),
               ),
             ],
           ),
-
-          // child: NestedScrollView(
-          //   floatHeaderSlivers: true,
-          //   headerSliverBuilder:
-          //       (BuildContext context1, bool innerBoxIsScrolled) {
-          //     return <Widget>[
-          //       // SliverAppBar(
-          //       SliverOverlapAbsorber(
-          //         handle:
-          //             NestedScrollView.sliverOverlapAbsorberHandleFor(context1),
-          //         sliver: SliverAppBar(
-          //           automaticallyImplyLeading: false,
-          //           title: Column(
-          //             children: [
-          //               //
-          //               // SizedBox(height: 00.v),
-          //               Container(
-          //                 color: theme.colorScheme.primary,
-          //                 padding: EdgeInsets.symmetric(
-          //                   horizontal: 16.h,
-          //                   vertical: 11.v,
-          //                 ),
-          //                 child: Row(
-          //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //                   children: [
-          //                     Padding(
-          //                       padding: EdgeInsets.symmetric(vertical: 4.v),
-          //                       child: Text(
-          //                         "lbl_orders".tr,
-          //                         style: CustomTextStyles.titleLargeBlack900,
-          //                       ),
-          //                     ),
-          //                     CustomDropDown(
-          //                       width: 100.h,
-          //                       hintText: "lbl_14_days_ago".tr,
-          //                       items: controller.operateModelObj.value
-          //                           .dropdownItemList!.value,
-          //                       onChanged: (value) {
-          //                         controller.onSelected(value);
-          //                       },
-          //                     ),
-          //                   ],
-          //                 ),
-          //               ),
-          //               //
-          //               _buildSectionInfo(),
-          //             ],
-          //           ),
-          //           pinned: true,
-          //           toolbarHeight: 0,
-          //           // collapsedHeight: 200,
-          //           // expandedHeight: 300,
-          //           forceElevated: innerBoxIsScrolled,
-          //           bottom: PreferredSize(
-          //             preferredSize: Size.fromHeight(300),
-          //             child: _buildStatus(),
-          //           ),
-          //         ),
-          //       ),
-          //     ];
-          //   },
-          //   body: Column(
-          //     children: [
-          //       Expanded(
-          //         child: SingleChildScrollView(
-          //           child: _buildSeventyTwo(),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-
-          //
         ),
       ),
     );
@@ -176,58 +214,208 @@ class OperatePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionInfo() {
+  Widget _orderTitleView() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          height: 50.v,
+          color: theme.colorScheme.primary,
+          padding: EdgeInsets.symmetric(
+            horizontal: 16.h,
+            vertical: 10.v,
+          ),
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 4.v),
+                child: Text(
+                  "lbl_orders".tr,
+                  style: CustomTextStyles.titleLargeBlack900,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Common widget
+  Widget iconInsideFrame({
+    required String colorBackgr,
+    required String icon,
+    required double sizeBackgr,
+    required double sizeIconBackgr,
+  }) {
+    return SizedBox(
+      height: 50.v,
+      width: 50.h,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          CustomImageView(
+            imagePath: colorBackgr,
+            height: sizeBackgr,
+            width: sizeBackgr,
+            alignment: Alignment.center,
+          ),
+          CustomImageView(
+            imagePath: icon,
+            height: sizeIconBackgr,
+            width: sizeIconBackgr,
+            alignment: Alignment.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget gridItem(
+    crossAxisCellCount,
+    mainAxisCellCount,
+    colorBackgr,
+    colorIconBackgr,
+    sizeBackgr,
+    icon,
+    sizeIconBackgr,
+    text,
+    textColor,
+    data,
+    dataColor,
+  ) {
+    return StaggeredGridTile.count(
+      crossAxisCellCount: crossAxisCellCount,
+      mainAxisCellCount: mainAxisCellCount,
+      child: Container(
+        padding: EdgeInsets.only(left: 10.h, right: 10.h),
+        decoration: BoxDecoration(
+          color: colorBackgr,
+          borderRadius: BorderRadiusStyle.roundedBorder10,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            //
+            Container(
+              child: iconInsideFrame(
+                colorBackgr: colorIconBackgr,
+                icon: icon,
+                sizeBackgr: sizeBackgr,
+                sizeIconBackgr: sizeIconBackgr,
+              ),
+            ),
+            //
+            SizedBox(width: 5.h),
+            //
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                //
+                Text(
+                  text.toString()[0].toUpperCase() +
+                      text.toString().substring(1) +
+                      ":",
+                  style: TextStyle(
+                    color: textColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
+                //
+                SizedBox(height: 5.h),
+                //
+                Text(
+                  data.toString(),
+                  style: TextStyle(
+                    color: dataColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionInfoAboutOrders() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.v),
+      color: theme.colorScheme.primary,
+      padding: EdgeInsets.only(left: 20.v, right: 20.v, bottom: 20.v),
       child: StaggeredGrid.count(
         crossAxisCount: 4,
         mainAxisSpacing: 20.v,
         crossAxisSpacing: 20.v,
         children: [
-          StaggeredGridTile.count(
-            crossAxisCellCount: 2,
-            mainAxisCellCount: 2,
-            child: Container(
-              decoration: AppDecoration.fillBlue10002.copyWith(
-                borderRadius: BorderRadiusStyle.roundedBorder10,
-              ),
-            ),
+          gridItem(
+            2,
+            1.5,
+            appTheme.lavender,
+            ImageConstant.imgPlay,
+            50.h,
+            ImageConstant.imgTelevision,
+            20.h,
+            'Total orders',
+            appTheme.gray80001,
+            100,
+            appTheme.black900,
           ),
-          StaggeredGridTile.count(
-            crossAxisCellCount: 2,
-            mainAxisCellCount: 1,
-            child: Container(
-              decoration: AppDecoration.fillBlue10002.copyWith(
-                borderRadius: BorderRadiusStyle.roundedBorder10,
-              ),
-            ),
+          gridItem(
+            2,
+            0.75,
+            appTheme.blue10002,
+            ImageConstant.imgCloseLightBlueA70001,
+            50.h,
+            ImageConstant.imgReply,
+            16.h,
+            'Saving',
+            appTheme.gray80001,
+            60,
+            appTheme.black900,
           ),
-          StaggeredGridTile.count(
-            crossAxisCellCount: 2,
-            mainAxisCellCount: 1,
-            child: Container(
-              decoration: AppDecoration.fillGreenB.copyWith(
-                borderRadius: BorderRadiusStyle.roundedBorder10,
-              ),
-            ),
+          gridItem(
+            2,
+            0.75,
+            appTheme.green100B2,
+            ImageConstant.imgPlayGreenA700,
+            50.h,
+            ImageConstant.imgCheckmark,
+            20.h,
+            'Received',
+            appTheme.gray80001,
+            30,
+            appTheme.black900,
           ),
-          StaggeredGridTile.count(
-            crossAxisCellCount: 2,
-            mainAxisCellCount: 1,
-            child: Container(
-              decoration: AppDecoration.fillDeepOrangeB.copyWith(
-                borderRadius: BorderRadiusStyle.roundedBorder10,
-              ),
-            ),
+          gridItem(
+            2,
+            0.75,
+            appTheme.deepOrange50,
+            ImageConstant.imgPlayOrangeA70001,
+            50.h,
+            ImageConstant.imgAirplane,
+            18.h,
+            'Transporting',
+            appTheme.gray80001,
+            3,
+            appTheme.black900,
           ),
-          StaggeredGridTile.count(
-            crossAxisCellCount: 2,
-            mainAxisCellCount: 1,
-            child: Container(
-              decoration: AppDecoration.fillDeeporange50.copyWith(
-                borderRadius: BorderRadiusStyle.roundedBorder10,
-              ),
-            ),
+          gridItem(
+            2,
+            0.75,
+            appTheme.deepOrange100B2,
+            ImageConstant.imgEllipse15,
+            50.h,
+            ImageConstant.imgThumbsUpPrimary,
+            20.h,
+            'Rejected',
+            appTheme.gray80001,
+            7,
+            appTheme.black900,
           ),
         ],
       ),
@@ -235,461 +423,446 @@ class OperatePage extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildTop() {
+  Widget _buildStatusTab() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.h),
-      decoration: AppDecoration.fillPrimary,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          //
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 185.h,
-                padding: EdgeInsets.symmetric(vertical: 23.v),
-                decoration: AppDecoration.fillBlue.copyWith(
-                  borderRadius: BorderRadiusStyle.roundedBorder10,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 46.v,
-                      width: 45.h,
-                      margin: EdgeInsets.only(
-                        top: 11.v,
-                        bottom: 48.v,
-                      ),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          CustomImageView(
-                            imagePath: ImageConstant.imgPlay,
-                            height: 46.v,
-                            width: 45.h,
-                            alignment: Alignment.center,
-                          ),
-                          CustomImageView(
-                            imagePath: ImageConstant.imgTelevision,
-                            height: 27.v,
-                            width: 24.h,
-                            alignment: Alignment.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 40.v),
-                      child: Column(
-                        children: [
-                          Text(
-                            "lbl_total_orders".tr,
-                            style: CustomTextStyles.titleMediumGray80001_1,
-                          ),
-                          SizedBox(height: 16.v),
-                          Text(
-                            "lbl_100".tr,
-                            style: theme.textTheme.headlineSmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                children: [
-                  Container(
-                    width: 160.h,
-                    padding: EdgeInsets.symmetric(vertical: 7.v),
-                    decoration: AppDecoration.fillBlue10002.copyWith(
-                      borderRadius: BorderRadiusStyle.roundedBorder10,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 4.v),
-                          child: _buildSeventyThree(
-                            image: ImageConstant.imgCloseLightBlueA70001,
-                            thumbsUp: ImageConstant.imgReply,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 3.v),
-                          child: Column(
-                            children: [
-                              Text(
-                                "lbl_saving".tr,
-                                style: CustomTextStyles.titleMediumGray80001_1,
-                              ),
-                              SizedBox(height: 6.v),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding: EdgeInsets.only(right: 22.h),
-                                  child: Text(
-                                    "lbl_60".tr,
-                                    style: CustomTextStyles
-                                        .titleLargeBlack900SemiBold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 13.v),
-                  Container(
-                    width: 160.h,
-                    padding: EdgeInsets.symmetric(vertical: 7.v),
-                    decoration: AppDecoration.fillGreenB.copyWith(
-                      borderRadius: BorderRadiusStyle.roundedBorder10,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 4.v),
-                          child: _buildSeventyFour(
-                            play: ImageConstant.imgPlayGreenA700,
-                            airplane: ImageConstant.imgCheckmark,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 3.v),
-                          child: Column(
-                            children: [
-                              Text(
-                                "lbl_received2".tr,
-                                style: CustomTextStyles.titleMediumGray80001_1,
-                              ),
-                              SizedBox(height: 6.v),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding: EdgeInsets.only(right: 22.h),
-                                  child: Text(
-                                    "lbl_30".tr,
-                                    style: CustomTextStyles
-                                        .titleLargeBlack900SemiBold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
+      padding: EdgeInsets.only(top: 10.v, bottom: 10.v),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary,
+        border: Border(
+          top: BorderSide(
+            color: const Color.fromARGB(19, 0, 0, 0),
+            width: 1.5,
           ),
-          SizedBox(height: 15.v),
-
-          //
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 185.h,
-                padding: EdgeInsets.symmetric(vertical: 6.v),
-                decoration: AppDecoration.fillDeepOrangeB.copyWith(
-                  borderRadius: BorderRadiusStyle.roundedBorder10,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5.v),
-                      child: _buildSeventyFour(
-                        play: ImageConstant.imgPlayOrangeA70001,
-                        airplane: ImageConstant.imgAirplane,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 5.v),
-                      child: Column(
-                        children: [
-                          Text(
-                            "lbl_transporting".tr,
-                            style: CustomTextStyles.titleMediumGray80001_1,
-                          ),
-                          SizedBox(height: 5.v),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 42.h),
-                              child: Text(
-                                "lbl_3".tr,
-                                style:
-                                    CustomTextStyles.titleLargeBlack900SemiBold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                width: 160.h,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 18.h,
-                  vertical: 6.v,
-                ),
-                decoration: AppDecoration.fillDeeporange50.copyWith(
-                  borderRadius: BorderRadiusStyle.roundedBorder10,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5.v),
-                      child: _buildSeventyThree(
-                        image: ImageConstant.imgEllipse15,
-                        thumbsUp: ImageConstant.imgThumbsUpPrimary,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 11.h,
-                        top: 2.v,
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            "lbl_rejected".tr,
-                            style: CustomTextStyles.titleMediumGray80001_1,
-                          ),
-                          SizedBox(height: 8.v),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 28.h),
-                              child: Text(
-                                "lbl_7".tr,
-                                style:
-                                    CustomTextStyles.titleLargeBlack900SemiBold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          bottom: BorderSide(
+            color: Colors.black12,
+            width: 1.5,
           ),
-          SizedBox(height: 10.v),
-
-          // group request buttons
-          // SizedBox(
-          //   height: 65.v,
-          //   child: Obx(
-          //     () => ListView.separated(
-          //       padding: EdgeInsets.symmetric(horizontal: 5.h),
-          //       scrollDirection: Axis.horizontal,
-          //       separatorBuilder: (
-          //         context,
-          //         index,
-          //       ) {
-          //         return SizedBox(
-          //           width: 11.h,
-          //         );
-          //       },
-          //       itemCount: controller
-          //           .operateModelObj.value.row1ItemList.value.length,
-          //       itemBuilder: (context, index) {
-          //         Row1ItemModel model = controller
-          //             .operateModelObj.value.row1ItemList.value[index];
-          //         return Row1ItemWidget(
-          //           model,
-          //         );
-          //       },
-          //     ),
-          //   ),
-          // ),
-          // SizedBox(height: 15.v),
-        ],
-      ),
-    );
-  }
-
-  /// Section Widget
-  Widget _buildSeventyTwo() {
-    return Container(
-      margin: EdgeInsets.only(right: 1.h),
-      decoration: AppDecoration.fillPrimary,
-      child: Obx(
-        () => ListView.separated(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          separatorBuilder: (
-            context,
-            index,
-          ) {
-            return SizedBox(height: 5.v);
-          },
-          itemCount:
-              controller.operateModelObj.value.seventytwoItemList.value.length,
-          itemBuilder: (context, index) {
-            SeventytwoItemModel model = controller
-                .operateModelObj.value.seventytwoItemList.value[index];
-            return SeventytwoItemWidget(
-              model,
-            );
-          },
         ),
       ),
-      // ),
-    );
-  }
-
-  /// Section Widget
-  Widget _buildStatus() {
-    return Container(
-      decoration: BoxDecoration(color: theme.colorScheme.primary),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
-            padding: EdgeInsets.only(top: 8.v, bottom: 8.v),
-            child: CustomDropDown(
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 6.h,
-                vertical: 4.v,
-              ),
-              width: 95.h,
-              hintText: "lbl_14_days_ago".tr,
-              items: controller.operateModelObj.value.dropdownItemList.value,
-              onChanged: (value) {
-                controller.onSelected(value);
+          GestureDetector(
+              onTap: () {
+                filter('all');
               },
-            ),
-          ),
-          Container(
-            width: 40.h,
-            margin: EdgeInsets.only(left: 5.h),
-            padding: EdgeInsets.symmetric(vertical: 8.v),
-            decoration: AppDecoration.outlineBlueGray.copyWith(
-              borderRadius: BorderRadiusStyle.circleBorder15,
-            ),
-            child: Center(
-              child: Text(
-                "lbl_all".tr,
-                style: CustomTextStyles.bodySmallPrimary,
+              child: Container(
+                width: 57.h,
+                margin: EdgeInsets.only(left: 5.h),
+                padding: EdgeInsets.symmetric(vertical: 8.v),
+                decoration: isTouch['all']
+                    ? AppDecoration.outlineBlueGray.copyWith(
+                        borderRadius: BorderRadiusStyle.circleBorder15,
+                      )
+                    : AppDecoration.outlineBluegray50.copyWith(
+                        borderRadius: BorderRadiusStyle.circleBorder15,
+                      ),
+                child: Center(
+                  child: Text(
+                    "lbl_all".tr,
+                    style: isTouch['all']
+                        ? CustomTextStyles.bodySmallPrimary
+                        : theme.textTheme.bodySmall,
+                  ),
+                ),
+              )),
+          GestureDetector(
+            onTap: () {
+              filter('saving');
+            },
+            child: Container(
+              width: 61.h,
+              margin: EdgeInsets.only(left: 5.h),
+              padding: EdgeInsets.symmetric(vertical: 8.v),
+              decoration: isTouch['saving']
+                  ? AppDecoration.outlineBlueGray.copyWith(
+                      borderRadius: BorderRadiusStyle.circleBorder15,
+                    )
+                  : AppDecoration.outlineBluegray50.copyWith(
+                      borderRadius: BorderRadiusStyle.circleBorder15,
+                    ),
+              child: Center(
+                child: Text(
+                  "Saving",
+                  style: isTouch['saving']
+                      ? CustomTextStyles.bodySmallPrimary
+                      : theme.textTheme.bodySmall,
+                ),
               ),
             ),
           ),
-          Container(
-            width: 56.h,
-            margin: EdgeInsets.only(left: 5.h),
-            padding: EdgeInsets.symmetric(vertical: 8.v),
-            decoration: AppDecoration.outlineBluegray50.copyWith(
-              borderRadius: BorderRadiusStyle.circleBorder15,
-            ),
-            child: Center(
-              child: Text(
-                "lbl_saving2".tr,
-                style: theme.textTheme.bodySmall,
-              ),
-            ),
-          ),
-          Container(
-            width: 70.h,
-            margin: EdgeInsets.only(left: 5.h),
-            padding: EdgeInsets.symmetric(vertical: 8.v),
-            decoration: AppDecoration.outlineBluegray50.copyWith(
-              borderRadius: BorderRadiusStyle.circleBorder15,
-            ),
-            child: Center(
-              child: Text(
-                "lbl_received".tr,
-                style: theme.textTheme.bodySmall,
-              ),
-            ),
-          ),
-          Container(
-            width: 86.h,
-            margin: EdgeInsets.only(left: 5.h),
-            padding: EdgeInsets.symmetric(vertical: 8.v),
-            decoration: AppDecoration.outlineBluegray50.copyWith(
-              borderRadius: BorderRadiusStyle.circleBorder15,
-            ),
-            child: Center(
-              child: Text(
-                "lbl_transporting2".tr,
-                style: theme.textTheme.bodySmall,
-              ),
-            ),
-          ),
+          GestureDetector(
+              onTap: () {
+                filter('received');
+              },
+              child: Container(
+                width: 67.h,
+                margin: EdgeInsets.only(left: 5.h),
+                padding: EdgeInsets.symmetric(vertical: 8.v),
+                decoration: isTouch['received']
+                    ? AppDecoration.outlineBlueGray.copyWith(
+                        borderRadius: BorderRadiusStyle.circleBorder15,
+                      )
+                    : AppDecoration.outlineBluegray50.copyWith(
+                        borderRadius: BorderRadiusStyle.circleBorder15,
+                      ),
+                child: Center(
+                  child: Text(
+                    "Received",
+                    style: isTouch['received']
+                        ? CustomTextStyles.bodySmallPrimary
+                        : theme.textTheme.bodySmall,
+                  ),
+                ),
+              )),
+          GestureDetector(
+              onTap: () {
+                filter('transporting');
+              },
+              child: Container(
+                width: 69.h,
+                margin: EdgeInsets.only(left: 5.h),
+                padding: EdgeInsets.symmetric(vertical: 8.v),
+                decoration: isTouch['transporting']
+                    ? AppDecoration.outlineBlueGray.copyWith(
+                        borderRadius: BorderRadiusStyle.circleBorder15,
+                      )
+                    : AppDecoration.outlineBluegray50.copyWith(
+                        borderRadius: BorderRadiusStyle.circleBorder15,
+                      ),
+                child: Center(
+                  child: Text(
+                    "Transporting",
+                    style: isTouch['transporting']
+                        ? CustomTextStyles.bodySmallPrimary
+                        : theme.textTheme.bodySmall,
+                  ),
+                ),
+              )),
         ],
       ),
     );
   }
 
-  /// Common widget
-  Widget _buildSeventyFour({
-    required String play,
-    required String airplane,
-  }) {
-    return SizedBox(
-      height: 46.v,
-      width: 45.h,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          CustomImageView(
-            imagePath: play,
-            height: 46.v,
-            width: 45.h,
-            alignment: Alignment.center,
+  Widget _buildListInfo() {
+    return ListView.separated(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      separatorBuilder: (
+        context,
+        index,
+      ) {
+        return SizedBox(height: 0.v);
+      },
+      itemCount: displayListOperates.length,
+      itemBuilder: (context, index) {
+        return operateItemWidget(displayListOperates[index]);
+      },
+    );
+  }
+
+  Widget buttonOperateItem(
+    int numberFlex,
+    String titleBtn,
+    Function? callback,
+  ) {
+    return Flexible(
+      flex: numberFlex,
+      child: GestureDetector(
+        onTap: () => callback,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 10.v),
+          decoration: AppDecoration.outlineGray,
+          child: Center(
+            child: Text(
+              titleBtn[0].toUpperCase() + titleBtn.substring(1),
+              style: CustomTextStyles.labelLargePrimaryContainer,
+            ),
           ),
-          CustomImageView(
-            imagePath: airplane,
-            height: 19.v,
-            width: 22.h,
-            alignment: Alignment.center,
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  /// Common widget
-  Widget _buildSeventyThree({
-    required String image,
-    required String thumbsUp,
-  }) {
-    return SizedBox(
-      height: 46.v,
-      width: 45.h,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          CustomImageView(
-            imagePath: image,
-            height: 46.v,
-            width: 45.h,
-            alignment: Alignment.center,
+  Widget operateItemWidget(OperateItemModel operateItemModelObj) {
+    return Column(
+      children: [
+        //
+        Container(
+          decoration: AppDecoration.fillPrimary,
+          child: Column(
+            children: [
+              //
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //
+                    SizedBox(height: 10.v),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 15.h,
+                              child: Center(
+                                child: Text(
+                                  "ID",
+                                  style: CustomTextStyles.labelLargeBluegray300,
+                                ),
+                              ),
+                            ),
+                            //
+                            Text(
+                              operateItemModelObj.id.toString(),
+                              overflow: TextOverflow.clip,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            //
+                            CustomImageView(
+                              imagePath: ImageConstant.imgComputer,
+                              height: 12.v,
+                              width: 12.h,
+                              margin: EdgeInsets.only(left: 8.h),
+                            ),
+                            //
+                            Container(
+                              width: 60.h,
+                              height: 20.h,
+                              margin: EdgeInsets.only(left: 10.h),
+                              padding: EdgeInsets.symmetric(vertical: 5.v),
+                              decoration: AppDecoration.fillBlue100.copyWith(
+                                borderRadius: BorderRadiusStyle.roundedBorder10,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  operateItemModelObj.status[0].toUpperCase() +
+                                      operateItemModelObj.status.substring(1),
+                                  overflow: TextOverflow.clip,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: appTheme.black900,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            //
+                          ],
+                        ),
+                        //
+                        GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.h, vertical: 5.v),
+                            decoration:
+                                AppDecoration.outlineBluegray50WithBorderRadius,
+                            child: Text(
+                              "GET",
+                              style: TextStyle(
+                                color: appTheme.lightBlueA700,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    //
+                    SizedBox(height: 10.v),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        //
+                        Container(
+                          width: 15.h,
+                          child: Center(
+                            child: CustomImageView(
+                              imagePath: ImageConstant.imgGrid,
+                              height: 12.h,
+                              width: 12.v,
+                            ),
+                          ),
+                        ),
+                        //
+                        Container(
+                          width: SizeUtils.width * 9 / 10,
+                          child: Text(
+                            operateItemModelObj.dimension,
+                            overflow: TextOverflow.clip,
+                            style: CustomTextStyles.labelLargeGray80002,
+                          ),
+                        ),
+                        //
+                      ],
+                    ),
+                    //
+                    SizedBox(height: 10.v),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        //
+                        Container(
+                          width: 15.h,
+                          child: Center(
+                            child: CustomImageView(
+                              imagePath: ImageConstant.imgThumbsUp,
+                              height: 12.h,
+                              width: 12.v,
+                            ),
+                          ),
+                        ),
+                        //
+                        Container(
+                          width: SizeUtils.width * 9 / 10,
+                          child: Text(
+                            operateItemModelObj.service,
+                            overflow: TextOverflow.clip,
+                            style: CustomTextStyles.labelLargeLightblue800,
+                          ),
+                        ),
+                        //
+                      ],
+                    ),
+                    //
+                    SizedBox(height: 10.v),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        //
+                        Container(
+                          width: 15.h,
+                          child: Center(
+                            child: CustomImageView(
+                              imagePath: ImageConstant.imgThumbsUpBlueGray300,
+                              height: 12.h,
+                              width: 12.v,
+                            ),
+                          ),
+                        ),
+                        //
+                        Container(
+                          width: SizeUtils.width * 9 / 10,
+                          child: Text(
+                            operateItemModelObj.model,
+                            overflow: TextOverflow.clip,
+                            style: CustomTextStyles.labelLargeOrangeA700,
+                          ),
+                        ),
+                        //
+                      ],
+                    ),
+                    //
+                    SizedBox(height: 10.v),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        //
+                        Container(
+                          width: 15.h,
+                          child: Center(
+                            child: CustomImageView(
+                              imagePath: ImageConstant.imgTelevisionBlueGray300,
+                              height: 12.h,
+                              width: 12.v,
+                            ),
+                          ),
+                        ),
+                        //
+                        Container(
+                          width: SizeUtils.width * 9 / 10,
+                          child: Text(
+                            operateItemModelObj.pricePerDay + "đ / day",
+                            overflow: TextOverflow.clip,
+                            style: CustomTextStyles.labelLargeTeal900,
+                          ),
+                        ),
+                        //
+                      ],
+                    ),
+                    //
+                    SizedBox(height: 10.v),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        //
+                        Container(
+                          padding: EdgeInsets.only(left: 5.h),
+                          width: SizeUtils.width / 2,
+                          child: Text(
+                            operateItemModelObj.startAt,
+                            overflow: TextOverflow.clip,
+                            style: CustomTextStyles.labelLargeGray0xFFA2AEBC,
+                          ),
+                        ),
+                        //
+                        Text(
+                          'total: '.toUpperCase() + 200000.toString() + " đ",
+                          style: CustomTextStyles.titleSmallGreen800_1,
+                        ),
+                      ],
+                    ),
+                    //
+                    SizedBox(height: 10.v),
+                  ],
+                ),
+              ),
+              //
+              Container(
+                width: SizeUtils.width,
+                child: Row(children: [
+                  //
+                  buttonOperateItem(
+                    3,
+                    'call shipper',
+                    () => print('call shipper'),
+                  ),
+                  //
+                  buttonOperateItem(
+                    3,
+                    'Edit order',
+                    () {
+                      print('Edit order');
+                    },
+                  ),
+                  //
+                  buttonOperateItem(
+                    3,
+                    'Revoke',
+                    () {
+                      print('Revoke');
+                    },
+                  ),
+                  //
+                  buttonOperateItem(
+                    1,
+                    '...',
+                    () {
+                      print('other');
+                    },
+                  ),
+                ]),
+              ),
+            ],
           ),
-          CustomImageView(
-            imagePath: thumbsUp,
-            height: 28.v,
-            width: 19.h,
-            alignment: Alignment.center,
-          ),
-        ],
-      ),
+        ),
+        //
+        Divider(),
+      ],
     );
   }
 }

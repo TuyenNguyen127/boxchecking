@@ -48,6 +48,9 @@ class AppDecoration {
   static BoxDecoration get fillRedA700 => BoxDecoration(
         color: appTheme.redA700,
       );
+  static BoxDecoration get fillLavender => BoxDecoration(
+        color: appTheme.lavender,
+      );
 
   // Outline decorations
   static BoxDecoration get outlineBlack => BoxDecoration(
@@ -101,6 +104,14 @@ class AppDecoration {
           color: appTheme.blueGray50,
           width: 1.h,
         ),
+      );
+  static BoxDecoration get outlineBluegray50WithBorderRadius => BoxDecoration(
+        color: theme.colorScheme.primary,
+        border: Border.all(
+          color: appTheme.blueGray50,
+          width: 1.h,
+        ),
+        borderRadius: BorderRadius.circular(8),
       );
   static BoxDecoration get outlineGray => BoxDecoration(
         color: theme.colorScheme.primary,
