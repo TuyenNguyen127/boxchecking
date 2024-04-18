@@ -180,8 +180,6 @@ class TextThemes {
 
 /// Class containing the supported color schemes.
 class ColorSchemes {
-  
-
   static final primaryColorScheme = ColorScheme.light(
     // Primary colors
     primary: Color(0XFFFFFFFF),
@@ -239,6 +237,7 @@ class PrimaryColors {
   Color get gray800 => Color(0XFF484848);
   Color get gray80001 => Color(0XFF4D4444);
   Color get gray80002 => Color(0XFF383838);
+  Color get gray0xFFA2AEBC => Color(0xFFA2AEBC);
 
   // GreenB
   Color get green100B2 => Color(0XB2CEF0C2);
@@ -252,11 +251,13 @@ class PrimaryColors {
 
   // Indigo
   Color get indigo600 => Color(0XFF3C569A);
+  Color get lavender => Color(0xFFCDDAFC);
 
   // LightBlue
   Color get lightBlue800 => Color(0XFF0079BD);
   Color get lightBlueA700 => Color(0XFF0093FF);
   Color get lightBlueA70001 => Color(0XFF0084FF);
+  Color get blueGrayBackgr => Color(0xFF3D579A);
 
   // Orange
   Color get orangeA700 => Color(0XFFFF5B00);
