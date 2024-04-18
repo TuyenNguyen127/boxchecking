@@ -23,6 +23,7 @@ import '../presentation/get_back_checking_and_payment_screen/get_back_checking_a
 import '../presentation/get_back_checking_and_payment_screen/binding/get_back_checking_and_payment_binding.dart';
 import '../presentation/app_navigation_screen/app_navigation_screen.dart';
 import '../presentation/app_navigation_screen/binding/app_navigation_binding.dart';
+import '../presentation/order_details/order_details_page.dart';
 
 class AppRoutes {
   static const String homeContainerScreen = '/home_container_screen';
@@ -61,6 +62,8 @@ class AppRoutes {
 
   static const String getBackCheckingAndPaymentScreen =
       '/get_back_checking_and_payment_screen';
+
+  static const String orderDetailsScreen = '/order_details_screen';
 
   static const String appNavigationScreen = '/app_navigation_screen';
 
@@ -157,6 +160,13 @@ class AppRoutes {
       bindings: [
         AppNavigationBinding(),
       ],
-    )
+    ),
+    GetPage(
+      name: orderDetailsScreen,
+      page: () => OrderDetailsScreen(),
+      // bindings: [
+      //   AppNavigationBinding(),
+      // ],
+    ),
   ];
 }
