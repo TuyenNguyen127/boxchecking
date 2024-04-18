@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
@@ -55,158 +56,65 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
       MyOptionItem(name: "Select Ward", id: 0);
   MyOptionItem districtOptionItemSelected =
       MyOptionItem(name: "Select District", id: 0);
-  List<dynamic> data = [
-    // {
-    //   "name": '',
-    //   "id": 0,
-    //   "data": [
-    //     {
-    //       "name": '',
-    //       "id": 0,
-    //       "data": [
-    //         {
-    //           "name": '',
-    //           "id": 0,
-    //         }
-    //       ]
-    //     }
-    //   ]
-    // },
+
+  List<dynamic> dataProvince = [
     {
       "name": "Ha Noi",
-      "id": 1442,
-      "data": [
-        // {
-        //   "name": '',
-        //   "id": 0,
-        //   "data": [
-        //     {
-        //       "name": '',
-        //       "id": 0,
-        //     }
-        //   ]
-        // },
-        {
-          "name": "Thanh Xuan 1",
-          "id": 122,
-          "data": [
-            {
-              "name": '',
-              "id": 0,
-            },
-            {"name": "Quan Nhan 1", "id": 1},
-            {"name": "Quan Nhan 2", "id": 2},
-            {"name": "Quan Nhan 3", "id": 3},
-          ]
-        },
-        {
-          "name": "Thanh Xuan 2",
-          "id": 123,
-          "data": [
-            {
-              "name": '',
-              "id": 0,
-            },
-            {"name": "Quan Nhan 6", "id": 4},
-            {"name": "Quan Nhan 4", "id": 5},
-            {"name": "Quan Nhan 5", "id": 6},
-          ]
-        }
-      ]
+      "idProvince": 201,
     },
     {
       "name": "Vinh Phuc",
-      "id": 1022,
-      "data": [
-        {
-          "name": "Thanh Xuan 3",
-          "id": 1122,
-          "data": [
-            {"name": "Quan Nhan 5", "id": 1},
-            {"name": "Quan Nhan 6", "id": 2},
-            {"name": "Quan Nhan 7", "id": 3},
-          ]
-        },
-        {
-          "name": "Thanh Xuan 4",
-          "id": 1133,
-          "data": [
-            {"name": "Quan Nhan", "id": 1},
-            {"name": "Quan Nhan 1", "id": 2},
-            {"name": "Quan Nhan 2", "id": 3},
-          ]
-        }
-      ]
+      "idProvince": 202,
     },
     {
       "name": "Hai Duong",
-      "id": 1033,
-      "data": [
-        {
-          "name": "Thanh Xuan 1",
-          "id": 112,
-          "data": [
-            {"name": "Quan Nhan", "id": 1},
-            {"name": "Quan Nhan 1", "id": 2},
-            {"name": "Quan Nhan 2", "id": 3},
-          ]
-        },
-        {
-          "name": "Thanh Xuan 2",
-          "id": 113,
-          "data": [
-            {"name": "Quan Nhan", "id": 1},
-            {"name": "Quan Nhan 1", "id": 2},
-            {"name": "Quan Nhan 2", "id": 3},
-          ]
-        }
-      ]
+      "idProvince": 203,
+    },
+    {
+      "name": "Yen Bai",
+      "idProvince": 204,
     }
   ];
 
+  List<dynamic> dataDistrict = [
+    {"idProvince": 201, "idDistrict": 101, "name": "Thanh Xuan"},
+    {"idProvince": 201, "idDistrict": 102, "name": "Cau Giay"},
+    {"idProvince": 202, "idDistrict": 103, "name": "Binh Xuyen"},
+    {"idProvince": 202, "idDistrict": 104, "name": "Lap Thach"},
+    {"idProvince": 203, "idDistrict": 105, "name": "Hai Duong City"},
+    {"idProvince": 203, "idDistrict": 106, "name": "Bai Bien"},
+    {"idProvince": 204, "idDistrict": 107, "name": "Muong Te"},
+    {"idProvince": 204, "idDistrict": 108, "name": "Doc Lo"}
+  ];
+
+  List<dynamic> dataWard = [
+    {"idProvince": 201, "idDistrict": 101, "idWard": 1, "name": "Quan Nhan"},
+    {"idProvince": 201, "idDistrict": 102, "idWard": 2, "name": "Quan Nho"},
+    {
+      "idProvince": 202,
+      "idDistrict": 103,
+      "idWard": 3,
+      "name": "Xa Binh Xuyen"
+    },
+    {"idProvince": 202, "idDistrict": 104, "idWard": 4, "name": "Xa Lap Thach"},
+    {
+      "idProvince": 203,
+      "idDistrict": 105,
+      "idWard": 5,
+      "name": "Xa Hai Duong City"
+    },
+    {"idProvince": 203, "idDistrict": 106, "idWard": 6, "name": "Xa Bai Bien"},
+    {"idProvince": 204, "idDistrict": 107, "idWard": 7, "name": "Xa Muong Te"},
+    {"idProvince": 204, "idDistrict": 108, "idWard": 8, "name": "Xa Doc Lo"}
+  ];
+
+  int? selectedProvinceId;
+  int? selectedDistrictId;
+  int? selectedWardId;
+
   @override
   void initState() {
-    List<MyOptionItem> listItems = [];
-    for (var element in data) {
-      listItems.add(MyOptionItem(id: element['id'], name: element['name']));
-    }
-    cityListModel = MyDropListModel(listItems);
     super.initState();
-  }
-
-  void selectDistrict(int id) {
-    setState(() {
-      List<MyOptionItem> listItems = [];
-      dynamic rs = findElementById(data, id);
-      dynamic result = findElementById(rs['data'], id);
-      for (var element in result['data']) {
-        listItems.add(MyOptionItem(id: element['id'], name: element['name']));
-      }
-      wardListModel = MyDropListModel(listItems);
-      wardOptionItemSelected = MyOptionItem(name: "Select Ward", id: 0);
-    });
-  }
-
-  void selectCity(int id) {
-    setState(() {
-      List<MyOptionItem> listItems = [];
-      dynamic result = findElementById(data, id);
-      for (var element in result['data']) {
-        listItems.add(MyOptionItem(id: element['id'], name: element['name']));
-      }
-      districtListModel = MyDropListModel(listItems);
-      districtOptionItemSelected = MyOptionItem(name: "Select District", id: 0);
-      wardOptionItemSelected = MyOptionItem(name: "Select Ward", id: 0);
-      wardListModel = MyDropListModel([]);
-    });
-  }
-
-  dynamic findElementById(List<dynamic> data, int id) {
-    for (var element in data)
-      if (element['id'] == id) {
-        return element;
-      }
-    return null;
   }
 
   @override
@@ -242,84 +150,6 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  String selectedCity = '';
-  String selectedDistrict = '';
-  String selectedWard = '';
-
-  Widget _buildAddressCode() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          child: DropdownButton<String>(
-            
-            value: selectedCity,
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedCity = newValue!;
-                selectedDistrict = ''; // Reset giá trị khi thay đổi city
-                selectedWard = ''; // Reset giá trị khi thay đổi city
-              });
-            },
-            items: data.map<DropdownMenuItem<String>>((dynamic item) {
-              return DropdownMenuItem<String>(
-                value: item["name"],
-                child: Text(item["name"]),
-              );
-            }).toList(),
-            hint: Text('Select a city'),
-          ),
-        ),
-        SizedBox(height: 20),
-        Center(
-          child: DropdownButton<String>(
-            value: selectedDistrict,
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedDistrict = newValue!;
-                selectedWard = ''; // Reset giá trị khi thay đổi district
-              });
-            },
-            items: (data.firstWhere(
-                        (element) => element['name'] == selectedCity)['data']
-                    as List<dynamic>)
-                .map<DropdownMenuItem<String>>((dynamic item) {
-              return DropdownMenuItem<String>(
-                value: item["name"],
-                child: Text(item["name"]),
-              );
-            }).toList(),
-            hint: Text('Select a district'),
-          ),
-        ),
-        SizedBox(height: 20),
-        Container(
-          child: DropdownButton<String>(
-            value: selectedWard,
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedWard = newValue!;
-              });
-            },
-            items: ((data.firstWhere((element) =>
-                                element['name'] == selectedCity)['data']
-                            as List<dynamic>)
-                        .firstWhere((element) =>
-                            element['name'] == selectedDistrict)['data']
-                    as List<dynamic>)
-                .map<DropdownMenuItem<String>>((dynamic item) {
-              return DropdownMenuItem<String>(
-                value: item["name"],
-                child: Text(item["name"]),
-              );
-            }).toList(),
-            hint: Text('Select a ward'),
-          ),
-        ),
-      ],
     );
   }
 
@@ -479,24 +309,223 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
             //
             _buildPhoneNumber(),
             //
-            SizedBox(height: 9.v),
+            SizedBox(height: 20.v),
             //
-            _city(),
-            SizedBox(height: 2.v),
-            //
-            _district(),
-            SizedBox(height: 2.v),
-            //
-            _wardCode(),
-            SizedBox(height: 15.v),
+            _buildAddressCode(),
+            SizedBox(height: 20.v),
             //
             _buildAddressView(),
-            SizedBox(height: 10.v),
-            //
-            _buildAddressCode()
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildAddressCode() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Province Dropdown
+        DropdownButtonFormField<int>(
+          decoration: InputDecoration(
+            labelText: 'Select Province',
+            contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+            hintStyle: TextStyle(
+              fontSize: 17,
+              color: Colors.grey,
+              fontWeight: FontWeight.w400,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            // floatingLabelBehavior: FloatingLabelBehavior.never,
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.grey,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.black,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.red,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            labelStyle: TextStyle(
+              fontSize: 17,
+              color: Colors.grey,
+              fontWeight: FontWeight.w400,
+            ),
+            hintText: 'Province Name',
+          ),
+          focusColor: Colors.amberAccent,
+          value: selectedProvinceId,
+          items: dataProvince.map((province) {
+            return DropdownMenuItem(
+              value: province['idProvince'] as int,
+              child: Text(
+                province['name'] as String,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w400,
+                ),
+                maxLines: 1, // Limit the number of lines to 1
+                overflow: TextOverflow.ellipsis,
+              ),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              selectedProvinceId = value;
+              selectedDistrictId = null; // Reset district selection
+            });
+          },
+        ),
+        SizedBox(height: 20),
+
+        // District Dropdown
+        DropdownButtonFormField<int>(
+          decoration: InputDecoration(
+            labelText: 'Select District',
+            contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+            hintStyle: TextStyle(
+              fontSize: 17,
+              color: Colors.grey,
+              fontWeight: FontWeight.w400,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            // floatingLabelBehavior: FloatingLabelBehavior.never,
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.grey,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.black,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.red,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            labelStyle: TextStyle(
+              fontSize: 17,
+              color: Colors.grey,
+              fontWeight: FontWeight.w400,
+            ),
+            hintText: 'District Name',
+          ),
+          value: selectedDistrictId,
+          items: dataDistrict
+              .where((district) => district['idProvince'] == selectedProvinceId)
+              .map((district) {
+            return DropdownMenuItem(
+              value: district['idDistrict'] as int,
+              child: Text(
+                district['name'] as String,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              selectedDistrictId = value;
+              selectedWardId = null;
+            });
+          },
+        ),
+        SizedBox(height: 20),
+
+        // Ward Dropdown
+        DropdownButtonFormField<int>(
+          decoration: InputDecoration(
+            labelText: 'Select Ward',
+            contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+            hintStyle: TextStyle(
+              fontSize: 17,
+              color: Colors.grey,
+              fontWeight: FontWeight.w400,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            // floatingLabelBehavior: FloatingLabelBehavior.never,
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.grey,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.black,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.red,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            labelStyle: TextStyle(
+              fontSize: 17,
+              color: Colors.grey,
+              fontWeight: FontWeight.w400,
+            ),
+            hintText: 'Ward Name',
+          ),
+          borderRadius: BorderRadius.circular(10),
+          value: selectedWardId,
+          items: dataWard
+              .where((ward) =>
+                  ward['idProvince'] == selectedProvinceId &&
+                  ward['idDistrict'] == selectedDistrictId)
+              .map((ward) {
+            return DropdownMenuItem(
+              value: ward['idWard'] as int,
+              child: Text(
+                ward['name'] as String,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              selectedWardId = value;
+            });
+          },
+          validator: (value) {
+            // Validate if value is null or empty
+            if (value == null || value == '') {
+              return 'Please select a ward';
+            }
+            return null;
+          },
+        ),
+      ],
     );
   }
 
@@ -511,8 +540,14 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
         fontWeight: FontWeight.w400,
       ),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.only(left: 15.h),
-        hintText: 'Enter your phone number *',
+        labelText: 'Phone Number',
+        labelStyle: TextStyle(
+              fontSize: 17,
+              color: Colors.grey,
+              fontWeight: FontWeight.w400,
+            ),
+        hintText: 'Enter your phone number',
+        contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
         hintStyle: TextStyle(
           fontSize: 14,
           color: Colors.grey,
@@ -521,7 +556,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        floatingLabelBehavior: FloatingLabelBehavior.never,
+        // floatingLabelBehavior: FloatingLabelBehavior.never,
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             color: Colors.grey,
@@ -557,8 +592,14 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
         fontWeight: FontWeight.w400,
       ),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.only(left: 15.h),
-        hintText: 'Enter your full name *',
+        labelText: 'Full Name',
+        labelStyle: TextStyle(
+              fontSize: 17,
+              color: Colors.grey,
+              fontWeight: FontWeight.w400,
+            ),
+        contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+        hintText: 'Enter your full name',
         hintStyle: TextStyle(
           fontSize: 14,
           color: Colors.grey,
@@ -567,7 +608,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        floatingLabelBehavior: FloatingLabelBehavior.never,
+        // floatingLabelBehavior: FloatingLabelBehavior.never,
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             color: Colors.grey,
@@ -603,17 +644,23 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
         fontWeight: FontWeight.w400,
       ),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.only(left: 15.h),
-        hintText: 'Enter your address *',
+        labelText: 'Address',
+        labelStyle: TextStyle(
+              fontSize: 17,
+              color: Colors.grey,
+              fontWeight: FontWeight.w400,
+            ),
+        contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+        hintText: 'Enter your address',
         hintStyle: TextStyle(
-          fontSize: 14,
+          fontSize: 16,
           color: Colors.grey,
           fontWeight: FontWeight.w400,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        floatingLabelBehavior: FloatingLabelBehavior.never,
+        // floatingLabelBehavior: FloatingLabelBehavior.never,
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             color: Colors.grey,
@@ -635,119 +682,6 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
         ),
       ),
       keyboardType: TextInputType.text,
-    );
-  }
-
-  // link tut call api async
-  // https://www.youtube.com/watch?v=PO24ydfdBv0
-
-  /// Section Widget
-  Widget _city() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 0),
-      child: Column(
-        children: <Widget>[
-          ///Simple DropDown
-          MySelectDropList(
-            paddingLeft: 0,
-            paddingRight: 0,
-            paddingTop: 0,
-            paddingBottom: 0,
-            containerPadding: EdgeInsets.only(left: 5.h),
-            borderColor: Colors.grey,
-            textSizeTitle: 14,
-            itemSelected: cityOptionItemSelected,
-            dropListModel: cityListModel,
-            showIcon: false,
-            showArrowIcon: true,
-            showBorder: true,
-            paddingDropItem:
-                const EdgeInsets.only(left: 20, top: 10, bottom: 10, right: 20),
-            suffixIcon: Icons.arrow_drop_down,
-            icon: const Icon(Icons.person, color: Colors.black),
-            onOptionSelected: (optionItem) {
-              cityOptionItemSelected = optionItem;
-              selectCity(cityOptionItemSelected.id);
-              setState(() {
-                cityController.text = cityOptionItemSelected.name;
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Section Widget
-  Widget _wardCode() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 0),
-      child: Column(
-        children: <Widget>[
-          ///Simple DropDown
-          MySelectDropList(
-            paddingLeft: 0,
-            paddingRight: 0,
-            paddingTop: 0,
-            paddingBottom: 0,
-            containerPadding: EdgeInsets.only(left: 5.h),
-            borderColor: Colors.grey,
-            textSizeTitle: 14,
-            itemSelected: wardOptionItemSelected,
-            dropListModel: wardListModel,
-            showIcon: false,
-            showArrowIcon: true,
-            showBorder: true,
-            paddingDropItem:
-                const EdgeInsets.only(left: 20, top: 10, bottom: 10, right: 20),
-            suffixIcon: Icons.arrow_drop_down,
-            icon: const Icon(Icons.person, color: Colors.black),
-            onOptionSelected: (optionItem) {
-              wardOptionItemSelected = optionItem;
-              setState(() {
-                wardCodeController.text = wardOptionItemSelected.name;
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Section Widget
-  Widget _district() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 0),
-      child: Column(
-        children: <Widget>[
-          ///Simple DropDown
-          MySelectDropList(
-            paddingLeft: 0,
-            paddingRight: 0,
-            paddingTop: 0,
-            paddingBottom: 0,
-            containerPadding: EdgeInsets.only(left: 5.h),
-            borderColor: Colors.grey,
-            textSizeTitle: 14,
-            itemSelected: districtOptionItemSelected,
-            dropListModel: districtListModel,
-            showIcon: false,
-            showArrowIcon: true,
-            showBorder: true,
-            paddingDropItem:
-                const EdgeInsets.only(left: 20, top: 10, bottom: 10, right: 20),
-            suffixIcon: Icons.arrow_drop_down,
-            icon: const Icon(Icons.person, color: Colors.black),
-            onOptionSelected: (optionItem) {
-              districtOptionItemSelected = optionItem;
-              selectDistrict(districtOptionItemSelected.id);
-              setState(() {
-                districtController.text = districtOptionItemSelected.name;
-              });
-            },
-          ),
-        ],
-      ),
     );
   }
 
