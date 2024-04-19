@@ -1,9 +1,6 @@
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/app_bar/appbar_trailing_iconbutton.dart';
-import 'widgets/requesttype_item_widget.dart';
-import 'models/requesttype_item_model.dart';
 import 'widgets/view_item_widget.dart';
 import 'models/view_item_model.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +45,7 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10.v),
-                _buildServiceSection(),
+                // _buildServiceSection(),
                 SizedBox(height: 10.v),
               ],
             ),
@@ -66,6 +63,7 @@ class HomePage extends StatelessWidget {
       leading: AppbarLeadingImage(
         imagePath: ImageConstant.imgLock,
         margin: EdgeInsets.only(left: 0.h, top: 8.v, bottom: 5.v),
+        onTap: () {},
       ),
       title: Container(
         width: 105.h,
@@ -90,10 +88,12 @@ class HomePage extends StatelessWidget {
         AppbarTrailingIconbutton(
           imagePath: ImageConstant.imgUser,
           margin: EdgeInsets.fromLTRB(16.h, 5.v, 3.h, 1.v),
+          onTap: () {},
         ),
         AppbarTrailingIconbutton(
           imagePath: ImageConstant.imgUserPrimary,
           margin: EdgeInsets.only(left: 11.h, top: 3.v, right: 19.h),
+          onTap: () {},
         ),
       ],
     );
@@ -101,76 +101,65 @@ class HomePage extends StatelessWidget {
 
   /// Section button 1
   Widget _buildRequestTypeSectionOne() {
-    return
-        // Obx(() =>
-        GridView.builder(
-            shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                mainAxisExtent: 71.v,
-                crossAxisCount: 2,
-                mainAxisSpacing: 14.h,
-                crossAxisSpacing: 14.h),
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: 2,
-            // controller.homeModelObj.value.requesttypeItemList.value.length,
-            itemBuilder: (context, index) {
-              // RequesttypeItemModel model = controller
-              //     .homeModelObj.value.requesttypeItemList.value[index];
-              // return RequesttypeItemWidget(model, onTapCollection: () {
-              //   onTapCollection();
-              // });
-
-              //
-              return GestureDetector(
-                onTap: () => {
-                  Get.toNamed(
-                    AppRoutes.typeRequestScreen,
-                  )
-                },
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(10, 0, 5, 0),
-                  height: 50,
-                  width: 150,
-                  decoration: const BoxDecoration(
-                    color: Color(0xffffc0c0),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
+    return GridView.builder(
+      shrinkWrap: true,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          mainAxisExtent: 71.v,
+          crossAxisCount: 2,
+          mainAxisSpacing: 14.h,
+          crossAxisSpacing: 14.h),
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: 2,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () => {
+            Get.toNamed(
+              AppRoutes.typeRequestScreen,
+            )
+          },
+          child: Container(
+            padding: EdgeInsets.fromLTRB(10, 0, 5, 0),
+            height: 50,
+            width: 150,
+            decoration: const BoxDecoration(
+              color: Color(0xffffc0c0),
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  height: 48,
+                  width: 48,
+                  decoration: BoxDecoration(
+                    color: Color(0xffff4c4c),
+                    borderRadius: const BorderRadius.all(Radius.circular(50)),
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 48,
-                        width: 48,
-                        decoration: BoxDecoration(
-                          color: Color(0xffff4c4c),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(50)),
-                        ),
-                        child: SvgPicture.asset(
-                          ImageConstant.imgTelevision,
-                          width: 16,
-                          height: 16,
-                          fit: BoxFit.scaleDown,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      FittedBox(
-                        fit: BoxFit.cover,
-                        child: Text(
-                          'Checking box',
-                          style: TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            // fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ],
+                  child: SvgPicture.asset(
+                    ImageConstant.imgTelevision,
+                    width: 16,
+                    height: 16,
+                    fit: BoxFit.scaleDown,
                   ),
                 ),
-              );
-            });
-    // );
+                SizedBox(width: 10),
+                FittedBox(
+                  fit: BoxFit.cover,
+                  child: Text(
+                    'Checking box',
+                    style: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                      // fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   /// Section button 1
@@ -196,25 +185,7 @@ class HomePage extends StatelessWidget {
                 color: Color(0xffffc0c0),
                 borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
-              child:
-                  // Row(
-                  //   children: [
-                  // Container(
-                  //   height: 48,
-                  //   width: 48,
-                  //   decoration: BoxDecoration(
-                  //     color: Color(0xffff4c4c),
-                  //     borderRadius: const BorderRadius.all(Radius.circular(50)),
-                  //   ),
-                  //   child: SvgPicture.asset(
-                  //     ImageConstant.imgTelevision,
-                  //     width: 16,
-                  //     height: 16,
-                  //     fit: BoxFit.scaleDown,
-                  //   ),
-                  // ),
-                  // SizedBox(width: 10),
-                  Center(
+              child: Center(
                 child: Text(
                   'Payment',
                   style: TextStyle(

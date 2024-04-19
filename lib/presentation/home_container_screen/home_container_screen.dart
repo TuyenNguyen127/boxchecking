@@ -1,8 +1,8 @@
 import 'package:lastapp/presentation/home_page/home_page.dart';
-import 'package:lastapp/presentation/recived_tab_container_page/recived_tab_container_page.dart';
-import 'package:lastapp/presentation/operate_page/operate_page.dart';
-import 'package:lastapp/presentation/setting_page/setting_page.dart';
-import 'package:lastapp/widgets/custom_bottom_bar.dart';
+import 'package:lastapp/presentation/ship/received/received_tab_container_page/received_tab_container_page.dart';
+import 'package:lastapp/presentation/operate/operate_page/operate_page.dart';
+import 'package:lastapp/presentation/setting/setting_page/setting_page.dart';
+import 'package:lastapp/widgets/bottom_bar/custom_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'controller/home_container_controller.dart';
@@ -13,15 +13,20 @@ class HomeContainerScreen extends GetWidget<HomeContainerController> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-            backgroundColor: theme.colorScheme.onError,
-            body: Navigator(
-                key: Get.nestedKey(1),
-                initialRoute: AppRoutes.homePage,
-                onGenerateRoute: (routeSetting) => GetPageRoute(
-                    page: () => getCurrentPage(routeSetting.name!),
-                    transition: Transition.noTransition)),
-            bottomNavigationBar: _buildBottomBar()));
+      child: Scaffold(
+        backgroundColor: theme.colorScheme.onError,
+        body: Navigator(
+          key: Get.nestedKey(1),
+          initialRoute: AppRoutes.homePage,
+          // initialRoute: AppRoutes.orderDetailsScreen,
+          onGenerateRoute: (routeSetting) => GetPageRoute(
+            page: () => getCurrentPage(routeSetting.name!),
+            transition: Transition.noTransition,
+          ),
+        ),
+        bottomNavigationBar: _buildBottomBar(),
+      ),
+    );
   }
 
   /// Section Widget

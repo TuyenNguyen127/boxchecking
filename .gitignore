@@ -8,3 +8,7 @@
 !/.flutter-plugins
 .git.zip
 .git
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+windows
