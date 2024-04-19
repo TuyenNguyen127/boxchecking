@@ -1,0 +1,42 @@
+{
+    "Order": {
+        "orderId": 1,
+        "status": "GetBackDelivery",
+        "shipStatusName": "waiting for delivery",
+        "boxs": [
+            {
+                "boxId": 1,
+                "boxTypeId": 1,
+                "boxModelId": 1,
+                "listItem": "10 cái quần, 20 cái áo",
+                "boxServices": [
+                    "Washing ",
+                    "Hang on"
+                ],
+                "weight": 200,
+                "quantity": 2,
+                "dimension": "Plastic|5x5x5",
+                "price": 400000
+            },
+            {
+                "boxId": 2,
+                "boxTypeId": 2,
+                "boxModelId": 2,
+                "listItem": "10 cái quần, 20 cái áo",
+                "boxServices": [
+                    "Washing "
+                ],
+                "weight": 200,
+                "quantity": 4,
+                "dimension": "Carton|10x10x10",
+                "price": 800000
+            }
+        ],
+        "name": "do ngoc long",
+        "phoneNumber": "0388508956",
+        "address": "Tòa nhà Sông Đà, Phạm Hùng, Mỹ Đình, Nam Từ Liêm, Hà Nội",
+        "date": "2024-04-03T17:08:38.2318284",
+        "toWardCode": "510102",
+        "toDistrictId": 1442
+    }
+}
