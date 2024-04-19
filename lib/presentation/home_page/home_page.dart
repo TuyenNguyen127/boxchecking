@@ -1,9 +1,6 @@
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/app_bar/appbar_trailing_iconbutton.dart';
-import 'widgets/requesttype_item_widget.dart';
-import 'models/requesttype_item_model.dart';
 import 'widgets/view_item_widget.dart';
 import 'models/view_item_model.dart';
 import 'package:flutter/material.dart';

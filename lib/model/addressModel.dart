@@ -1,10 +1,10 @@
 class AddressModel {
-  late String name; // ten user
-  late String phoneNumber; // sdt
-  late int wardCodeId; // xa, phuong
-  late int districtId; // quan, huyen
-  late int cityId; // tinh, tpho
-  late String addressNumber; // so nha
+  late String name; // tên user
+  late String phoneNumber; // sđt
+  late int wardCodeId; // xã, phường
+  late int districtId; // quận, huyện
+  late int cityId; // tỉnh, thành phố
+  late String addressNumber; // số nhà, tên đường
   AddressModel({
     required this.name,
     required this.phoneNumber,

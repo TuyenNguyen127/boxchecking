@@ -1,4 +1,4 @@
-import '../presentation/onb_address_screen/models/option_item.dart';
+import '../presentation/order_new_box/onb_address_screen/models/option_item.dart';
 import 'package:flutter/material.dart';
 
 class MySelectDropList extends StatefulWidget {
@@ -178,8 +178,7 @@ class SelectDropListState extends State<MySelectDropList>
                   child: Text(
                     optionItemSelected.name,
                     style: TextStyle(
-                        color: optionItemSelected.id == '0' ||
-                                optionItemSelected.id == null
+                        color: optionItemSelected.id == '0'
                             ? widget.hintColorTitle ?? Colors.grey
                             : widget.textColorTitle ?? Colors.black,
                         fontSize: widget.textSizeTitle),

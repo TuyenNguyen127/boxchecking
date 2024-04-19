@@ -1,24 +1,24 @@
 class BoxOrderModel {
-  int id;
-  int? typeBox;
-  int? modelBox;
-  String services;
-  String items;
-  // String dimension;
-  bool selected;
-  int price;
-  int weight;
+  int id; // id sản phẩm
+  int? typeBox; // loại box . ví dụ: plastic, paper
+  int? modelBox; // size box
+  String services; // dịch vụ
+  String items; // quần áo, hàng hóa
+  // String dimension; // name của typeBox (thông qua id typeBox) + modelBox
+  bool selected; // bool
+  int price; // giá tiền
+  int weight; // cân nặng đơn hàng
 
   BoxOrderModel({
-    required this.id, // id sản phẩm
-    required this.typeBox, // loại box . ví dụ: plastic, paper
-    required this.modelBox, // size box
-    required this.services, // dịch vụ
-    required this.items, // quần áo, hàng hóa
-    // required this.dimension, // name của typeBox (thông qua id typeBox) + modelBox
-    required this.selected, // bool
-    required this.price, // giá tiền của order box
-    required this.weight, // cân nặng đơn hàng
+    required this.id,
+    required this.typeBox,
+    required this.modelBox,
+    required this.services,
+    required this.items,
+    // required this.dimension,
+    required this.selected,
+    required this.price,
+    required this.weight,
   });
   factory BoxOrderModel.fromJson(Map<String, dynamic> json) {
     List<dynamic> ser = json["boxServices"];
@@ -27,20 +27,26 @@ class BoxOrderModel {
       service_ += element.toString();
     }
     return BoxOrderModel(
-        typeBox: json["boxTypeId"] ?? 1,
-        modelBox: json["boxModelId"] ?? 1,
-        services: service_,
-        // dimension: json["dimension"] ?? '',
-        id: json["boxId"] ?? 1,
-        items: json["listItem"] ?? '',
-        selected: false,
-        price: json["price"] ?? 0,
-        weight: json["weight"] ?? 0);
+      typeBox: json["boxTypeId"] ?? 1,
+      modelBox: json["boxModelId"] ?? 1,
+      services: service_,
+      // dimension: json["dimension"] ?? '',
+      id: json["boxId"] ?? 1,
+      items: json["listItem"] ?? '',
+      selected: false,
+      price: json["price"] ?? 0,
+      weight: json["weight"] ?? 0,
+    );
   }
   // Map<String, dynamic> toJson() => {
-  //       "type_box": typeBox,
-  //       "model_box": modelBox,
-  //       "services": services,
-  //       "amount": amount
+  //     "typeBox": boxTypeId,
+  //     "modelBox": boxModelId,
+  //     "services": service_,
+  //     // "dimension": dimension,
+  //     "id": boxId,
+  //     "items": listItem,
+  //     "selected": false,
+  //     "price": price,
+  //     "weight": weight,
   //     };
 }

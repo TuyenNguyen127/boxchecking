@@ -2,13 +2,13 @@ import 'package:lastapp/model/addressModel.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
 
 class OrderModel {
-  int id;
-  String createAt;
-  String status;
-  List<BoxOrderModel> boxes;
-  bool checked;
-  AddressModel? addressModel;
-  String? description;
+  int id; // id order
+  String createAt; // thời gian tạo
+  String status; // trạng thái. ví dụ: pending, finished,...
+  List<BoxOrderModel> boxes; // list boxOrder
+  bool checked; // checkbox
+  AddressModel? addressModel; // địa chỉ
+  String? description; // mô tả/ghi chú
 
   OrderModel({
     required this.id,
