@@ -1,0 +1,30 @@
+[
+    {
+        "shipstatus": 1,
+        "name": "waiting processing"
+    },{
+        "shipstatus": 2,
+        "name": "not yet warehouse"
+    },
+    {
+        "shipstatus": 3,
+        "name": "processing"
+    },
+    {
+        "shipstatus": 4,
+        "name": "shipped"
+    },
+    {
+        "shipstatus": 5,
+        "name": "waiting get back"
+    },{
+        "shipstatus": 6,
+        "name": "cancelled"
+    },{
+        "shipstatus": 4,
+        "name": "get back delivery"
+    },{
+        "shipstatus": 4,
+        "name": "done"
+    }
+]
