@@ -1,5 +1,5 @@
 import '../../../core/app_export.dart';
-import '../../../model/OrderGet.dart';
+import '../../../model/orderModel.dart';
 import '../models/send_box_choose_box_model.dart';
 
 /// A controller class for the SendBoxChooseBoxScreen.
@@ -7,7 +7,8 @@ import '../models/send_box_choose_box_model.dart';
 /// This class manages the state of the SendBoxChooseBoxScreen, including the
 /// current sendBoxChooseBoxModelObj
 class SendBoxChooseBoxController extends GetxController {
-  Rx<SendBoxChooseBoxModel> sendBoxChooseBoxModelObj = SendBoxChooseBoxModel().obs;
+  Rx<SendBoxChooseBoxModel> sendBoxChooseBoxModelObj =
+      SendBoxChooseBoxModel().obs;
 
   RxList<OrderGet> listOrders = <OrderGet>[].obs;
 

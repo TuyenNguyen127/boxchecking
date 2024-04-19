@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:lastapp/model/OrderGet.dart';
-import 'package:lastapp/model/address.dart';
-import 'package:lastapp/model/boxOrder.dart';
+import 'package:lastapp/model/orderModel.dart';
+import 'package:lastapp/model/addressModel.dart';
+import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/custom_checkbox_button.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';

@@ -1,4 +1,4 @@
-import 'package:lastapp/model/address.dart';
+import 'package:lastapp/model/addressModel.dart';
 
 import '../../../core/app_export.dart';
 import '../models/get_back_address_model.dart';

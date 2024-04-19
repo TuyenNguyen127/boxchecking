@@ -4,13 +4,13 @@ import 'dart:js';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lastapp/core/app_export.dart';
-import 'package:lastapp/model/OrderGet.dart';
+import 'package:lastapp/model/orderModel.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/custom_drop_down.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 
 import 'controller/send_box_choose_box_controller.dart';
-import '../../model/boxOrder.dart';
+import '../../model/boxOrderModel.dart';
 import 'package:http/http.dart' as http;
 
 class SendBoxChooseBoxScreen extends StatefulWidget {
@@ -20,9 +20,10 @@ class SendBoxChooseBoxScreen extends StatefulWidget {
   }
 }
 
-class MainSendBox extends State<SendBoxChooseBoxScreen> with TickerProviderStateMixin {
-  
-  SendBoxChooseBoxController sendBoxChooseBoxController = Get.put(SendBoxChooseBoxController());
+class MainSendBox extends State<SendBoxChooseBoxScreen>
+    with TickerProviderStateMixin {
+  SendBoxChooseBoxController sendBoxChooseBoxController =
+      Get.put(SendBoxChooseBoxController());
 
   List<OrderGet> listOrders = <OrderGet>[];
   bool checkAll = false;
@@ -61,8 +62,10 @@ class MainSendBox extends State<SendBoxChooseBoxScreen> with TickerProviderState
 
   @override
   void initState() {
-    if (sendBoxChooseBoxController.listOrders.length == 0) requestOrder();
-    else listOrders = sendBoxChooseBoxController.listOrders;
+    if (sendBoxChooseBoxController.listOrders.length == 0)
+      requestOrder();
+    else
+      listOrders = sendBoxChooseBoxController.listOrders;
     super.initState();
   }
 
@@ -413,7 +416,8 @@ class MainSendBox extends State<SendBoxChooseBoxScreen> with TickerProviderState
                                 child: ListView.builder(
                                   itemCount: listOrders[index].boxs.length,
                                   itemBuilder: (context, i) {
-                                    return _buildItem(listOrders[index].boxs[i]);
+                                    return _buildItem(
+                                        listOrders[index].boxs[i]);
                                   },
                                 ),
                               ),
@@ -433,7 +437,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen> with TickerProviderState
   }
 
   /// Section Widget
-  Widget _buildItem(BoxOrder boxOrder) {
+  Widget _buildItem(BoxOrderItem boxOrder) {
     return Container(
       padding: EdgeInsets.fromLTRB(5.h, 10.v, 10.h, 10.v),
       decoration: AppDecoration.outlineBluegray300,

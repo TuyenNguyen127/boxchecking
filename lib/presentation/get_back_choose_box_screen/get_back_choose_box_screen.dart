@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:lastapp/model/OrderGet.dart';
-import 'package:lastapp/model/boxOrder.dart';
+import 'package:lastapp/model/orderModel.dart';
+import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/app_bar/appbar_title.dart';
@@ -21,9 +21,10 @@ class GetBackChooseBoxScreen extends StatefulWidget {
   }
 }
 
-class MainGetBackBox extends State<GetBackChooseBoxScreen> with TickerProviderStateMixin {
-
-  GetBackChooseBoxController getBackChooseBoxController = Get.put(GetBackChooseBoxController());
+class MainGetBackBox extends State<GetBackChooseBoxScreen>
+    with TickerProviderStateMixin {
+  GetBackChooseBoxController getBackChooseBoxController =
+      Get.put(GetBackChooseBoxController());
 
   List<OrderGet> listOrders = <OrderGet>[];
   bool checkAll = false;
@@ -62,11 +63,13 @@ class MainGetBackBox extends State<GetBackChooseBoxScreen> with TickerProviderSt
 
   @override
   void initState() {
-    if (getBackChooseBoxController.listOrders.length == 0) requestOrder();
-    else listOrders = getBackChooseBoxController.listOrders;
+    if (getBackChooseBoxController.listOrders.length == 0)
+      requestOrder();
+    else
+      listOrders = getBackChooseBoxController.listOrders;
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -415,14 +418,14 @@ class MainGetBackBox extends State<GetBackChooseBoxScreen> with TickerProviderSt
                                 child: ListView.builder(
                                   itemCount: listOrders[index].boxs.length,
                                   itemBuilder: (context, i) {
-                                    return _buildItem(listOrders[index].boxs[i]);
+                                    return _buildItem(
+                                        listOrders[index].boxs[i]);
                                   },
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      
                       ],
                     );
                   },
@@ -431,7 +434,6 @@ class MainGetBackBox extends State<GetBackChooseBoxScreen> with TickerProviderSt
             ],
           ),
         ),
-      
       ],
     );
   }

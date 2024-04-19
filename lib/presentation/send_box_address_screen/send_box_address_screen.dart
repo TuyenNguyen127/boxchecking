@@ -1,4 +1,4 @@
-import 'package:lastapp/model/address.dart';
+import 'package:lastapp/model/addressModel.dart';
 import 'package:lastapp/presentation/send_box_choose_box_screen/controller/send_box_choose_box_controller.dart';
 import 'package:lastapp/widgets/app_bar/custom_app_bar.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';

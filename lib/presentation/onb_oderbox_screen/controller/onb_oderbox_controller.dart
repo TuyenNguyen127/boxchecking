@@ -4,7 +4,6 @@ import 'package:lastapp/presentation/onb_oderbox_screen/models/new_box_day.dart'
 import '../../../core/app_export.dart';
 import '../models/subject_model.dart';
 import '../models/onb_oderbox_model.dart';
-import '../../../model/onb.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 /// A controller class for the OnbOderboxScreen.
@@ -20,8 +19,6 @@ class OnbOderboxController extends GetxController {
   var currentList = <NewOrderBox>[].obs;
 
   Rx<OnbOderboxModel> onbOderboxModelObj = OnbOderboxModel().obs;
-
-  Rx<NewOrderBoxModel> listOrders = NewOrderBoxModel().obs;
 
   SelectionPopupModel? selectedDropDownValue;
 
@@ -86,8 +83,6 @@ class OnbOderboxController extends GetxController {
 
     khueListOrders.removeAt(index);
   }
-
-  
 
   void init() {
     tuyenList.addAll({
