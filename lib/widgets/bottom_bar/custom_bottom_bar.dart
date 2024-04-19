@@ -44,7 +44,7 @@ class CustomBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 63.v,
+      height: 60.v,
       decoration: BoxDecoration(
         color: theme.colorScheme.primary,
       ),

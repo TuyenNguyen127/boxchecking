@@ -12,53 +12,60 @@ class TypeRequestScreen extends GetWidget<TypeRequestController> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-            appBar: _buildAppBarRequestPage(context),
-            // appBar: _buildAppBar(context),
-            body: Container(
-                width: 392.h,
-                padding: EdgeInsets.symmetric(horizontal: 10.h, vertical: 8.v),
-                child: Column(children: [
-                  CustomOutlinedButton(
-                    text: "lbl_oder_new_box".tr,
-                    buttonStyle: CustomButtonStyles.outlineBlack,
-                    onPressed: () => onTapOderNewBox(),
-                  ),
-                  SizedBox(height: 6.v),
-                  // _buildButton2(),
-                  CustomOutlinedButton(
-                    text: "Send box to warehouse",
-                    buttonStyle: CustomButtonStyles.outlineBlack,
-                    onPressed: () => onTapSendBoxToWarehouse(),
-                  ),
-                  SizedBox(height: 6.v),
-                  CustomOutlinedButton(
-                    text: "lbl_get_back_box".tr,
-                    buttonStyle: CustomButtonStyles.outlineBlack,
-                    onPressed: () => onTapGetBackBox(),
-                  ),
-                  SizedBox(height: 6.v),
-                  CustomOutlinedButton(
-                      text: "lbl_help".tr,
-                      buttonStyle: CustomButtonStyles.outlineBlack),
-                  SizedBox(height: 5.v)
-                ]))));
+      child: Scaffold(
+        appBar: _buildAppBarRequestPage(context),
+        // appBar: _buildAppBar(context),
+        body: Container(
+          width: 392.h,
+          padding: EdgeInsets.symmetric(horizontal: 10.h, vertical: 8.v),
+          child: Column(
+            children: [
+              CustomOutlinedButton(
+                text: "lbl_oder_new_box".tr,
+                buttonStyle: CustomButtonStyles.outlineBlack,
+                onPressed: () => onTapOderNewBox(),
+              ),
+              SizedBox(height: 6.v),
+              // _buildButton2(),
+              CustomOutlinedButton(
+                text: "Send box to warehouse",
+                buttonStyle: CustomButtonStyles.outlineBlack,
+                onPressed: () => onTapSendBoxToWarehouse(),
+              ),
+              SizedBox(height: 6.v),
+              CustomOutlinedButton(
+                text: "lbl_get_back_box".tr,
+                buttonStyle: CustomButtonStyles.outlineBlack,
+                onPressed: () => onTapGetBackBox(),
+              ),
+              SizedBox(height: 6.v),
+              CustomOutlinedButton(
+                  text: "lbl_help".tr,
+                  buttonStyle: CustomButtonStyles.outlineBlack),
+              SizedBox(height: 5.v)
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   /// Section Widget
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return CustomAppBar(
-        height: 66.v,
-        leadingWidth: 38.h,
-        leading: AppbarLeadingImage(
-            imagePath: ImageConstant.imgVectorPrimary,
-            margin: EdgeInsets.only(left: 26.h, top: 24.v, bottom: 21.v),
-            onTap: () {
-              onTapVector(context);
-            }),
-        centerTitle: true,
-        title: AppbarTitle(text: "lbl_request".tr),
-        styleType: Style.bgFill);
+      height: 66.v,
+      leadingWidth: 38.h,
+      leading: AppbarLeadingImage(
+        imagePath: ImageConstant.imgVectorPrimary,
+        margin: EdgeInsets.only(left: 26.h, top: 24.v, bottom: 21.v),
+        onTap: () {
+          onTapVector(context);
+        },
+      ),
+      centerTitle: true,
+      title: AppbarTitle(text: "lbl_request".tr),
+      styleType: Style.bgFill,
+    );
   }
 
   // app bar

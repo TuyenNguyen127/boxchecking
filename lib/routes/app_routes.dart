@@ -24,6 +24,10 @@ import '../presentation/app_navigation_screen/app_navigation_screen.dart';
 import '../presentation/app_navigation_screen/binding/app_navigation_binding.dart';
 
 class AppRoutes {
+  static const String appNavigationScreen = '/app_navigation_screen';
+
+  static const String initialRoute = '/initialRoute';
+
   static const String homeContainerScreen = '/home_container_screen';
 
   static const String homePage = '/home_page';
@@ -62,10 +66,6 @@ class AppRoutes {
       '/get_back_checking_and_payment_screen';
 
   static const String orderDetailsScreen = '/order_details_screen';
-
-  static const String appNavigationScreen = '/app_navigation_screen';
-
-  static const String initialRoute = '/initialRoute';
 
   static List<GetPage> pages = [
     GetPage(
@@ -159,12 +159,12 @@ class AppRoutes {
         AppNavigationBinding(),
       ],
     ),
-    GetPage(
-      name: orderDetailsScreen,
-      page: () => OrderDetailsScreen(),
-      // bindings: [
-      //   AppNavigationBinding(),
-      // ],
-    ),
+    // GetPage(
+    //   name: orderDetailsScreen,
+    //   page: () => OrderDetailsScreen(),
+    //   // bindings: [
+    //   //   AppNavigationBinding(),
+    //   // ],
+    // ),
   ];
 }

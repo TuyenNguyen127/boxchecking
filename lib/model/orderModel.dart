@@ -3,7 +3,8 @@ import 'package:lastapp/model/boxOrderModel.dart';
 
 class OrderModel {
   int id; // id order
-  String createAt; // thời gian tạo
+  String createdAt; // thời gian tạo
+  String finishedAt; // thời gian hoàn thành
   String status; // trạng thái. ví dụ: pending, finished,...
   List<BoxOrderModel> boxes; // list boxOrder
   bool checked; // checkbox
@@ -12,7 +13,8 @@ class OrderModel {
 
   OrderModel({
     required this.id,
-    required this.createAt,
+    required this.createdAt,
+    required this.finishedAt,
     required this.status,
     required this.boxes,
     required this.checked,
@@ -36,7 +38,8 @@ class OrderModel {
 
     return OrderModel(
       id: json["orderId"] ?? 1,
-      createAt: json["date"] ?? '',
+      createdAt: json["date"] ?? '',
+      finishedAt: json["date"] ?? '',
       status: json["status"] ?? 'Check',
       boxes: _boxes,
       checked: false,

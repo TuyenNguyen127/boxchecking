@@ -7,7 +7,7 @@ class BoxOrderModel {
   // String dimension; // name của typeBox (thông qua id typeBox) + modelBox
   bool selected; // bool
   int price; // giá tiền
-  int weight; // cân nặng đơn hàng
+  double weight; // cân nặng đơn hàng
 
   BoxOrderModel({
     required this.id,

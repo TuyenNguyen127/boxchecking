@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
+import '../../../model/addressModel.dart';
+import '../../../model/boxOrderModel.dart';
+import '../../../model/orderModel.dart';
+import '../../order_details/order_details_page.dart';
 import 'models/operate_model.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -14,8 +18,8 @@ class OperatePage extends StatefulWidget {
 }
 
 class _OperatePageState extends State<OperatePage> {
-  List<OperateItemModel> listOperates = <OperateItemModel>[];
-  List<OperateItemModel> displayListOperates = <OperateItemModel>[];
+  List<OrderModel> listOperates = <OrderModel>[];
+  List<OrderModel> displayListOperates = <OrderModel>[];
 
   Map isTouch = {
     'all': true,
@@ -53,59 +57,61 @@ class _OperatePageState extends State<OperatePage> {
 
   void add() {
     listOperates.addAll({
-      OperateItemModel(
+      OrderModel(
         id: 33589549623491,
         status: 'Saving',
-        dimension: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
-        service: "Hang On, Washing",
-        model: "Box | 50x50x100 | 20kg",
-        pricePerDay: "10000",
-        startAt: "Start at: 20/12/2023",
+        boxes: <BoxOrderModel>[
+          BoxOrderModel(
+            id: 33589549623491,
+            typeBox: 1,
+            modelBox: 1,
+            services: 'Washing, Hang On',
+            items: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
+            selected: false,
+            price: 30000,
+            weight: 3.0,
+          ),
+        ],
+        createdAt: "20/12/2023",
+        finishedAt: "20/12/2023",
+        checked: false,
+        addressModel: AddressModel(
+          name: "long do",
+          phoneNumber: "0123456789",
+          wardCodeId: 2,
+          districtId: 2,
+          cityId: 1,
+          addressNumber: "345",
+        ),
+        description: "",
       ),
-      OperateItemModel(
-        id: 33589549623492,
-        status: 'received',
-        dimension: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
-        service: "Hang On, Washing",
-        model: "Box | 50x50x100 | 20kg",
-        pricePerDay: "10000",
-        startAt: "Start at: 20/12/2023",
-      ),
-      OperateItemModel(
-        id: 33589549623493,
-        status: 'transporting',
-        dimension: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
-        service: "Hang On, Washing",
-        model: "Box | 50x50x100 | 20kg",
-        pricePerDay: "10000",
-        startAt: "Start at: 20/12/2023",
-      ),
-      OperateItemModel(
+      OrderModel(
         id: 33589549623491,
         status: 'Saving',
-        dimension: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
-        service: "Hang On, Washing",
-        model: "Box | 50x50x100 | 20kg",
-        pricePerDay: "10000",
-        startAt: "Start at: 20/12/2023",
-      ),
-      OperateItemModel(
-        id: 33589549623492,
-        status: 'received',
-        dimension: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
-        service: "Hang On, Washing",
-        model: "Box | 50x50x100 | 20kg",
-        pricePerDay: "10000",
-        startAt: "Start at: 20/12/2023",
-      ),
-      OperateItemModel(
-        id: 33589549623493,
-        status: 'transporting',
-        dimension: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
-        service: "Hang On, Washing",
-        model: "Box | 50x50x100 | 20kg",
-        pricePerDay: "10000",
-        startAt: "Start at: 20/12/2023",
+        boxes: <BoxOrderModel>[
+          BoxOrderModel(
+            id: 33589549623491,
+            typeBox: 1,
+            modelBox: 1,
+            services: 'Washing, Hang On',
+            items: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
+            selected: false,
+            price: 30000,
+            weight: 3.0,
+          ),
+        ],
+        createdAt: "20/12/2023",
+        finishedAt: "20/12/2023",
+        checked: false,
+        addressModel: AddressModel(
+          name: "long do",
+          phoneNumber: "0123456789",
+          wardCodeId: 2,
+          districtId: 2,
+          cityId: 1,
+          addressNumber: "345",
+        ),
+        description: "",
       ),
     });
   }
@@ -483,53 +489,55 @@ class _OperatePageState extends State<OperatePage> {
             ),
           ),
           GestureDetector(
-              onTap: () {
-                filter('received');
-              },
-              child: Container(
-                width: 67.h,
-                margin: EdgeInsets.only(left: 5.h),
-                padding: EdgeInsets.symmetric(vertical: 8.v),
-                decoration: isTouch['received']
-                    ? AppDecoration.outlineBlueGray.copyWith(
-                        borderRadius: BorderRadiusStyle.circleBorder15,
-                      )
-                    : AppDecoration.outlineBluegray50.copyWith(
-                        borderRadius: BorderRadiusStyle.circleBorder15,
-                      ),
-                child: Center(
-                  child: Text(
-                    "Received",
-                    style: isTouch['received']
-                        ? CustomTextStyles.bodySmallPrimary
-                        : theme.textTheme.bodySmall,
-                  ),
+            onTap: () {
+              filter('received');
+            },
+            child: Container(
+              width: 67.h,
+              margin: EdgeInsets.only(left: 5.h),
+              padding: EdgeInsets.symmetric(vertical: 8.v),
+              decoration: isTouch['received']
+                  ? AppDecoration.outlineBlueGray.copyWith(
+                      borderRadius: BorderRadiusStyle.circleBorder15,
+                    )
+                  : AppDecoration.outlineBluegray50.copyWith(
+                      borderRadius: BorderRadiusStyle.circleBorder15,
+                    ),
+              child: Center(
+                child: Text(
+                  "Received",
+                  style: isTouch['received']
+                      ? CustomTextStyles.bodySmallPrimary
+                      : theme.textTheme.bodySmall,
                 ),
-              )),
+              ),
+            ),
+          ),
           GestureDetector(
-              onTap: () {
-                filter('transporting');
-              },
-              child: Container(
-                width: 69.h,
-                margin: EdgeInsets.only(left: 5.h),
-                padding: EdgeInsets.symmetric(vertical: 8.v),
-                decoration: isTouch['transporting']
-                    ? AppDecoration.outlineBlueGray.copyWith(
-                        borderRadius: BorderRadiusStyle.circleBorder15,
-                      )
-                    : AppDecoration.outlineBluegray50.copyWith(
-                        borderRadius: BorderRadiusStyle.circleBorder15,
-                      ),
-                child: Center(
-                  child: Text(
-                    "Transporting",
-                    style: isTouch['transporting']
-                        ? CustomTextStyles.bodySmallPrimary
-                        : theme.textTheme.bodySmall,
-                  ),
+            onTap: () {
+              filter('transporting');
+            },
+            child: Container(
+              width: 69.h,
+              margin: EdgeInsets.only(left: 5.h),
+              padding: EdgeInsets.symmetric(vertical: 8.v),
+              decoration: isTouch['transporting']
+                  ? AppDecoration.outlineBlueGray.copyWith(
+                      borderRadius: BorderRadiusStyle.circleBorder15,
+                    )
+                  : AppDecoration.outlineBluegray50.copyWith(
+                      borderRadius: BorderRadiusStyle.circleBorder15,
+                    ),
+              child: Center(
+                child: Text(
+                  "Transporting",
+                  style: isTouch['transporting']
+                      ? CustomTextStyles.bodySmallPrimary
+                      : theme.textTheme.bodySmall,
                 ),
-              )),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -575,7 +583,7 @@ class _OperatePageState extends State<OperatePage> {
     );
   }
 
-  Widget operateItemWidget(OperateItemModel operateItemModelObj) {
+  Widget operateItemWidget(OrderModel operateItem) {
     return Column(
       children: [
         //
@@ -609,7 +617,7 @@ class _OperatePageState extends State<OperatePage> {
                             ),
                             //
                             Text(
-                              operateItemModelObj.id.toString(),
+                              operateItem.id.toString(),
                               overflow: TextOverflow.clip,
                               style: TextStyle(
                                 color: Colors.black,
@@ -635,8 +643,8 @@ class _OperatePageState extends State<OperatePage> {
                               ),
                               child: Center(
                                 child: Text(
-                                  operateItemModelObj.status[0].toUpperCase() +
-                                      operateItemModelObj.status.substring(1),
+                                  operateItem.status[0].toUpperCase() +
+                                      operateItem.status.substring(1),
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
                                     fontSize: 10,
@@ -651,7 +659,27 @@ class _OperatePageState extends State<OperatePage> {
                         ),
                         //
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            // //
+                            // Get.toNamed(
+                            //   AppRoutes.orderDetailsScreen,
+                            // );
+
+                            //
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    OrderDetailsScreen(operateItem),
+                              ),
+                            );
+
+                            // //
+                            // Navigator.pushNamed(
+                            //   context,
+                            //   AppRoutes.orderDetailsScreen,
+                            // );
+                          },
                           child: Container(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8.h, vertical: 5.v),
@@ -690,7 +718,7 @@ class _OperatePageState extends State<OperatePage> {
                         Container(
                           width: SizeUtils.width * 9 / 10,
                           child: Text(
-                            operateItemModelObj.dimension,
+                            operateItem.boxes.it,
                             overflow: TextOverflow.clip,
                             style: CustomTextStyles.labelLargeGray80002,
                           ),
@@ -719,7 +747,7 @@ class _OperatePageState extends State<OperatePage> {
                         Container(
                           width: SizeUtils.width * 9 / 10,
                           child: Text(
-                            operateItemModelObj.service,
+                            operateItem.service,
                             overflow: TextOverflow.clip,
                             style: CustomTextStyles.labelLargeLightblue800,
                           ),
@@ -748,7 +776,7 @@ class _OperatePageState extends State<OperatePage> {
                         Container(
                           width: SizeUtils.width * 9 / 10,
                           child: Text(
-                            operateItemModelObj.model,
+                            operateItem.model,
                             overflow: TextOverflow.clip,
                             style: CustomTextStyles.labelLargeOrangeA700,
                           ),
@@ -777,7 +805,7 @@ class _OperatePageState extends State<OperatePage> {
                         Container(
                           width: SizeUtils.width * 9 / 10,
                           child: Text(
-                            operateItemModelObj.pricePerDay + "đ / day",
+                            operateItem.pricePerDay + "đ / day",
                             overflow: TextOverflow.clip,
                             style: CustomTextStyles.labelLargeTeal900,
                           ),
@@ -795,7 +823,7 @@ class _OperatePageState extends State<OperatePage> {
                           padding: EdgeInsets.only(left: 5.h),
                           width: SizeUtils.width / 2,
                           child: Text(
-                            operateItemModelObj.startAt,
+                            operateItem.startAt,
                             overflow: TextOverflow.clip,
                             style: CustomTextStyles.labelLargeGray0xFFA2AEBC,
                           ),
