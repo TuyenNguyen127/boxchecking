@@ -2,6 +2,7 @@ import 'package:lastapp/model/orderModel.dart';
 
 import '../../../../core/app_export.dart';
 import '../models/get_back_choose_box_model.dart';
+import 'package:lastapp/model/selectionPopupModel/selection_popup_model.dart';
 
 /// A controller class for the GetBackChooseBoxScreen.
 ///

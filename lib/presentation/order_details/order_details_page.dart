@@ -23,64 +23,64 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   List<OrderModel> listOrders = <OrderModel>[];
 
   void add() {
-    listOrders.addAll({
-      OrderModel(
-        id: 33589549623491,
-        status: 'Saving',
-        boxes: <BoxOrderModel>[
-          BoxOrderModel(
-            id: 33589549623491,
-            typeBox: 1,
-            modelBox: 1,
-            services: 'Washing, Hang On',
-            items: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
-            selected: false,
-            price: 30000,
-            weight: 3.0,
-          ),
-        ],
-        createdAt: "20/12/2023",
-        finishedAt: "20/12/2023",
-        checked: false,
-        addressModel: AddressModel(
-          name: "long do",
-          phoneNumber: "0123456789",
-          wardCodeId: 2,
-          districtId: 2,
-          cityId: 1,
-          addressNumber: "345",
-        ),
-        description: "",
-      ),
-      OrderModel(
-        id: 33589549623491,
-        status: 'Saving',
-        boxes: <BoxOrderModel>[
-          BoxOrderModel(
-            id: 33589549623491,
-            typeBox: 1,
-            modelBox: 1,
-            services: 'Washing, Hang On',
-            items: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
-            selected: false,
-            price: 30000,
-            weight: 3.0,
-          ),
-        ],
-        createdAt: "20/12/2023",
-        finishedAt: "20/12/2023",
-        checked: false,
-        addressModel: AddressModel(
-          name: "long do",
-          phoneNumber: "0123456789",
-          wardCodeId: 2,
-          districtId: 2,
-          cityId: 1,
-          addressNumber: "345",
-        ),
-        description: "",
-      ),
-    });
+    // listOrders.addAll({
+    //   OrderModel(
+    //     id: 33589549623491,
+    //     status: 'Saving',
+    //     boxes: <BoxOrderModel>[
+    //       BoxOrderModel(
+    //         id: 33589549623491,
+    //         typeBox: 1,
+    //         modelBox: 1,
+    //         services: 'Washing, Hang On',
+    //         items: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
+    //         selected: false,
+    //         price: 30000,
+    //         weight: 3.0,
+    //       ),
+    //     ],
+    //     createdAt: "20/12/2023",
+    //     finishedAt: "20/12/2023",
+    //     checked: false,
+    //     addressModel: AddressModel(
+    //       name: "long do",
+    //       phoneNumber: "0123456789",
+    //       wardCodeId: 2,
+    //       districtId: 2,
+    //       cityId: 1,
+    //       addressNumber: "345",
+    //     ),
+    //     description: "",
+    //   ),
+    //   OrderModel(
+    //     id: 33589549623491,
+    //     status: 'Saving',
+    //     boxes: <BoxOrderModel>[
+    //       BoxOrderModel(
+    //         id: 33589549623491,
+    //         typeBox: 1,
+    //         modelBox: 1,
+    //         services: 'Washing, Hang On',
+    //         items: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
+    //         selected: false,
+    //         price: 30000,
+    //         weight: 3.0,
+    //       ),
+    //     ],
+    //     createdAt: "20/12/2023",
+    //     finishedAt: "20/12/2023",
+    //     checked: false,
+    //     addressModel: AddressModel(
+    //       name: "long do",
+    //       phoneNumber: "0123456789",
+    //       wardCodeId: 2,
+    //       districtId: 2,
+    //       cityId: 1,
+    //       addressNumber: "345",
+    //     ),
+    //     description: "",
+    //   ),
+    // });
   }
 
   @override

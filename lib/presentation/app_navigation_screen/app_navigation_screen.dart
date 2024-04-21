@@ -35,7 +35,7 @@ class AppNavigationScreen extends GetWidget<AppNavigationController> {
                         _buildScreenTitle(
                           screenTitle: "ONB - Oderbox".tr,
                           onTapScreenTitle: () =>
-                              onTapScreenTitle(AppRoutes.onbOderboxScreen),
+                              onTapScreenTitle(AppRoutes.onbOrderboxScreen),
                         ),
                         _buildScreenTitle(
                           screenTitle: "ONB - Address".tr,

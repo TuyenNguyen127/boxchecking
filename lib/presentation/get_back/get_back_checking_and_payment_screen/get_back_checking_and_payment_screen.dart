@@ -33,14 +33,15 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
 
   @override
   void initState() {
-    for (var element in chooseController.listOrders) {
-      heightItems += element.boxes.length * 160.v;
-      for (var e in element.boxes) {
-        total += e.price;
-      }
-      idList.add(element.id);
-    }
-    print(idList);
+    // for (var element in chooseController.listOrders) {
+    //   heightItems += element.boxes.length * 160.v;
+    //   for (var e in element.boxes) {
+    //     total += e.price;
+    //   }
+    //   idList.add(element.id);
+    // }
+    // print(idList);
+
     super.initState();
   }
 
@@ -325,28 +326,29 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
                           155.v,
                       child: Column(
                         children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: 0.h, right: 10.h, bottom: 10.h),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Order ID - " +
-                                      chooseController.listOrders[index].id
-                                          .toString(),
-                                  style: CustomTextStyles.labelLargeBold,
-                                ),
-                              ],
-                            ),
-                          ),
+                          // Padding(
+                          //   padding: EdgeInsets.only(
+                          //       left: 0.h, right: 10.h, bottom: 10.h),
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //     children: [
+                          //       Text(
+                          //         "Order ID - " +
+                          //             chooseController.listOrders[index].id
+                          //                 .toString(),
+                          //         style: CustomTextStyles.labelLargeBold,
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                           Expanded(
                             child: ListView.builder(
                               itemCount: chooseController
                                   .listOrders[index].boxes.length,
                               itemBuilder: (context, i) {
                                 return _buildPackageRequirementsItem(
-                                    chooseController.listOrders[index].boxes[i]);
+                                    chooseController
+                                        .listOrders[index].boxes[i]);
                               },
                             ),
                           ),
@@ -715,11 +717,11 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
         },
         body: jsonEncode(<String, dynamic>{
           "name": addressController.tuyenListAddress[0].name,
-          "phoneNumber":
-              addressController.tuyenListAddress[0].phoneNumber,
+          "phoneNumber": addressController.tuyenListAddress[0].phoneNumber,
           "address": addressController.tuyenListAddress[0].addressNumber,
           "date": "2024-04-07T05:04:47.315Z",
-          "toWardCode": '510102', //addressController.tuyenListAddress[0].towardCode,
+          "toWardCode":
+              '510102', //addressController.tuyenListAddress[0].towardCode,
           "toDistrictId": addressController.tuyenListAddress[0].districtId,
           "orderId": idList
         }),

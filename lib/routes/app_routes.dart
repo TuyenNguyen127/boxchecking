@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import '../presentation/home_container_screen/home_container_screen.dart';
 import '../presentation/home_container_screen/binding/home_container_binding.dart';
-import '../presentation/order_new_box/onb_oderbox_screen/onb_oderbox_screen.dart';
-import '../presentation/order_new_box/onb_oderbox_screen/binding/onb_oderbox_binding.dart';
+import '../presentation/order_new_box/onb_oderbox_screen/onb_orderbox_screen.dart';
+import '../presentation/order_new_box/onb_oderbox_screen/binding/onb_orderbox_binding.dart';
 import '../presentation/order_new_box/onb_address_screen/onb_address_screen.dart';
 import '../presentation/order_new_box/onb_address_screen/binding/onb_address_binding.dart';
 import '../presentation/order_new_box/onb_checking_and_payment_screen/onb_checking_and_payment_screen.dart';
@@ -42,7 +42,7 @@ class AppRoutes {
 
   static const String settingPage = '/setting_page';
 
-  static const String onbOderboxScreen = '/onb_oderbox_screen';
+  static const String onbOrderboxScreen = '/onb_oderbox_screen';
 
   static const String onbAddressScreen = '/onb_address_screen';
 
@@ -83,11 +83,11 @@ class AppRoutes {
       ],
     ),
     GetPage(
-      name: onbOderboxScreen,
-      page: () => OnbOderboxScreen(),
-      bindings: [
-        OnbOderboxBinding(),
-      ],
+      name: onbOrderboxScreen,
+      page: () => OnbOrderboxScreen(),
+      // bindings: [
+      //   OnbOrderboxBinding(),
+      // ],
     ),
     GetPage(
       name: onbAddressScreen,
@@ -96,20 +96,20 @@ class AppRoutes {
         OnbAddressBinding(),
       ],
     ),
-    GetPage(
-      name: onbCheckingAndPaymentScreen,
-      page: () => OnbCheckingAndPaymentScreen(),
-      bindings: [
-        OnbCheckingAndPaymentBinding(),
-      ],
-    ),
-    GetPage(
-      name: typeRequestScreen,
-      page: () => TypeRequestScreen(),
-      bindings: [
-        TypeRequestBinding(),
-      ],
-    ),
+    // GetPage(
+    //   name: onbCheckingAndPaymentScreen,
+    //   page: () => OnbCheckingAndPaymentScreen(),
+    //   bindings: [
+    //     OnbCheckingAndPaymentBinding(),
+    //   ],
+    // ),
+    // GetPage(
+    //   name: typeRequestScreen,
+    //   page: () => TypeRequestScreen(),
+    //   bindings: [
+    //     TypeRequestBinding(),
+    //   ],
+    // ),
     GetPage(
       name: sendBoxChooseBoxScreen,
       page: () => SendBoxChooseBoxScreen(),

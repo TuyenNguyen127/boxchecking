@@ -1,0 +1,17 @@
+[
+    {
+        "shiptatusID": 1,
+        "name": "awaiting confirmation"
+    },{
+        "shiptatusID": 2,
+        "name": "waiting for delivery"
+    },
+    {
+        "shiptatusID": 3,
+        "name": "awaiting shipping"
+    },
+    {
+        "shiptatusID": 4,
+        "name": "done"
+    }
+]

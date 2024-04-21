@@ -56,122 +56,74 @@ class _OperatePageState extends State<OperatePage> {
   }
 
   void add() {
-    listOperates.addAll({
-      OrderModel(
-        id: 33589549623491,
-        status: 'Saving',
-        boxes: <BoxOrderModel>[
-          BoxOrderModel(
-            id: 33589549623491,
-            typeBox: 1,
-            modelBox: 1,
-            services: 'Washing, Hang On',
-            items: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
-            selected: false,
-            price: 30000,
-            weight: 3.0,
-          ),
-        ],
-        createdAt: "20/12/2023",
-        finishedAt: "20/12/2023",
-        checked: false,
-        addressModel: AddressModel(
-          name: "long do",
-          phoneNumber: "0123456789",
-          wardCodeId: 2,
-          districtId: 2,
-          cityId: 1,
-          addressNumber: "345",
-        ),
-        description: "",
-      ),
-      OrderModel(
-        id: 33589549623491,
-        status: 'Saving',
-        boxes: <BoxOrderModel>[
-          BoxOrderModel(
-            id: 33589549623491,
-            typeBox: 1,
-            modelBox: 1,
-            services: 'Washing, Hang On',
-            items: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
-            selected: false,
-            price: 30000,
-            weight: 3.0,
-          ),
-        ],
-        createdAt: "20/12/2023",
-        finishedAt: "20/12/2023",
-        checked: false,
-        addressModel: AddressModel(
-          name: "long do",
-          phoneNumber: "0123456789",
-          wardCodeId: 2,
-          districtId: 2,
-          cityId: 1,
-          addressNumber: "345",
-        ),
-        description: "",
-      ),
-    });
+    // listOperates.addAll({
+    //   OrderModel(
+    //     id: 33589549623491,
+    //     status: 'Saving',
+    //     boxes: <BoxOrderModel>[
+    //       BoxOrderModel(
+    //         id: 33589549623491,
+    //         typeBox: 1,
+    //         modelBox: 1,
+    //         services: 'Washing, Hang On',
+    //         items: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
+    //         selected: false,
+    //         price: 30000,
+    //         weight: 3.0,
+    //       ),
+    //     ],
+    //     createdAt: "20/12/2023",
+    //     finishedAt: "20/12/2023",
+    //     checked: false,
+    //     addressModel: AddressModel(
+    //       name: "long do",
+    //       phoneNumber: "0123456789",
+    //       wardCodeId: 2,
+    //       districtId: 2,
+    //       cityId: 1,
+    //       addressNumber: "345",
+    //     ),
+    //     description: "",
+    //   ),
+    //   OrderModel(
+    //     id: 33589549623491,
+    //     status: 'Saving',
+    //     boxes: <BoxOrderModel>[
+    //       BoxOrderModel(
+    //         id: 33589549623491,
+    //         typeBox: 1,
+    //         modelBox: 1,
+    //         services: 'Washing, Hang On',
+    //         items: '10xQuan Jean; 10xAo so mi; 10xThat lung da',
+    //         selected: false,
+    //         price: 30000,
+    //         weight: 3.0,
+    //       ),
+    //     ],
+    //     createdAt: "20/12/2023",
+    //     finishedAt: "20/12/2023",
+    //     checked: false,
+    //     addressModel: AddressModel(
+    //       name: "long do",
+    //       phoneNumber: "0123456789",
+    //       wardCodeId: 2,
+    //       districtId: 2,
+    //       cityId: 1,
+    //       addressNumber: "345",
+    //     ),
+    //     description: "",
+    //   ),
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
     // done (old version - not fixed, not sticky)
-    // return SafeArea(
-    //   child: Scaffold(
-    //     // backgroundColor: theme.colorScheme.primary,
-    //     backgroundColor: Colors.transparent,
-    //     appBar: _buildAppBarOperatePage(),
-    //     body: SizedBox(
-    //       width: SizeUtils.width,
-    //       //
-    //       child: Column(
-    //         children: [
-    //           //
-    //           _orderTitleView(),
-    //           //
-    //           // Expanded(
-    //           //   child: SingleChildScrollView(
-    //           //     child:
-    //           // _buildTop(),
-    //           _buildSectionInfoAboutOrders(),
-    //           SizedBox(height: 5.v),
-    //           //   ),
-    //           // ),
-    //           //
-    //           _buildStatusTab(),
-    //           //
-    //           Expanded(
-    //             child: SingleChildScrollView(
-    //               child: _buildListInfo(),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
-
-    // new version with sticky tabs and hiding orders' info section
-    return Scaffold(
-      appBar: _buildAppBarOperatePage(),
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  //
-                  _orderTitleView(),
-                  //
-                  _buildSectionInfoAboutOrders(),
-                ],
-              ),
-            ),
-          ];
-        },
+    return SafeArea(
+      child: Scaffold(
+        // backgroundColor: theme.colorScheme.primary,
+        backgroundColor: Colors.transparent,
+        appBar: _buildAppBarOperatePage(),
         body: SizedBox(
           width: SizeUtils.width,
           //
@@ -190,6 +142,43 @@ class _OperatePageState extends State<OperatePage> {
         ),
       ),
     );
+
+    // new version with sticky tabs and hiding orders' info section
+    // return Scaffold(
+    //   appBar: _buildAppBarOperatePage(),
+    //   body: NestedScrollView(
+    //     headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+    //       return <Widget>[
+    //         SliverToBoxAdapter(
+    //           child: Column(
+    //             children: [
+    //               //
+    //               _orderTitleView(),
+    //               //
+    //               _buildSectionInfoAboutOrders(),
+    //             ],
+    //           ),
+    //         ),
+    //       ];
+    //     },
+    //     body: SizedBox(
+    //       width: SizeUtils.width,
+    //       //
+    //       child: Column(
+    //         children: [
+    //           //
+    //           _buildStatusTab(),
+    //           //
+    //           Expanded(
+    //             child: SingleChildScrollView(
+    //               child: _buildListInfo(),
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   /// appbar
@@ -616,15 +605,15 @@ class _OperatePageState extends State<OperatePage> {
                               ),
                             ),
                             //
-                            Text(
-                              operateItem.id.toString(),
-                              overflow: TextOverflow.clip,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                            // Text(
+                            //   operateItem.id.toString(),
+                            //   overflow: TextOverflow.clip,
+                            //   style: TextStyle(
+                            //     color: Colors.black,
+                            //     fontSize: 10,
+                            //     fontWeight: FontWeight.w500,
+                            //   ),
+                            // ),
                             //
                             CustomImageView(
                               imagePath: ImageConstant.imgComputer,
@@ -714,15 +703,15 @@ class _OperatePageState extends State<OperatePage> {
                             ),
                           ),
                         ),
-                        //
-                        Container(
-                          width: SizeUtils.width * 9 / 10,
-                          child: Text(
-                            operateItem.boxes.it,
-                            overflow: TextOverflow.clip,
-                            style: CustomTextStyles.labelLargeGray80002,
-                          ),
-                        ),
+                        // //
+                        // Container(
+                        //   width: SizeUtils.width * 9 / 10,
+                        //   child: Text(
+                        //     operateItem.boxes.,
+                        //     overflow: TextOverflow.clip,
+                        //     style: CustomTextStyles.labelLargeGray80002,
+                        //   ),
+                        // ),
                         //
                       ],
                     ),
@@ -743,15 +732,15 @@ class _OperatePageState extends State<OperatePage> {
                             ),
                           ),
                         ),
-                        //
-                        Container(
-                          width: SizeUtils.width * 9 / 10,
-                          child: Text(
-                            operateItem.service,
-                            overflow: TextOverflow.clip,
-                            style: CustomTextStyles.labelLargeLightblue800,
-                          ),
-                        ),
+                        // //
+                        // Container(
+                        //   width: SizeUtils.width * 9 / 10,
+                        //   child: Text(
+                        //     operateItem.service,
+                        //     overflow: TextOverflow.clip,
+                        //     style: CustomTextStyles.labelLargeLightblue800,
+                        //   ),
+                        // ),
                         //
                       ],
                     ),
@@ -772,15 +761,15 @@ class _OperatePageState extends State<OperatePage> {
                             ),
                           ),
                         ),
-                        //
-                        Container(
-                          width: SizeUtils.width * 9 / 10,
-                          child: Text(
-                            operateItem.model,
-                            overflow: TextOverflow.clip,
-                            style: CustomTextStyles.labelLargeOrangeA700,
-                          ),
-                        ),
+                        // //
+                        // Container(
+                        //   width: SizeUtils.width * 9 / 10,
+                        //   child: Text(
+                        //     operateItem.model,
+                        //     overflow: TextOverflow.clip,
+                        //     style: CustomTextStyles.labelLargeOrangeA700,
+                        //   ),
+                        // ),
                         //
                       ],
                     ),
@@ -801,15 +790,15 @@ class _OperatePageState extends State<OperatePage> {
                             ),
                           ),
                         ),
-                        //
-                        Container(
-                          width: SizeUtils.width * 9 / 10,
-                          child: Text(
-                            operateItem.pricePerDay + "đ / day",
-                            overflow: TextOverflow.clip,
-                            style: CustomTextStyles.labelLargeTeal900,
-                          ),
-                        ),
+                        // //
+                        // Container(
+                        //   width: SizeUtils.width * 9 / 10,
+                        //   child: Text(
+                        //     operateItem.pricePerDay + "đ / day",
+                        //     overflow: TextOverflow.clip,
+                        //     style: CustomTextStyles.labelLargeTeal900,
+                        //   ),
+                        // ),
                         //
                       ],
                     ),
@@ -818,16 +807,16 @@ class _OperatePageState extends State<OperatePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        //
-                        Container(
-                          padding: EdgeInsets.only(left: 5.h),
-                          width: SizeUtils.width / 2,
-                          child: Text(
-                            operateItem.startAt,
-                            overflow: TextOverflow.clip,
-                            style: CustomTextStyles.labelLargeGray0xFFA2AEBC,
-                          ),
-                        ),
+                        // //
+                        // Container(
+                        //   padding: EdgeInsets.only(left: 5.h),
+                        //   width: SizeUtils.width / 2,
+                        //   child: Text(
+                        //     operateItem.startAt,
+                        //     overflow: TextOverflow.clip,
+                        //     style: CustomTextStyles.labelLargeGray0xFFA2AEBC,
+                        //   ),
+                        // ),
                         //
                         Text(
                           'total: '.toUpperCase() + 200000.toString() + " đ",

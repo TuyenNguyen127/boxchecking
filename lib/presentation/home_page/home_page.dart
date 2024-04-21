@@ -1,18 +1,33 @@
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/app_bar/appbar_trailing_iconbutton.dart';
-import 'widgets/view_item_widget.dart';
-import 'models/view_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'controller/home_controller.dart';
 import 'models/home_model.dart';
 
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
 // ignore_for_file: must_be_immutable
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   HomeController controller = Get.put(HomeController(HomeModel().obs));
+
+  @override
+  void initState() {
+    super.initState();
+
+    initializeDateFormatting();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,31 +37,27 @@ class HomePage extends StatelessWidget {
         appBar: _buildAppBar(),
         body: Container(
           width: SizeUtils.width,
+          decoration: BoxDecoration(
+            // color: theme.colorScheme.primary,
+            color: Colors.transparent,
+          ),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.h),
-                  decoration: AppDecoration.fillPrimary,
-                  child: Column(
-                    children: [
-                      SizedBox(height: 17.v),
-                      CustomImageView(
-                        imagePath: ImageConstant.imgImage,
-                        height: 370.v,
-                        width: 295.h,
-                      ),
-                      SizedBox(height: 17.v),
-                      _buildRequestTypeSectionOne(),
-                      SizedBox(height: 17.v),
-                      _buildRequestTypeSectionTwo(),
-                      SizedBox(height: 17.v),
-                    ],
-                  ),
+                Column(
+                  children: [
+                    //
+                    _buildBannerView(),
+                    //
+                    SizedBox(height: 10.v),
+                    //
+                    _buildSectionInfoAboutOrders(),
+                    //
+                    SizedBox(height: 10.v),
+                    _buildServiceView(),
+                    //
+                  ],
                 ),
-                SizedBox(height: 10.v),
-                // _buildServiceSection(),
-                SizedBox(height: 10.v),
               ],
             ),
           ),
@@ -59,183 +70,525 @@ class HomePage extends StatelessWidget {
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       elevation: 0,
-      leadingWidth: 62.h,
-      leading: AppbarLeadingImage(
-        imagePath: ImageConstant.imgLock,
-        margin: EdgeInsets.only(left: 0.h, top: 8.v, bottom: 5.v),
+      leadingWidth: 60.h,
+      leading: GestureDetector(
         onTap: () {},
+        child: Container(
+          margin: EdgeInsets.only(left: 10.h),
+          child: Center(
+            child: SvgPicture.asset(
+              ImageConstant.imgLock,
+              height: 50.v,
+              width: 50.h,
+              fit: BoxFit.contain,
+              colorFilter:
+                  ColorFilter.mode(Colors.transparent, BlendMode.srcIn),
+            ),
+          ),
+        ),
       ),
       title: Container(
-        width: 105.h,
+        width: 100.h,
         margin: EdgeInsets.only(left: 0.h, bottom: 0.v),
-        child: RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: "lbl_hello".tr + "\n",
-                style: CustomTextStyles.titleSmallff9c9c9c,
-              ),
-              TextSpan(
-                text: "Nguyễn Tuyển",
-                style: CustomTextStyles.titleSmallff000000,
-              ),
-            ],
+        child: Text(
+          "Nguyễn Tuyển",
+          style: TextStyle(
+            color: Color(0XFF000000),
+            fontSize: 18.fSize,
+            fontWeight: FontWeight.w600,
           ),
-          textAlign: TextAlign.left,
         ),
       ),
       actions: [
-        AppbarTrailingIconbutton(
-          imagePath: ImageConstant.imgUser,
-          margin: EdgeInsets.fromLTRB(16.h, 5.v, 3.h, 1.v),
+        GestureDetector(
           onTap: () {},
+          child: Container(
+            child: Center(
+              child: SvgPicture.asset(
+                ImageConstant.imgUser,
+                height: 50.v,
+                width: 50.h,
+                fit: BoxFit.contain,
+                colorFilter:
+                    ColorFilter.mode(Colors.transparent, BlendMode.srcIn),
+              ),
+            ),
+          ),
         ),
-        AppbarTrailingIconbutton(
-          imagePath: ImageConstant.imgUserPrimary,
-          margin: EdgeInsets.only(left: 11.h, top: 3.v, right: 19.h),
+        GestureDetector(
           onTap: () {},
+          child: Container(
+            margin: EdgeInsets.only(left: 10.h, right: 20.h),
+            child: Center(
+              child: SvgPicture.asset(
+                ImageConstant.imgUserPrimary,
+                height: 50.v,
+                width: 50.h,
+                fit: BoxFit.contain,
+                colorFilter:
+                    ColorFilter.mode(Colors.transparent, BlendMode.srcIn),
+              ),
+            ),
+          ),
         ),
       ],
     );
   }
 
-  /// Section button 1
-  Widget _buildRequestTypeSectionOne() {
-    return GridView.builder(
-      shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisExtent: 71.v,
-          crossAxisCount: 2,
-          mainAxisSpacing: 14.h,
-          crossAxisSpacing: 14.h),
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: 2,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () => {
-            Get.toNamed(
-              AppRoutes.typeRequestScreen,
-            )
-          },
-          child: Container(
-            padding: EdgeInsets.fromLTRB(10, 0, 5, 0),
-            height: 50,
-            width: 150,
-            decoration: const BoxDecoration(
-              color: Color(0xffffc0c0),
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  height: 48,
-                  width: 48,
-                  decoration: BoxDecoration(
-                    color: Color(0xffff4c4c),
-                    borderRadius: const BorderRadius.all(Radius.circular(50)),
-                  ),
-                  child: SvgPicture.asset(
-                    ImageConstant.imgTelevision,
-                    width: 16,
-                    height: 16,
-                    fit: BoxFit.scaleDown,
-                  ),
+  Widget _buildBannerView() {
+    // Get current time
+    DateTime now = DateTime.now();
+    // String currentTime = '${now.hour}:${now.minute}:${now.second}';
+
+    // Format the current time in English
+    String formattedDay = DateFormat('EEEE').format(now);
+    formattedDay = formattedDay[0].toUpperCase() + formattedDay.substring(1);
+    String formattedTime = DateFormat.yMMMMd('en_US').format(now);
+    ;
+
+    return Container(
+      width: SizeUtils.width,
+      padding:
+          EdgeInsets.only(left: 20.h, right: 20.h, bottom: 10.h, top: 25.h),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          //
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //
+              Text(
+                'Good',
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 35,
                 ),
-                SizedBox(width: 10),
-                FittedBox(
-                  fit: BoxFit.cover,
-                  child: Text(
-                    'Checking box',
-                    style: TextStyle(
-                      overflow: TextOverflow.ellipsis,
-                      // fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
-                  ),
+              ),
+              //
+              Text(
+                'Morning,',
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 35,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
-      },
+          //
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              //
+              Text(
+                "Today's $formattedDay",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              //
+              Text(
+                '$formattedTime',
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          //
+        ],
+      ),
     );
   }
 
-  /// Section button 1
-  Widget _buildRequestTypeSectionTwo() {
-    return GridView.builder(
-        shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            mainAxisExtent: 71.v,
-            crossAxisCount: 2,
-            mainAxisSpacing: 14.h,
-            crossAxisSpacing: 14.h),
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: 2,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            // onTap: onTapCollection(),
-            // onTap: () => onTapCollection,
-            child: Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 5, 0),
-              height: 50,
-              width: 150,
-              decoration: const BoxDecoration(
-                color: Color(0xffffc0c0),
-                borderRadius: BorderRadius.all(Radius.circular(8)),
+  Widget _buildOrderTitleView(String title) {
+    // return Column(
+    //   crossAxisAlignment: CrossAxisAlignment.center,
+    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //   children: [
+    //     Container(
+    //       padding: EdgeInsets.symmetric(horizontal: 20.h),
+    //       height: 50.v,
+    //       color: theme.colorScheme.primary,
+    //       child: Row(
+    //         children: [
+    //           Padding(
+    //             padding: EdgeInsets.symmetric(vertical: 5.v),
+    //             child: Text(
+    //               "lbl_orders".tr,
+    //               style: CustomTextStyles.titleLargeBlack900,
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ],
+    // );
+
+    return Container(
+      padding: EdgeInsets.only(bottom: 10.v),
+      child: Row(
+        children: [
+          Text(
+            title[0].toUpperCase() + title.substring(1),
+            style: CustomTextStyles.titleLargeBlack900,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Common widget
+  Widget iconInsideFrame({
+    required String colorBackgr,
+    required double sizeBackgr,
+    required String icon,
+    required double sizeIconBackgr,
+  }) {
+    return SizedBox(
+      // height: 60.v,
+      // width: 60.h,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          CustomImageView(
+            imagePath: colorBackgr,
+            height: sizeBackgr,
+            width: sizeBackgr,
+            alignment: Alignment.center,
+          ),
+          CustomImageView(
+            imagePath: icon,
+            height: sizeIconBackgr,
+            width: sizeIconBackgr,
+            alignment: Alignment.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget gridItem(
+    crossAxisCellCount,
+    mainAxisCellCount,
+    colorBackgr,
+    colorIconBackgr,
+    sizeBackgr,
+    icon,
+    sizeIconBackgr,
+    text,
+    textColor,
+    data,
+    dataColor,
+  ) {
+    return StaggeredGridTile.count(
+      crossAxisCellCount: crossAxisCellCount,
+      mainAxisCellCount: mainAxisCellCount,
+      child: Container(
+        decoration: BoxDecoration(
+          color: colorBackgr,
+          borderRadius: BorderRadiusStyle.roundedBorder10,
+        ),
+        //
+        child: Row(
+          children: [
+            //
+            Flexible(
+              flex: 1,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(left: 10.h, right: 0.h),
+                    child: iconInsideFrame(
+                      colorBackgr: colorIconBackgr,
+                      sizeBackgr: 60.v,
+                      icon: icon,
+                      // sizeIconBackgr: sizeIconBackgr,
+                      sizeIconBackgr: 60.v / 2,
+                    ),
+                  ),
+                ],
               ),
-              child: Center(
-                child: Text(
-                  'Payment',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
+            ),
+            //
+            Flexible(
+              flex: 2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  //
+                  Container(
+                    child: Center(
+                      child: Text(
+                        text.toString()[0].toUpperCase() +
+                            text.toString().substring(1) +
+                            ":",
+                        style: TextStyle(
+                          color: textColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                  ),
+                  //
+                  SizedBox(height: 2.h),
+                  //
+                  Container(
+                    child: Center(
+                      child: Text(
+                        data.toString(),
+                        style: TextStyle(
+                          color: dataColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 22,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionInfoAboutOrders() {
+    return Container(
+      width: SizeUtils.width,
+      color: theme.colorScheme.primary,
+      padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 10.h),
+      child: Column(
+        children: [
+          //
+          _buildOrderTitleView('orders'),
+          //
+          StaggeredGrid.count(
+            crossAxisCount: 4,
+            mainAxisSpacing: 20.v,
+            crossAxisSpacing: 20.v,
+            children: [
+              gridItem(
+                2,
+                1.5,
+                appTheme.lavender,
+                ImageConstant.imgPlay,
+                60.h,
+                ImageConstant.imgTelevision,
+                20.h,
+                'Total orders',
+                appTheme.gray80001,
+                100,
+                appTheme.black900,
+              ),
+              gridItem(
+                2,
+                0.75,
+                appTheme.blue10002,
+                ImageConstant.imgCloseLightBlueA70001,
+                50.h,
+                ImageConstant.imgReply,
+                16.h,
+                'Saving',
+                appTheme.gray80001,
+                60,
+                appTheme.black900,
+              ),
+              gridItem(
+                2,
+                0.75,
+                appTheme.green100B2,
+                ImageConstant.imgPlayGreenA700,
+                50.h,
+                ImageConstant.imgCheckmark,
+                20.h,
+                'Received',
+                appTheme.gray80001,
+                30,
+                appTheme.black900,
+              ),
+              gridItem(
+                2,
+                0.75,
+                appTheme.deepOrange100B2,
+                ImageConstant.imgPlayOrangeA70001,
+                50.h,
+                ImageConstant.imgAirplane,
+                18.h,
+                'Transporting',
+                appTheme.gray80001,
+                3,
+                appTheme.black900,
+              ),
+              gridItem(
+                2,
+                0.75,
+                appTheme.deepOrange50,
+                ImageConstant.imgEllipse15,
+                50.h,
+                ImageConstant.imgThumbsUpPrimary,
+                20.h,
+                'Rejected',
+                appTheme.gray80001,
+                7,
+                appTheme.black900,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildServiceView() {
+    return Container(
+      width: SizeUtils.width,
+      padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary,
+      ),
+      child: Column(
+        children: [
+          //
+          _buildOrderTitleView('services'),
+          //
+          Row(
+            children: [
+              //
+              Flexible(
+                flex: 1,
+                child: GestureDetector(
+                  onTap: () => onTapOrderNewBox(),
+                  child: Container(
+                    height: 140.v,
+                    margin: EdgeInsets.only(right: 10.h),
+                    decoration: BoxDecoration(
+                      color: appTheme.deepOrange50,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Container(
+                        width: 70.h,
+                        child: Center(
+                          child: Text(
+                            'Order new box',
+                            overflow: TextOverflow.clip,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-              //   ],
-              // ),
-            ),
-          );
-        });
-    // );
+              //
+              Flexible(
+                flex: 1,
+                child: GestureDetector(
+                  onTap: () => onTapSendBoxToWarehouse(),
+                  child: Container(
+                    height: 140.v,
+                    margin: EdgeInsets.only(left: 10.h, right: 10.h),
+                    decoration: BoxDecoration(
+                      color: appTheme.deepOrange100B2,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Container(
+                        width: 70.h,
+                        child: Center(
+                          child: Text(
+                            'Send order',
+                            overflow: TextOverflow.clip,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              //
+              Flexible(
+                flex: 1,
+                child: GestureDetector(
+                  onTap: () => onTapGetBackBox(),
+                  child: Container(
+                    height: 140.v,
+                    margin: EdgeInsets.only(left: 10.h),
+                    decoration: BoxDecoration(
+                      color: appTheme.green100B2,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Container(
+                        width: 70.h,
+                        child: Center(
+                          child: Text(
+                            'Get box back',
+                            overflow: TextOverflow.clip,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              //
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
-  /// Section Widget
-  Widget _buildServiceSection() {
-    return Container(
-        padding: EdgeInsets.symmetric(horizontal: 17.h, vertical: 11.v),
-        decoration: AppDecoration.fillPrimary,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text("lbl_services".tr, style: CustomTextStyles.titleMediumGray80001),
-          SizedBox(height: 15.v),
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.h),
-              child: Obx(() => GridView.builder(
-                  shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      mainAxisExtent: 66.v,
-                      crossAxisCount: 4,
-                      mainAxisSpacing: 11.h,
-                      crossAxisSpacing: 11.h),
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount:
-                      controller.homeModelObj.value.viewItemList.value.length,
-                  itemBuilder: (context, index) {
-                    ViewItemModel model =
-                        controller.homeModelObj.value.viewItemList.value[index];
-                    return ViewItemWidget(model);
-                  }))),
-          SizedBox(height: 15.v)
-        ]));
+  /// Navigates to the onbOderboxScreen when the action is triggered.
+  onTapOrderNewBox() {
+    Get.toNamed(
+      AppRoutes.onbOrderboxScreen,
+    );
   }
 
-  /// Navigates to the typeRequestScreen when the action is triggered.
-  // onTapCollection() {
-  //   Get.toNamed(
-  //     AppRoutes.typeRequestScreen,
-  //   );
-  // }
+  /// Navigates to the sendBoxChooseBoxScreen when the action is triggered.
+  onTapSendBoxToWarehouse() {
+    Get.toNamed(
+      AppRoutes.sendBoxChooseBoxScreen,
+    );
+  }
+
+  /// Navigates to the getBackChooseBoxScreen when the action is triggered.
+  onTapGetBackBox() {
+    Get.toNamed(
+      AppRoutes.getBackChooseBoxScreen,
+    );
+  }
 }

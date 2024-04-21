@@ -319,7 +319,7 @@ class MainGetBackBox extends State<GetBackChooseBoxScreen>
           //   ),
           // ),
           SizedBox(height: 25.v),
-          _buildListOrder(context),
+          // _buildListOrder(context),
         ],
       ),
     );
@@ -328,107 +328,107 @@ class MainGetBackBox extends State<GetBackChooseBoxScreen>
   Widget _buildListOrder(context) {
     return Column(
       children: [
-        CheckboxListTile(
-          controlAffinity: ListTileControlAffinity.leading,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 12.h),
-                child: Text('${checkAll ? 'Unselect all' : 'Select all'}',
-                    style: CustomTextStyles.titleSmallBlack900Medium),
-              ),
-              // CustomImageView(
-              //   imagePath: ImageConstant.imgBookmark,
-              //   height: 13.v,
-              //   width: 11.h,
-              //   margin: EdgeInsets.only(left: 6.h, top: 3.v, bottom: 3.v),
-              // ),
-            ],
-          ),
-          value: checkAll,
-          onChanged: (value) => setState(() {
-            checkAll = value!;
-            listOrders.forEach((element) {
-              element.checked = value;
-              element.boxes.forEach((e) {
-                e.selected = value;
-              });
-            });
-          }),
-        ),
-        SizedBox(height: 12.v),
-        Container(
-          height: 600.v,
-          decoration: AppDecoration.outlineBluegray300,
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: listOrders.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        CheckboxListTile(
-                          controlAffinity: ListTileControlAffinity.leading,
-                          title: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(left: 12.h),
-                                child: Text("lbl_id".tr,
-                                    style: CustomTextStyles
-                                        .titleSmallBlack900Medium),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 5.h),
-                                child: Text(listOrders[index].id.toString(),
-                                    style: CustomTextStyles
-                                        .titleSmallBlack900Medium),
-                              ),
-                              CustomImageView(
-                                imagePath: ImageConstant.imgBookmark,
-                                height: 13.v,
-                                width: 11.h,
-                                margin: EdgeInsets.only(
-                                    left: 6.h, top: 3.v, bottom: 3.v),
-                              ),
-                            ],
-                          ),
-                          value: listOrders[index].checked,
-                          onChanged: (value) => setState(() {
-                            if (value == false) checkAll = false;
-                            listOrders[index].checked = value!;
-                            listOrders[index].boxes.forEach((element) {
-                              element.selected = value;
-                            });
-                          }),
-                        ),
-                        SizedBox(height: 12.v),
-                        Container(
-                          height: listOrders[index].boxes.length * 150.v,
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: ListView.builder(
-                                  itemCount: listOrders[index].boxes.length,
-                                  itemBuilder: (context, i) {
-                                    return _buildItem(
-                                        listOrders[index].boxes[i]);
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
+        //     CheckboxListTile(
+        //       controlAffinity: ListTileControlAffinity.leading,
+        //       title: Row(
+        //         mainAxisAlignment: MainAxisAlignment.start,
+        //         children: [
+        //           Padding(
+        //             padding: EdgeInsets.only(left: 12.h),
+        //             child: Text('${checkAll ? 'Unselect all' : 'Select all'}',
+        //                 style: CustomTextStyles.titleSmallBlack900Medium),
+        //           ),
+        //           // CustomImageView(
+        //           //   imagePath: ImageConstant.imgBookmark,
+        //           //   height: 13.v,
+        //           //   width: 11.h,
+        //           //   margin: EdgeInsets.only(left: 6.h, top: 3.v, bottom: 3.v),
+        //           // ),
+        //         ],
+        //       ),
+        //       value: checkAll,
+        //       onChanged: (value) => setState(() {
+        //         checkAll = value!;
+        //         listOrders.forEach((element) {
+        //           element.checked = value;
+        //           element.boxes.forEach((e) {
+        //             e.selected = value;
+        //           });
+        //         });
+        //       }),
+        //     ),
+        //     SizedBox(height: 12.v),
+        //     Container(
+        //       height: 600.v,
+        //       decoration: AppDecoration.outlineBluegray300,
+        //       child: Column(
+        //         children: [
+        //           Expanded(
+        //             child: ListView.builder(
+        //               itemCount: listOrders.length,
+        //               itemBuilder: (context, index) {
+        //                 return Column(
+        //                   children: [
+        //                     CheckboxListTile(
+        //                       controlAffinity: ListTileControlAffinity.leading,
+        //                       title: Row(
+        //                         crossAxisAlignment: CrossAxisAlignment.start,
+        //                         children: [
+        //                           Padding(
+        //                             padding: EdgeInsets.only(left: 12.h),
+        //                             child: Text("lbl_id".tr,
+        //                                 style: CustomTextStyles
+        //                                     .titleSmallBlack900Medium),
+        //                           ),
+        //                           Padding(
+        //                             padding: EdgeInsets.only(left: 5.h),
+        //                             child: Text(listOrders[index].id.toString(),
+        //                                 style: CustomTextStyles
+        //                                     .titleSmallBlack900Medium),
+        //                           ),
+        //                           CustomImageView(
+        //                             imagePath: ImageConstant.imgBookmark,
+        //                             height: 13.v,
+        //                             width: 11.h,
+        //                             margin: EdgeInsets.only(
+        //                                 left: 6.h, top: 3.v, bottom: 3.v),
+        //                           ),
+        //                         ],
+        //                       ),
+        //                       value: listOrders[index].checked,
+        //                       onChanged: (value) => setState(() {
+        //                         if (value == false) checkAll = false;
+        //                         listOrders[index].checked = value!;
+        //                         listOrders[index].boxes.forEach((element) {
+        //                           element.selected = value;
+        //                         });
+        //                       }),
+        //                     ),
+        //                     SizedBox(height: 12.v),
+        //                     Container(
+        //                       height: listOrders[index].boxes.length * 150.v,
+        //                       child: Column(
+        //                         children: [
+        //                           Expanded(
+        //                             child: ListView.builder(
+        //                               itemCount: listOrders[index].boxes.length,
+        //                               itemBuilder: (context, i) {
+        //                                 return _buildItem(
+        //                                     listOrders[index].boxes[i]);
+        //                               },
+        //                             ),
+        //                           ),
+        //                         ],
+        //                       ),
+        //                     ),
+        //                   ],
+        //                 );
+        //               },
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
       ],
     );
   }
