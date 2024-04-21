@@ -13,5 +13,7 @@
     {
         "shiptatusID": 4,
         "name": "done"
+    },{
+        "name": "cancelled"
     }
 ]

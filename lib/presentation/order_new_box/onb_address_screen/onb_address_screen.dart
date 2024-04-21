@@ -1,6 +1,4 @@
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:async';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
@@ -19,8 +17,6 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
   TextEditingController controller = TextEditingController();
 
   // OnbAddressController onbAddressController = Get.put(OnbAddressController());
-
-  Completer<GoogleMapController> googleMapController = Completer();
 
   late bool isPickedDate = false;
 
@@ -678,28 +674,6 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
         ),
       ),
       keyboardType: TextInputType.text,
-    );
-  }
-
-  /// Section Widget
-  Widget _buildMaps() {
-    return SizedBox(
-      height: 219.v,
-      width: 350.h,
-      child: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(37.43296265331129, -122.08832357078792),
-          zoom: 14.4746,
-        ),
-        onMapCreated: (GoogleMapController controller) {
-          googleMapController.complete(controller);
-        },
-        zoomControlsEnabled: false,
-        zoomGesturesEnabled: false,
-        myLocationButtonEnabled: false,
-        myLocationEnabled: false,
-      ),
     );
   }
 
