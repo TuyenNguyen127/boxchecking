@@ -6,7 +6,7 @@ export 'package:lastapp/core/utils/initial_bindings.dart';
 export 'package:lastapp/core/utils/logger.dart';
 export 'package:lastapp/core/utils/pref_utils.dart';
 export 'package:lastapp/core/utils/size_utils.dart';
-export 'package:lastapp/data/models/selectionPopupModel/selection_popup_model.dart';
+// export '../../assets/data/models/selectionPopupModel/selection_popup_model.dart';
 export 'package:lastapp/localization/app_localization.dart';
 export 'package:lastapp/routes/app_routes.dart';
 export 'package:lastapp/theme/app_decoration.dart';

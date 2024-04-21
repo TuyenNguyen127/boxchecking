@@ -296,21 +296,21 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
                           130.v,
                       child: Column(
                         children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: 0.h, right: 10.h, bottom: 10.h),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Order ID - " +
-                                      chooseController.listOrders[index].id
-                                          .toString(),
-                                  style: CustomTextStyles.labelLargeBold,
-                                ),
-                              ],
-                            ),
-                          ),
+                          // Padding(
+                          //   padding: EdgeInsets.only(
+                          //       left: 0.h, right: 10.h, bottom: 10.h),
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //     children: [
+                          //       Text(
+                          //         "Order ID - " +
+                          //             chooseController.listOrders[index].id
+                          //                 .toString(),
+                          //         style: CustomTextStyles.labelLargeBold,
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                           Expanded(
                             child: ListView.builder(
                               itemCount: chooseController

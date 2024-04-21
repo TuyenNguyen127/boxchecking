@@ -1,4 +1,5 @@
 import 'package:lastapp/core/app_export.dart';
+import 'package:lastapp/model/selectionPopupModel/selection_popup_model.dart';
 
 /// This class defines the variables used in the [onb_oderbox_screen],
 /// and is typically used to hold data that is passed between different parts of the application.

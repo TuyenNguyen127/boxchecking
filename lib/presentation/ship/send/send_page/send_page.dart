@@ -85,21 +85,21 @@ class Send extends State<SendPage> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SizedBox(
-          width: SizeUtils.width,
-          child: Column(
-            children: [
-              _buildStatus(),
-              SizedBox(height: 8.v),
-              _buildTotal(),
-              SizedBox(height: 8.v),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: _buildSend(),
-                ),
-              ),
-            ],
-          ),
-        ),
+            // width: SizeUtils.width,
+            // child: Column(
+            //   children: [
+            //     _buildStatus(),
+            //     SizedBox(height: 8.v),
+            //     _buildTotal(),
+            //     SizedBox(height: 8.v),
+            //     Expanded(
+            //       child: SingleChildScrollView(
+            //         child: _buildSend(),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            ),
       ),
     );
   }

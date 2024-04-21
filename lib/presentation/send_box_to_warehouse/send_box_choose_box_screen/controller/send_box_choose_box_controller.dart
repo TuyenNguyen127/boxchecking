@@ -1,6 +1,7 @@
 import '../../../../core/app_export.dart';
 import '../../../../model/orderModel.dart';
 import '../models/send_box_choose_box_model.dart';
+import 'package:lastapp/model/selectionPopupModel/selection_popup_model.dart';
 
 /// A controller class for the SendBoxChooseBoxScreen.
 ///
