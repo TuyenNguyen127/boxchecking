@@ -58,9 +58,9 @@ class BoxOrderModel {
   int boxId;
   int boxTypeId;
   int boxModelId;
-  List<String> listItem;
+  String listItem;
   List<String> boxServices;
-  int weight;
+  double weight;
   int quantity;
   String dimension;
   int price;
@@ -78,14 +78,14 @@ class BoxOrderModel {
   });
 
   factory BoxOrderModel.fromJson(Map<String, dynamic> json) {
-    List<dynamic> listItemJson = json['listItem'];
+    //List<dynamic> listItemJson = json['listItem'];
     List<dynamic> boxServicesJson = json['boxServices'];
 
     return BoxOrderModel(
       boxId: json['boxId'],
       boxTypeId: json['boxTypeId'],
       boxModelId: json['boxModelId'],
-      listItem: listItemJson.map((item) => item.toString()).toList(),
+      listItem: json['listItem'],
       boxServices:
           boxServicesJson.map((service) => service.toString()).toList(),
       weight: json['weight'],
