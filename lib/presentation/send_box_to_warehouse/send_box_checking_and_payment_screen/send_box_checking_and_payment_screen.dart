@@ -10,6 +10,7 @@ import 'package:lastapp/core/app_export.dart';
 import '../send_box_address_screen/controller/send_box_address_controller.dart';
 import '../send_box_choose_box_screen/controller/send_box_choose_box_controller.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SendBoxCheckingAndPaymentScreen extends StatefulWidget {
   @override
@@ -31,7 +32,7 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
 
   @override
   void initState() {
-    for (var element in chooseController.listOrders) {
+    for (var element in listOrders) {
       heightItems += element.boxes.length * 130.v;
     }
 
@@ -289,28 +290,13 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
             children: [
               Expanded(
                 child: ListView.builder(
-                  itemCount: chooseController.listOrders.length,
+                  itemCount: listOrders.length,
                   itemBuilder: (context, index) {
                     return Container(
-                      height: chooseController.listOrders[index].boxes.length *
+                      height: listOrders[index].boxes.length *
                           130.v,
                       child: Column(
                         children: [
-                          // Padding(
-                          //   padding: EdgeInsets.only(
-                          //       left: 0.h, right: 10.h, bottom: 10.h),
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //     children: [
-                          //       Text(
-                          //         "Order ID - " +
-                          //             chooseController.listOrders[index].id
-                          //                 .toString(),
-                          //         style: CustomTextStyles.labelLargeBold,
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
                           Expanded(
                             child: ListView.builder(
                               itemCount: chooseController
@@ -654,7 +640,7 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
   Future<void> createRequestSendBox() async {
     try {
       var uri = Uri.https(
-          '529d-118-70-128-84.ngrok-free.app', '/api/Order/OrderToWareHouse');
+          dotenv.get('HOST'), '/api/Order/OrderToWareHouse');
       final response = await http.post(
         uri,
         headers: <String, String>{
