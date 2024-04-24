@@ -14,29 +14,37 @@ import 'models/subject_model.dart';
 
 import 'dart:convert'; // for JSON decoding
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
 
 // ignore: must_be_immutable
-class OnbOrderboxScreen extends flutter.StatefulWidget {
+class OnbOrderboxScreen extends StatefulWidget {
   OnbOrderboxScreen({Key? key}) : super(key: key);
 
   @override
-  flutter.State<OnbOrderboxScreen> createState() => _OnbOrderboxScreenState();
+  State<OnbOrderboxScreen> createState() => _OnbOrderboxScreenState();
 }
 
-class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
+class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
+  late StateSetter _listOrderBoxSetState;
+
+  int intialAmountInput = 1;
+
   int? selectedTypeBoxId;
   int? selectedModelBoxId;
 
   String service = "";
   dynamic typeBox = null;
   dynamic modelBox = null;
+  int maxItemsCanHandle = 0;
+
+  // BoxOrderModel orderBox = BoxOrderModel();
 
   final TextEditingController _itemDialogTextController =
       TextEditingController();
-  List<Map<String, dynamic>> _addingListItems = [];
+  List<Map<String, dynamic>> _listOrderBoxItems = [];
 
   final List<Map<String, dynamic>> data = [];
   Map<String, dynamic> boxOrder_jsonData = {};
@@ -58,36 +66,42 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
       "idTypeBox": 1,
       "name": "Large",
       "description": "height: 50, width: 50, length: 100",
+      "maxItems": 2,
     },
     {
       "id": 2,
       "idTypeBox": 1,
       "name": "Medium",
       "description": "height: 50, width: 50, length: 50",
+      "maxItems": 2,
     },
     {
       "id": 3,
       "idTypeBox": 1,
       "name": "Small",
       "description": "height: 30, width: 30, length: 50",
+      "maxItems": 2,
     },
     {
       "id": 4,
       "idTypeBox": 2,
       "name": "Large",
       "description": "height: 50, width: 50, length: 100",
+      "maxItems": 2,
     },
     {
       "id": 5,
       "idTypeBox": 2,
       "name": "Medium",
       "description": "height: 50, width: 50, length: 50",
+      "maxItems": 2,
     },
     {
       "id": 6,
       "idTypeBox": 2,
       "name": "Small",
       "description": "height: 30, width: 30, length: 50",
+      "maxItems": 2,
     },
   ];
 
@@ -109,7 +123,7 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
     },
   ];
 
-  getSubjectData() {
+  void getSubjectData() {
     subjectData.clear();
     dropDownData.clear();
 
@@ -141,9 +155,9 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
         return MultiSelectItem(subjectdata, subjectdata.subjectName);
       }).toList();
     } else if (apiResponse['code'] == 400) {
-      print("Show Error model why error occurred..");
+      print("Show error model why error occurred");
     } else {
-      print("show some error model like something went worng..");
+      print("Show some error model like something went wrong");
     }
   }
 
@@ -163,10 +177,33 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
     }
   }
 
-  void _addItemToList(String inputText) {
-    setState(() {
-      _addingListItems.add({"item": inputText, "amount": 1});
-    });
+  void _showDelayedDialog(BuildContext context) {
+    Fluttertoast.showToast(
+      msg: "You should type the name of item before press 'Add' button",
+      // toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP_LEFT,
+      timeInSecForIosWeb: 5,
+      backgroundColor: Colors.black26,
+      textColor: Colors.black87,
+      fontSize: 14.fSize,
+    );
+  }
+
+  void _addItemToList(
+      StateSetter _setState, BuildContext dialogContext, String inputText) {
+    if (inputText != '') {
+      _setState(() {
+        _listOrderBoxItems
+            .add({"item": inputText, "amount": intialAmountInput});
+        intialAmountInput = 1;
+      });
+    } else {
+      // show a small dialog to notify that u should type the item that user wants to add
+      // dialog appears in a few seconds
+      _setState(() {
+        _showDelayedDialog(dialogContext);
+      });
+    }
   }
 
   void saveItemsData() {
@@ -192,64 +229,70 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, ref, _) {
-        return SafeArea(
-          child: Scaffold(
-            appBar: _buildAppBarPageOrderbox(),
-            body: Consumer(
-              builder: (context, newBoxOrder, _) {
-                return Container(
-                  width: SizeUtils.width,
-                  height: SizeUtils.height,
-                  decoration: AppDecoration.fillGray,
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
+    // return Consumer(
+    //   builder: (context, ref, _) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: _buildAppBarPageOrderbox(),
+        body:
+            // Consumer(
+            //   builder: (context, newBoxOrder, _) {
+            //     return
+            Container(
+          width: SizeUtils.width,
+          height: SizeUtils.height,
+          decoration: AppDecoration.fillGray,
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Positioned.fill(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: _buildSectionTrackProgress(),
+                ),
+              ),
+              //
+              Positioned(
+                top: 70.v,
+                child: Container(
+                  child: Column(
                     children: [
-                      Positioned.fill(
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: _buildSectionTrackProgress(),
-                        ),
-                      ),
                       //
-                      Positioned(
-                        top: 70.v,
-                        child: Container(
-                          child: Column(
-                            children: [
-                              _buildFormSection(context),
-                              SizedBox(height: 10.v),
-                            ],
-                          ),
-                        ),
-                      ),
+                      _buildFormSection(),
+                      SizedBox(height: 10.v),
                       //
-                      Container(
-                        padding: EdgeInsets.only(
-                            left: 35.h, right: 35.h, bottom: 25.v),
-                        child: CustomIconButton(
-                          height: 60.adaptSize,
-                          width: 60.adaptSize,
-                          padding: EdgeInsets.all(15.h),
-                          alignment: Alignment.bottomRight,
-                          onTap: () {
-                            onTapBtnArrowRight(context);
-                          },
-                          child: CustomImageView(
-                            imagePath: ImageConstant.imgArrowRight,
-                          ),
-                        ),
-                      ),
+                      _buildListOrderBox(),
+                      SizedBox(height: 10.v),
                     ],
                   ),
-                );
-              },
-            ),
+                ),
+              ),
+              //
+              Container(
+                padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 25.v),
+                child: CustomIconButton(
+                  height: 60.adaptSize,
+                  width: 60.adaptSize,
+                  padding: EdgeInsets.all(15.h),
+                  alignment: Alignment.bottomRight,
+                  onTap: () {
+                    onTapBtnArrowRight(context);
+                  },
+                  child: CustomImageView(
+                    imagePath: ImageConstant.imgArrowRight,
+                  ),
+                ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+        //     );
+        //   },
+        // ),
+      ),
     );
+    //   },
+    // );
   }
 
   // app bar
@@ -277,6 +320,7 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
     );
   }
 
+  /// track progress
   Widget _buildSectionTrackProgress() {
     return Container(
       height: 160.v,
@@ -382,27 +426,27 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
     );
   }
 
-  /// Section Widget
-  Widget _buildFormSection(BuildContext context) {
+  /// first section
+  Widget _buildFormSection() {
     return Container(
       decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            offset: Offset(
-              0.5,
-              0.5,
-            ),
-            blurRadius: 1.0,
-            spreadRadius: 0.5,
-          ), //BoxShadow
-          BoxShadow(
-            color: Colors.white,
-            offset: Offset(0.0, 0.0),
-            blurRadius: 0.0,
-            spreadRadius: 0.0,
-          ), //BoxShadow
-        ],
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black26,
+        //     offset: Offset(
+        //       0.5,
+        //       0.5,
+        //     ),
+        //     blurRadius: 1.0,
+        //     spreadRadius: 0.5,
+        //   ), //BoxShadow
+        //   BoxShadow(
+        //     color: Colors.white,
+        //     offset: Offset(0.0, 0.0),
+        //     blurRadius: 0.0,
+        //     spreadRadius: 0.0,
+        //   ), //BoxShadow
+        // ],
         color: theme.colorScheme.primary,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(30),
@@ -423,8 +467,8 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
                 'Information about box',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 18.fSize,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 20.fSize,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
             ),
@@ -432,14 +476,14 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
           //
           SizedBox(height: 20.v),
           //
-          _buildForm(context),
+          _buildForm(),
           //
         ],
       ),
     );
   }
 
-  Widget _buildForm(BuildContext context) {
+  Widget _buildForm() {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
@@ -541,11 +585,11 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
         ),
         focusColor: Colors.amberAccent,
         value: selectedTypeBoxId,
-        items: dataTypeBox.map((typeBox) {
+        items: dataTypeBox.map((typeBoxItem) {
           return DropdownMenuItem(
-            value: typeBox['id'] as int,
+            value: typeBoxItem['id'] as int,
             child: Text(
-              typeBox['name'] as String,
+              typeBoxItem['name'] as String,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 17.fSize,
@@ -560,6 +604,10 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
           setState(() {
             selectedTypeBoxId = value;
             typeBox = value;
+
+            print(typeBox);
+            print(typeBox['name']);
+            print(typeBox.runtimeType);
           });
         },
       ),
@@ -611,15 +659,16 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
         focusColor: Colors.amberAccent,
         value: selectedModelBoxId,
         items: dataModelBox
-            .where((modelBox) => modelBox['idTypeBox'] == selectedTypeBoxId)
-            .map((modelBox) {
+            .where((modelBoxItem) =>
+                modelBoxItem['idTypeBox'] == selectedTypeBoxId)
+            .map((modelBoxItem) {
           return DropdownMenuItem(
-              value: modelBox['id'] as int,
+              value: modelBoxItem['id'] as int,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    modelBox['name'],
+                    modelBoxItem['name'],
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 17.fSize,
@@ -627,7 +676,7 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
                     ),
                   ),
                   Text(
-                    ' (' + modelBox['description'] + ')',
+                    ' (' + modelBoxItem['description'] + ')',
                     style: TextStyle(
                       color: Colors.black54,
                       fontSize: 15.fSize,
@@ -641,6 +690,11 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
           setState(() {
             selectedModelBoxId = value;
             modelBox = value;
+            // maxItemsCanHandle = ;
+
+            print(modelBox);
+            print(modelBox['maxItems']);
+            print(modelBox.runtimeType);
           });
         },
       ),
@@ -660,7 +714,10 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
             items: dropDownData,
             title: Text(
               "Select service",
-              style: TextStyle(color: Colors.grey),
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14.fSize,
+              ),
             ),
             selectedColor: appTheme.blue500,
             decoration: BoxDecoration(
@@ -701,6 +758,7 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
               textStyle: TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.w700,
+                fontSize: 14.fSize,
               ),
             ),
           ),
@@ -754,57 +812,64 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
           'Choose items',
           style: TextStyle(
             color: Colors.black,
+            fontSize: 20.fSize,
             fontWeight: FontWeight.w700,
           ),
         ),
       ),
-      content: Container(
-        width: SizeUtils.width * 2 / 3,
-        height: SizeUtils.height * 4 / 7,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            //
-            Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  //
-                  Text(
-                    'Information of item',
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
+      content: StatefulBuilder(
+        builder: (BuildContext dialogContext, StateSetter setState) {
+          _listOrderBoxSetState = setState;
+
+          return Container(
+            width: SizeUtils.width * 2 / 3,
+            height: SizeUtils.height * 5 / 7,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                //
+                Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      //
+                      Text(
+                        'Information of item',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18.fSize,
+                        ),
+                      ),
+                      SizedBox(height: 15.v),
+                      //
+                      _buildInfoView(_listOrderBoxSetState, dialogContext),
+                      //
+                      SizedBox(height: 15.v),
+                      //
+                      Text(
+                        'Your items',
+                        style: TextStyle(
+                          color: flutter.Color.fromARGB(255, 139, 137, 137),
+                          fontSize: 18.fSize,
+                        ),
+                      ),
+                      SizedBox(height: 15.v),
+                      //
+                      _buildListItemsView(_listOrderBoxSetState),
+                      //
+                    ],
                   ),
-                  SizedBox(height: 15.v),
-                  //
-                  _buildInfoView(),
-                  //
-                  SizedBox(height: 15.v),
-                  // Divider(),
-                  // SizedBox(height: 15.v),
-                  //
-                  Text(
-                    'Your items',
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(height: 15.v),
-                  //
-                  _buildListItemsView(),
-                  //
-                ],
-              ),
+                ),
+                //
+                _buildCloseSaveBtns(),
+              ],
             ),
-            //
-            _buildCloseSaveBtns(),
-          ],
-        ),
+          );
+        },
       ),
-      // actions: [],
+      //
     );
   }
 
@@ -816,6 +881,12 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
           child: GestureDetector(
             onTap: () {
               _itemDialogTextController.clear();
+
+              setState(() {
+                intialAmountInput = 1;
+                _listOrderBoxItems = [];
+              });
+
               Navigator.of(context).pop();
             },
             child: Container(
@@ -832,6 +903,7 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
                   'Close',
                   style: TextStyle(
                     color: Colors.black,
+                    fontSize: 17.fSize,
                   ),
                 ),
               ),
@@ -862,6 +934,7 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
                   'Save',
                   style: TextStyle(
                     color: Colors.black,
+                    fontSize: 17.fSize,
                   ),
                 ),
               ),
@@ -872,25 +945,169 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
     );
   }
 
-  Widget _buildInfoView() {
+  Widget _buildInfoView(StateSetter _setState, BuildContext dialogContext) {
     return Container(
       // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
           //
-          Flexible(flex: 3, child: _buildInfoInput()),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              //
+              Flexible(
+                  flex: 3, child: _buildInfoInput(_setState, dialogContext)),
+              //
+              SizedBox(width: 15.h),
+              //
+              Flexible(
+                flex: 1,
+                // child: incDecButtons("1"),
+                child: Container(
+                  height: 50.v,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: Colors.black26,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      //
+                      GestureDetector(
+                        onTap: () {
+                          // print('giảm');
+                          _setState(() {
+                            if (intialAmountInput > 1) {
+                              intialAmountInput = intialAmountInput - 1;
+                            }
+                          });
+                        },
+                        child: Text(
+                          '-',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20.fSize,
+                          ),
+                        ),
+                      ),
+                      //
+                      Text(
+                        intialAmountInput.toString(),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18.fSize,
+                        ),
+                      ),
+                      //
+                      GestureDetector(
+                        onTap: () {
+                          // print('tăng');
+                          _setState(() {
+                            intialAmountInput = intialAmountInput + 1;
+                          });
+                        },
+                        child: Text(
+                          '+',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20.fSize,
+                          ),
+                        ),
+                      ),
+                      //
+                    ],
+                  ),
+                ),
+              ),
+              //
+            ],
+          ),
           //
-          SizedBox(width: 15.h),
+          SizedBox(height: 10.v),
           //
-          Flexible(flex: 1, child: incDecButtons("1")),
-          //
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              //
+              GestureDetector(
+                onTap: () {
+                  _setState(() {
+                    _itemDialogTextController.clear();
+                    intialAmountInput = 1;
+                  });
+                },
+                child: Container(
+                  margin: EdgeInsets.only(right: 15.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.h, vertical: 10.v),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15.fSize,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              //
+              GestureDetector(
+                onTap: () {
+                  _addItemToList(
+                      _setState, dialogContext, _itemDialogTextController.text);
+                  _setState(() {
+                    _itemDialogTextController.clear();
+                  });
+                },
+                child: Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 18.h, vertical: 10.v),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Add',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15.fSize,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              //
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildInfoInput() {
+  Widget _buildInfoInput(StateSetter _setState, BuildContext dialogContext) {
     return Container(
       height: 50.v,
       child: Row(
@@ -901,6 +1118,7 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
               controller: _itemDialogTextController,
               style: TextStyle(
                 color: Colors.black,
+                fontSize: 17.fSize,
               ),
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.only(
@@ -924,8 +1142,8 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
               cursorColor: Colors.black,
               //
               onSubmitted: (value) {
-                _addItemToList(_itemDialogTextController.text);
-
+                _addItemToList(
+                    _setState, dialogContext, _itemDialogTextController.text);
                 _itemDialogTextController.clear();
               },
             ),
@@ -935,45 +1153,133 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
     );
   }
 
-  Widget _buildListItemsView() {
+  Widget _buildListItemsView(StateSetter _setState) {
     return Container(
       // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
       height: 250.v,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: _addingListItems.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: EdgeInsets.only(bottom: 10.v),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      //
-                      Flexible(
-                        flex: 3,
-                        child: displayCurrentItem(
-                            _addingListItems[index]['item'].toString()),
-                      ),
-                      //
-                      SizedBox(width: 10.h),
-                      //
-                      Flexible(
-                        flex: 1,
-                        child: incDecButtons(
-                            _addingListItems[index]['amount'].toString()),
-                      ),
-                      //
-                    ],
+      child: _listOrderBoxItems.length == 0
+          ? Container(
+              margin: EdgeInsets.only(bottom: 10.v),
+              child: Center(
+                child: Text(
+                  'Cart is empty',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 16.fSize,
                   ),
-                );
-              },
+                ),
+              ),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _listOrderBoxItems.length,
+                    itemBuilder: (chooseItemsContext, index) {
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10.v),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            //
+                            Flexible(
+                              flex: 3,
+                              child: displayCurrentItem(
+                                  _listOrderBoxItems[index]['item'].toString()),
+                            ),
+                            //
+                            SizedBox(width: 10.h),
+                            //
+                            Flexible(
+                              flex: 1,
+                              // child: incDecButtons(_listOrderBoxItems[index]['amount']),
+                              child: Container(
+                                height: 50.v,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                    color: Colors.black26,
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    //
+                                    GestureDetector(
+                                      onTap: () {
+                                        // print('giảm');
+                                        _setState(() {
+                                          if (_listOrderBoxItems[index]
+                                                  ['amount'] >
+                                              0) {
+                                            _listOrderBoxItems[index]
+                                                    ['amount'] =
+                                                _listOrderBoxItems[index]
+                                                        ['amount'] -
+                                                    1;
+
+                                            if (_listOrderBoxItems[index]
+                                                    ['amount'] ==
+                                                0) {
+                                              _listOrderBoxItems
+                                                  .removeAt(index);
+                                            }
+                                          }
+                                        });
+                                      },
+                                      child: Text(
+                                        '-',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20.fSize,
+                                        ),
+                                      ),
+                                    ),
+                                    //
+                                    Text(
+                                      _listOrderBoxItems[index]['amount']
+                                          .toString(),
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18.fSize,
+                                      ),
+                                    ),
+                                    //
+                                    GestureDetector(
+                                      onTap: () {
+                                        // print('tăng');
+                                        _setState(() {
+                                          _listOrderBoxItems[index]['amount'] =
+                                              _listOrderBoxItems[index]
+                                                      ['amount'] +
+                                                  1;
+                                        });
+                                      },
+                                      child: Text(
+                                        '+',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20.fSize,
+                                        ),
+                                      ),
+                                    ),
+                                    //
+                                  ],
+                                ),
+                              ),
+                            ),
+                            //
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
       //
     );
   }
@@ -997,9 +1303,10 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
               margin: EdgeInsets.only(left: 10.h),
               child: Text(
                 item,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  overflow: TextOverflow.ellipsis,
                   color: Colors.black,
+                  fontSize: 16.fSize,
                 ),
               ),
             ),
@@ -1009,56 +1316,184 @@ class _OnbOrderboxScreenState extends flutter.State<OnbOrderboxScreen> {
     );
   }
 
-  Widget incDecButtons(String amount) {
+  // Widget incDecButtons(BuildContext chooseItemsContext, int amount) {
+  //   return Container(
+  //     height: 50.v,
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(6),
+  //       border: Border.all(
+  //         color: Colors.black26,
+  //         width: 1.5,
+  //       ),
+  //     ),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //       children: [
+  //         //
+  //         GestureDetector(
+  //           onTap: () {
+  //             print('giảm');
+  //             setState(() {});
+  //           },
+  //           child: Text(
+  //             '-',
+  //             style: TextStyle(
+  //               color: Colors.black,
+  //               fontSize: 20.fSize,
+  //             ),
+  //           ),
+  //         ),
+  //         //
+  //         Text(
+  //           amount.toString(),
+  //           style: TextStyle(
+  //             color: Colors.black,
+  //             fontSize: 18.fSize,
+  //           ),
+  //         ),
+  //         //
+  //         GestureDetector(
+  //           onTap: () {
+  //             print('tăng');
+  //           },
+  //           child: Text(
+  //             '+',
+  //             style: TextStyle(
+  //               color: Colors.black,
+  //               fontSize: 20.fSize,
+  //             ),
+  //           ),
+  //         ),
+  //         //
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  /// first section
+  Widget _buildListOrderBox() {
+    // StateSetter _setState;
+
     return Container(
-      height: 50.v,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(
-          color: Colors.black26,
-          width: 1.5,
-        ),
+        // border: Border.all(color: Colors.black38),
+        color: theme.colorScheme.primary,
+        // borderRadius: BorderRadius.only(
+        //   topRight: Radius.circular(30),
+        //   topLeft: Radius.circular(30),
+        // ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      width: SizeUtils.width,
+      padding:
+          EdgeInsets.only(left: 20.h, right: 20.h, bottom: 20.v, top: 20.v),
+      child: Column(
         children: [
           //
-          GestureDetector(
-            onTap: () {
-              print('giảm');
-            },
-            child: Text(
-              '-',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20.fSize,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              //
+              Text(
+                'List order box',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18.fSize,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
-            ),
+              //
+              GestureDetector(
+                onTap: () {
+                  //
+                  _listOrderBoxItems.clear();
+                  //
+                  // snackbar appears
+                },
+                child: Text(
+                  'Delete all',
+                  style: TextStyle(
+                    color: appTheme.blue500,
+                    fontSize: 16.fSize,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
           ),
           //
-          Text(
-            amount,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 18.fSize,
-            ),
-          ),
-          //
-          GestureDetector(
-            onTap: () {
-              print('tăng');
-            },
-            child: Text(
-              '+',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20.fSize,
+          SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: [
+                  StatefulBuilder(
+                    builder:
+                        (BuildContext dialogContext, StateSetter setState) {
+                      _listOrderBoxSetState = setState;
+
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        // physics: NeverScrollableScrollPhysics(),
+                        itemCount: _listOrderBoxItems.length,
+                        itemBuilder: (context, index) {
+                          return _buildOrderBoxItem(_listOrderBoxItems[index]);
+                        },
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ),
           //
         ],
       ),
+    );
+  }
+
+  Widget _buildOrderBoxItem(item) {
+    return Container(
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.black54),
+          borderRadius: BorderRadius.circular(6)),
+      child: Row(
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          //
+          Flexible(flex: 1, child: verticalDecIncBtn()),
+          //
+          Flexible(flex: 4, child: orderBoxContentItem()),
+          //
+          VerticalDivider(),
+          //
+          Flexible(
+            flex: 1,
+            child: GestureDetector(
+              onTap: () {
+                print('delete');
+              },
+              child: Icon(
+                Icons.delete,
+                color: appTheme.redA200,
+                size: 30.fSize,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget orderBoxContentItem() {
+    return Container(
+      child: Column(
+        children: [],
+      ),
+    );
+  }
+
+  Widget verticalDecIncBtn() {
+    return Column(
+      children: [],
     );
   }
 
