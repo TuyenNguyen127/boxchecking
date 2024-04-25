@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart' as flutter;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lastapp/core/app_export.dart';
@@ -30,7 +29,7 @@ class OnbOrderboxScreen extends StatefulWidget {
 class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   late StateSetter _listOrderBoxSetState;
 
-  int intialAmountInput = 1;
+  int initialAmountInput = 1;
 
   int? selectedTypeBoxId;
   int? selectedModelBoxId;
@@ -38,12 +37,15 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   String service = "";
   dynamic typeBox = null;
   dynamic modelBox = null;
-  int maxItemsCanHandle = 0;
+  int maxAmountItemsCanHandle = 50;
 
   // BoxOrderModel orderBox = BoxOrderModel();
 
+  TextEditingController chooseItemsController = TextEditingController();
+
   final TextEditingController _itemDialogTextController =
       TextEditingController();
+  List<Map<String, dynamic>> _listOrderBoxItemsInModal = [];
   List<Map<String, dynamic>> _listOrderBoxItems = [];
 
   final List<Map<String, dynamic>> data = [];
@@ -66,42 +68,36 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
       "idTypeBox": 1,
       "name": "Large",
       "description": "height: 50, width: 50, length: 100",
-      "maxItems": 2,
     },
     {
       "id": 2,
       "idTypeBox": 1,
       "name": "Medium",
       "description": "height: 50, width: 50, length: 50",
-      "maxItems": 2,
     },
     {
       "id": 3,
       "idTypeBox": 1,
       "name": "Small",
       "description": "height: 30, width: 30, length: 50",
-      "maxItems": 2,
     },
     {
       "id": 4,
       "idTypeBox": 2,
       "name": "Large",
       "description": "height: 50, width: 50, length: 100",
-      "maxItems": 2,
     },
     {
       "id": 5,
       "idTypeBox": 2,
       "name": "Medium",
       "description": "height: 50, width: 50, length: 50",
-      "maxItems": 2,
     },
     {
       "id": 6,
       "idTypeBox": 2,
       "name": "Small",
       "description": "height: 30, width: 30, length: 50",
-      "maxItems": 2,
     },
   ];
 
@@ -177,14 +173,16 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     }
   }
 
-  void _showDelayedDialog(BuildContext context) {
+  // show a small dialog to notify that u should type the item that user wants to add
+  // dialog appears in a few seconds
+  void _showDelayedToast(String text) {
     Fluttertoast.showToast(
-      msg: "You should type the name of item before press 'Add' button",
+      msg: text,
       // toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.TOP_LEFT,
       timeInSecForIosWeb: 5,
       backgroundColor: Colors.black26,
-      textColor: Colors.black87,
+      textColor: Colors.white,
       fontSize: 14.fSize,
     );
   }
@@ -192,26 +190,85 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   void _addItemToList(
       StateSetter _setState, BuildContext dialogContext, String inputText) {
     if (inputText != '') {
-      _setState(() {
-        _listOrderBoxItems
-            .add({"item": inputText, "amount": intialAmountInput});
-        intialAmountInput = 1;
+      // check the amount of other items to calculate the total and compare with maxAmountItemsCanHandle
+      int countAmount = 0;
+      _listOrderBoxItemsInModal.forEach((item) {
+        int amountOfCurrentItem = item['amount'];
+        countAmount += amountOfCurrentItem;
       });
+
+      if (_listOrderBoxItemsInModal.length < 5 &&
+          countAmount < maxAmountItemsCanHandle) {
+        _setState(() {
+          _listOrderBoxItemsInModal
+              .add({"item": inputText, "amount": initialAmountInput});
+          initialAmountInput = 1;
+        });
+      } else {
+        if (_listOrderBoxItemsInModal.length >= 5) {
+          _showDelayedToast("Sorry, you've just added enough 5 items");
+        } else if (!(countAmount < maxAmountItemsCanHandle)) {
+          _showDelayedToast(
+              "Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle");
+        }
+      }
     } else {
-      // show a small dialog to notify that u should type the item that user wants to add
-      // dialog appears in a few seconds
-      _setState(() {
-        _showDelayedDialog(dialogContext);
-      });
+      _showDelayedToast(
+          "You should type the name of item before press 'Add' button");
     }
   }
 
   void saveItemsData() {
-    print('save');
+    // print('save');
+    setState(() {
+      // _listOrderBoxItems = _listOrderBoxItemsInModal;
+      chooseItemsController.text =
+          _listOrderBoxItemsInModal.map((orderBoxItem) {
+        String name = orderBoxItem['item'];
+        String amount = orderBoxItem['amount'].toString();
+        return '${amount[0].toUpperCase()}${amount.substring(1)}x${name}';
+      }).join('; ');
+      _showDelayedToast("Saved successfully!");
+    });
   }
 
-  void onClickAddBtn() {
-    print('add');
+  void onClickFormInfoAddBtn() {
+    print('FormInfoAddBtn');
+    setState(() {
+      bool acceptForCreatingNewOrder = true;
+      if (typeBox == null) {
+        acceptForCreatingNewOrder = false;
+        _showDelayedToast('You missed the type of box');
+      }
+
+      if (modelBox == null) {
+        acceptForCreatingNewOrder = false;
+        _showDelayedToast('You missed the model of box');
+      }
+
+      if (service == '') {
+        acceptForCreatingNewOrder = false;
+        _showDelayedToast('You missed the services');
+      }
+
+      if (_listOrderBoxItemsInModal.length == 0) {
+        // _listOrderBoxItems = _listOrderBoxItemsInModal;
+        // }
+        // else {
+        acceptForCreatingNewOrder = false;
+        _showDelayedToast('You missed the items');
+      }
+
+      if (acceptForCreatingNewOrder) {
+        _listOrderBoxItems = _listOrderBoxItemsInModal;
+      }
+    });
+  }
+
+  void onClickChooseItemsAddBtn(
+      StateSetter _setState, BuildContext dialogContext) {
+    _addItemToList(_setState, dialogContext, _itemDialogTextController.text);
+    _itemDialogTextController.clear();
   }
 
   @override
@@ -306,7 +363,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
         imagePath: ImageConstant.imgVectorPrimary,
         margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
         onTap: () {
-          onTapVector();
+          onClickBackToHomepageBtn();
         },
       ),
       title: Text(
@@ -430,23 +487,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   Widget _buildFormSection() {
     return Container(
       decoration: BoxDecoration(
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.black26,
-        //     offset: Offset(
-        //       0.5,
-        //       0.5,
-        //     ),
-        //     blurRadius: 1.0,
-        //     spreadRadius: 0.5,
-        //   ), //BoxShadow
-        //   BoxShadow(
-        //     color: Colors.white,
-        //     offset: Offset(0.0, 0.0),
-        //     blurRadius: 0.0,
-        //     spreadRadius: 0.0,
-        //   ), //BoxShadow
-        // ],
         color: theme.colorScheme.primary,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(30),
@@ -509,17 +549,17 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           _buildChooseItemsInput(),
           SizedBox(height: 20.v),
           //
-          _buildAddBtn(),
+          _buildFormInfoAddBtn(),
           //
         ],
       ),
     );
   }
 
-  Widget _buildAddBtn() {
+  Widget _buildFormInfoAddBtn() {
     return GestureDetector(
       onTap: () {
-        onClickAddBtn();
+        onClickFormInfoAddBtn();
       },
       child: Container(
         width: 80.h,
@@ -604,10 +644,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           setState(() {
             selectedTypeBoxId = value;
             typeBox = value;
-
-            print(typeBox);
-            print(typeBox['name']);
-            print(typeBox.runtimeType);
+            selectedModelBoxId = null;
           });
         },
       ),
@@ -690,11 +727,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           setState(() {
             selectedModelBoxId = value;
             modelBox = value;
-            // maxItemsCanHandle = ;
-
-            print(modelBox);
-            print(modelBox['maxItems']);
-            print(modelBox.runtimeType);
           });
         },
       ),
@@ -703,7 +735,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
 
   Widget _buildServiceInput() {
     late bool isPicked = false;
-
     return Container(
       height: isPicked ? 80.h : null,
       child: Column(
@@ -741,6 +772,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
             ),
             onConfirm: (results) {
               setState(() {
+                service = '';
                 if (results.length > 0) {
                   isPicked = true;
                 }
@@ -787,21 +819,62 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           borderRadius: BorderRadius.circular(10),
         ),
         padding: EdgeInsets.only(left: 10.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: [
-            Text(
-              'Choose items',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 17.fSize,
-                fontWeight: FontWeight.w500,
-              ),
+            // _listOrderBoxItemsInModal.length != 0
+            //
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _listOrderBoxItemsInModal.length != 0
+                    ? Text(
+                        "Items: " +
+                            _listOrderBoxItemsInModal.map((orderBoxItem) {
+                              String name = orderBoxItem['item'];
+                              String amount = orderBoxItem['amount'].toString();
+                              return '${amount[0].toUpperCase()}${amount.substring(1)}x${name}';
+                            }).join('; '),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 17.fSize,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )
+                    : Text(
+                        'Choose items',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 17.fSize,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+              ],
             ),
+            //
+            // Positioned(
+            //   top: -10,
+            //   left: 0,
+            //   child: Container(
+            //     decoration: BoxDecoration(
+            //       color: Colors.white,
+            //       border: Border.all(color: Colors.black38),
+            //     ),
+            //     child: Text(
+            //       "Choose items",
+            //       style: TextStyle(
+            //         color: Colors.black54,
+            //         fontSize: 14.fSize,
+            //         fontWeight: FontWeight.w500,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            //
           ],
         ),
       ),
+      //
     );
   }
 
@@ -851,7 +924,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                       Text(
                         'Your items',
                         style: TextStyle(
-                          color: flutter.Color.fromARGB(255, 139, 137, 137),
+                          color: Colors.black,
                           fontSize: 18.fSize,
                         ),
                       ),
@@ -883,8 +956,12 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
               _itemDialogTextController.clear();
 
               setState(() {
-                intialAmountInput = 1;
-                _listOrderBoxItems = [];
+                initialAmountInput = 1;
+
+                if (_listOrderBoxItems.length == 0) {
+                  _listOrderBoxItemsInModal = [];
+                  _listOrderBoxItems = [];
+                }
               });
 
               Navigator.of(context).pop();
@@ -900,7 +977,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
               ),
               child: Center(
                 child: Text(
-                  'Close',
+                  'Cancel',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 17.fSize,
@@ -980,8 +1057,8 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                         onTap: () {
                           // print('giảm');
                           _setState(() {
-                            if (intialAmountInput > 1) {
-                              intialAmountInput = intialAmountInput - 1;
+                            if (initialAmountInput > 1) {
+                              initialAmountInput = initialAmountInput - 1;
                             }
                           });
                         },
@@ -995,7 +1072,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                       ),
                       //
                       Text(
-                        intialAmountInput.toString(),
+                        initialAmountInput.toString(),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 18.fSize,
@@ -1006,7 +1083,40 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                         onTap: () {
                           // print('tăng');
                           _setState(() {
-                            intialAmountInput = intialAmountInput + 1;
+                            // check the amount of other items to calculate the total and compare with maxAmountItemsCanHandle
+                            int countAmount = 0;
+                            _listOrderBoxItemsInModal.forEach((item) {
+                              int amountOfCurrentItem = item['amount'];
+                              countAmount += amountOfCurrentItem;
+                            });
+
+                            // không thể chứa thêm được
+                            // p/s: countAmount >= maxAmountItemsCanHandle <=> maxAmountItemsCanHandle - countAmount <= 0
+                            if (countAmount >= maxAmountItemsCanHandle) {
+                              // diasble textfield
+
+                              // show toast
+                              _showDelayedToast(
+                                  'Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle');
+                            } else {
+                              // số lượng có thể chứa thêm 1
+                              if (maxAmountItemsCanHandle - countAmount == 1) {
+                                // initialAmountInput = 1;
+                                _showDelayedToast(
+                                    'Okay fen, this box can handle more this item with quantity of only 1');
+                              }
+                              // số lượng có thể chứa hơn 1
+                              if (maxAmountItemsCanHandle - countAmount > 1) {
+                                if (initialAmountInput <
+                                    maxAmountItemsCanHandle - countAmount) {
+                                  initialAmountInput = initialAmountInput + 1;
+                                } else {
+                                  _showDelayedToast(
+                                      'Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle');
+                                }
+                              }
+                            }
+                            //
                           });
                         },
                         child: Text(
@@ -1036,7 +1146,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                 onTap: () {
                   _setState(() {
                     _itemDialogTextController.clear();
-                    intialAmountInput = 1;
+                    initialAmountInput = 1;
                   });
                 },
                 child: Container(
@@ -1045,7 +1155,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                       EdgeInsets.symmetric(horizontal: 10.h, vertical: 10.v),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Colors.grey,
+                      color: Colors.black26,
                       width: 1.5,
                     ),
                     borderRadius: BorderRadius.circular(6),
@@ -1068,18 +1178,14 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
               //
               GestureDetector(
                 onTap: () {
-                  _addItemToList(
-                      _setState, dialogContext, _itemDialogTextController.text);
-                  _setState(() {
-                    _itemDialogTextController.clear();
-                  });
+                  onClickChooseItemsAddBtn(_setState, dialogContext);
                 },
                 child: Container(
                   padding:
-                      EdgeInsets.symmetric(horizontal: 18.h, vertical: 10.v),
+                      EdgeInsets.symmetric(horizontal: 19.h, vertical: 10.v),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Colors.grey,
+                      color: Colors.black26,
                       width: 1.5,
                     ),
                     borderRadius: BorderRadius.circular(6),
@@ -1156,8 +1262,8 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   Widget _buildListItemsView(StateSetter _setState) {
     return Container(
       // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-      height: 250.v,
-      child: _listOrderBoxItems.length == 0
+      height: 300.v,
+      child: _listOrderBoxItemsInModal.length == 0
           ? Container(
               margin: EdgeInsets.only(bottom: 10.v),
               child: Center(
@@ -1175,7 +1281,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                 children: [
                   ListView.builder(
                     shrinkWrap: true,
-                    itemCount: _listOrderBoxItems.length,
+                    itemCount: _listOrderBoxItemsInModal.length,
                     itemBuilder: (chooseItemsContext, index) {
                       return Container(
                         margin: EdgeInsets.only(bottom: 10.v),
@@ -1186,14 +1292,15 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                             Flexible(
                               flex: 3,
                               child: displayCurrentItem(
-                                  _listOrderBoxItems[index]['item'].toString()),
+                                  _listOrderBoxItemsInModal[index]['item']
+                                      .toString()),
                             ),
                             //
                             SizedBox(width: 10.h),
                             //
                             Flexible(
                               flex: 1,
-                              // child: incDecButtons(_listOrderBoxItems[index]['amount']),
+                              // child: incDecButtons(_listOrderBoxItemsInModal[index]['amount']),
                               child: Container(
                                 height: 50.v,
                                 decoration: BoxDecoration(
@@ -1212,19 +1319,19 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                                       onTap: () {
                                         // print('giảm');
                                         _setState(() {
-                                          if (_listOrderBoxItems[index]
+                                          if (_listOrderBoxItemsInModal[index]
                                                   ['amount'] >
                                               0) {
-                                            _listOrderBoxItems[index]
+                                            _listOrderBoxItemsInModal[index]
                                                     ['amount'] =
-                                                _listOrderBoxItems[index]
+                                                _listOrderBoxItemsInModal[index]
                                                         ['amount'] -
                                                     1;
 
-                                            if (_listOrderBoxItems[index]
+                                            if (_listOrderBoxItemsInModal[index]
                                                     ['amount'] ==
                                                 0) {
-                                              _listOrderBoxItems
+                                              _listOrderBoxItemsInModal
                                                   .removeAt(index);
                                             }
                                           }
@@ -1240,7 +1347,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                                     ),
                                     //
                                     Text(
-                                      _listOrderBoxItems[index]['amount']
+                                      _listOrderBoxItemsInModal[index]['amount']
                                           .toString(),
                                       style: TextStyle(
                                         color: Colors.black,
@@ -1252,10 +1359,40 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                                       onTap: () {
                                         // print('tăng');
                                         _setState(() {
-                                          _listOrderBoxItems[index]['amount'] =
-                                              _listOrderBoxItems[index]
-                                                      ['amount'] +
-                                                  1;
+                                          // check the amount of other items to calculate the total and compare with maxAmountItemsCanHandle
+                                          int countAmount = 0;
+                                          _listOrderBoxItemsInModal
+                                              .forEach((item) {
+                                            int amountOfCurrentItem =
+                                                item['amount'];
+                                            countAmount += amountOfCurrentItem;
+                                          });
+
+                                          // không thể chứa thêm được
+                                          // p/s: countAmount >= maxAmountItemsCanHandle <=> maxAmountItemsCanHandle - countAmount <= 0
+                                          if (countAmount >=
+                                              maxAmountItemsCanHandle) {
+                                            // diasble textfield
+
+                                            // show toast
+                                            _showDelayedToast(
+                                                'Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle');
+                                          } else {
+                                            // số lượng có thể chứa hơn 1
+                                            if (maxAmountItemsCanHandle -
+                                                    countAmount >=
+                                                1) {
+                                              _listOrderBoxItemsInModal[index]
+                                                      ['amount'] =
+                                                  _listOrderBoxItemsInModal[
+                                                          index]['amount'] +
+                                                      1;
+                                              initialAmountInput = 1;
+                                            } else {
+                                              _showDelayedToast(
+                                                  'Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle');
+                                            }
+                                          }
                                         });
                                       },
                                       child: Text(
@@ -1498,10 +1635,14 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   }
 
   /// Navigates to the typeRequestScreen when the action is triggered.
-  onTapVector() {
-    Get.toNamed(
-      AppRoutes.typeRequestScreen,
-    );
+  onClickBackToHomepageBtn() {
+    // Get.toNamed(
+    //   AppRoutes.typeRequestScreen,
+    // );
+
+    // Get.toNamed(
+    //   AppRoutes.initialRoute,
+    // );
   }
 
   /// Navigates to the onbAddressScreen when the action is triggered.
