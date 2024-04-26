@@ -46,7 +46,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   final TextEditingController _chooseItemsTextToFillController =
       TextEditingController();
   List<Map<String, dynamic>> _listOrderBoxItemsInModal = [];
-  List<Map<String, dynamic>> _listOrderBoxItemsInModalAfterCanceling = [];
   List<Map<String, dynamic>> _listOrderBoxItemsInModalAfterSaving = [];
   List<Map<String, dynamic>> _listOrderBoxItems = [];
 
@@ -121,7 +120,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     },
   ];
 
-  void getSubjectData() {
+  void getServiceDataMultiSelect() {
     subjectData.clear();
     dropDownData.clear();
 
@@ -194,44 +193,52 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
 
     setState(() {
       bool acceptForCreatingNewOrder = true;
-      // if (typeBox == null) {
-      //   acceptForCreatingNewOrder = false;
-      //   _showDelayedToast('You missed the type of box');
-      // }
+      if (typeBox == null) {
+        acceptForCreatingNewOrder = false;
+        _showDelayedToast('You missed the type of box');
+      }
 
-      // if (modelBox == null) {
-      //   acceptForCreatingNewOrder = false;
-      //   _showDelayedToast('You missed the model of box');
-      // }
+      if (modelBox == null) {
+        acceptForCreatingNewOrder = false;
+        _showDelayedToast('You missed the model of box');
+      }
 
-      // if (service == '') {
-      //   acceptForCreatingNewOrder = false;
-      //   _showDelayedToast('You missed the services');
-      // }
+      if (service == '') {
+        acceptForCreatingNewOrder = false;
+        _showDelayedToast('You missed the services');
+      }
 
-      // if (_listOrderBoxItemsInModal.length == 0) {
-      //   // _listOrderBoxItems = _listOrderBoxItemsInModal;
-      //   // }
-      //   // else {
-      //   acceptForCreatingNewOrder = false;
-      //   _showDelayedToast('You missed the items');
-      // }
+      if (_listOrderBoxItemsInModal.length == 0) {
+        // _listOrderBoxItems = _listOrderBoxItemsInModal;
+        // }
+        // else {
+        acceptForCreatingNewOrder = false;
+        _showDelayedToast('You missed the items');
+      }
 
       if (acceptForCreatingNewOrder) {
         String boxId = UniqueKey().toString();
-        _listOrderBoxItems = _listOrderBoxItemsInModalAfterSaving;
-
         print(boxId);
+
+        customDeepClone(
+            _listOrderBoxItems, _listOrderBoxItemsInModalAfterSaving);
+
+        String listItems = _listOrderBoxItems.map((orderBoxItem) {
+          String name = orderBoxItem['item'];
+          String amount = orderBoxItem['amount'].toString();
+          return '${amount}x${name[0].toUpperCase()}${name.substring(1)}';
+        }).join(' | ');
+
         // BoxOrderModel(
-        //   boxId,
-        //   selectedTypeBoxId,
-        //   this.boxModelId,
-        //   this.listItem,
-        //   this.boxServices,
-        //   this.weight,
-        //   this.quantity,
-        //   this.dimension,
-        //   this.price,
+        //   boxId: boxId,
+        //   boxTypeId: selectedTypeBoxId,
+        //   boxModelId: selectedModelBoxId,
+        //   listItem: listItems,
+        //   boxServices: service,
+        //   weight: 50,
+        //   quantity: 1,
+        //   dimension: service,
+        //   price: 100,
         // );
 
         _showDelayedToast('Successfully created!');
@@ -239,41 +246,8 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     });
   }
 
-  // void onClickChooseItemsBtnAddItemToList(
-  //     StateSetter _setState, BuildContext dialogContext, String inputText) {
-  //   if (inputText != '') {
-  //     // check the amount of other items to calculate the total and compare with maxAmountItemsCanHandle
-  //     int countAmount = 0;
-  //     _listOrderBoxItemsInModal.forEach((item) {
-  //       int amountOfCurrentItem = item['amount'];
-  //       countAmount += amountOfCurrentItem;
-  //     });
-  //     if (_listOrderBoxItemsInModal.length < 5 &&
-  //         countAmount < maxAmountItemsCanHandle) {
-  //       _setState(() {
-  //         _listOrderBoxItemsInModal
-  //             .add({"item": inputText, "amount": initialAmountInput});
-  //         initialAmountInput = 1;
-  //       });
-  //     } else {
-  //       if (_listOrderBoxItemsInModal.length >= 5) {
-  //         _showDelayedToast("Sorry, you've just added enough 5 items");
-  //       } else if (!(countAmount < maxAmountItemsCanHandle)) {
-  //         _showDelayedToast(
-  //             "Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle");
-  //       }
-  //     }
-  //   } else {
-  //     _showDelayedToast(
-  //         "You should type the name of item before adding any items");
-  //   }
-  //   _chooseItemsTextToFillController.clear();
-  // }
-
   void onClickChooseItemsAddBtn(
       StateSetter _setState, BuildContext dialogContext) {
-    // onClickChooseItemsBtnAddItemToList(_setState, dialogContext, _chooseItemsTextToFillController.text);
-
     String inputText = _chooseItemsTextToFillController.text;
 
     if (inputText != '') {
@@ -308,11 +282,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   }
 
   void onClickChooseItemsBtnCancel() {
-    // setState(() {
-    // if (_listOrderBoxItemsInModal != _listOrderBoxItemsInModalAfterSaving) {
-    //   _listOrderBoxItemsInModal = _listOrderBoxItemsInModalAfterSaving;
-    // }
-
     if (_listOrderBoxItemsInModal.length != 0 &&
         _listOrderBoxItemsInModalAfterSaving.length == 0) {
       _listOrderBoxItemsInModal.clear();
@@ -320,32 +289,23 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
 
     if (onChangedListItems(
         _listOrderBoxItemsInModalAfterSaving, _listOrderBoxItemsInModal)) {
-      setState(() {
-        _listOrderBoxItemsInModal = _listOrderBoxItemsInModalAfterSaving;
-      });
+      customDeepClone(
+          _listOrderBoxItemsInModal, _listOrderBoxItemsInModalAfterSaving);
     }
-
-    // chooseItemsController.text =
-    //     _listOrderBoxItemsInModalAfterCanceling.map((orderBoxItem) {
-    //   String name = orderBoxItem['item'];
-    //   String amount = orderBoxItem['amount'].toString();
-    //   return '${amount[0].toUpperCase()}${amount.substring(1)}x${name}';
-    // }).join('; ');
 
     initialAmountInput = 1;
     _chooseItemsTextToFillController.clear();
     Navigator.of(context).pop();
-    // });
   }
 
   void onClickChooseItemsBtnSave() {
-    // print('save');
-
     if (_listOrderBoxItemsInModalAfterSaving.length == 0) {
       if (_listOrderBoxItemsInModal.length != 0) {
         setState(() {
-          _listOrderBoxItemsInModalAfterSaving = _listOrderBoxItemsInModal;
+          customDeepClone(
+              _listOrderBoxItemsInModalAfterSaving, _listOrderBoxItemsInModal);
         });
+
         _showDelayedToast("Successfully saved!");
       } else {
         _showDelayedToast("Are you sure? You haven't chose any items yet");
@@ -353,44 +313,50 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     } else if (onChangedListItems(
         _listOrderBoxItemsInModalAfterSaving, _listOrderBoxItemsInModal)) {
       setState(() {
-        _listOrderBoxItemsInModalAfterSaving = _listOrderBoxItemsInModal;
+        customDeepClone(
+            _listOrderBoxItemsInModalAfterSaving, _listOrderBoxItemsInModal);
       });
-      _showDelayedToast("Successfully modified!");
-    }
 
-    // chooseItemsController.text =
-    //     _listOrderBoxItemsInModalAfterSaving.map((orderBoxItem) {
-    //   String name = orderBoxItem['item'];
-    //   String amount = orderBoxItem['amount'].toString();
-    //   return '${amount[0].toUpperCase()}${amount.substring(1)}x${name}';
-    // }).join('; ');
+      _showDelayedToast("Successfully modified!");
+      if (_listOrderBoxItemsInModalAfterSaving.length == 0) {
+        _showDelayedToast("Are you sure? You haven't chose any items yet");
+      }
+    }
 
     initialAmountInput = 1;
     _chooseItemsTextToFillController.clear();
     Navigator.of(context).pop();
   }
 
+  void customDeepClone(List<Map<String, dynamic>> listNeedToClone,
+      List<Map<String, dynamic>> listPrototype) {
+    setState(() {
+      listNeedToClone.clear();
+
+      for (int index = 0; index < listPrototype.length; index++) {
+        listNeedToClone.add({
+          'item': listPrototype[index]['item'],
+          'amount': listPrototype[index]['amount'],
+        });
+      }
+    });
+  }
+
   bool onChangedListItems(
       _listOrderBoxItemsInModalAfterSaving, _listOrderBoxItemsInModal) {
-    print('vao day');
-    print(_listOrderBoxItemsInModalAfterSaving);
-    print(_listOrderBoxItemsInModal);
-
     if (_listOrderBoxItemsInModalAfterSaving.length !=
         _listOrderBoxItemsInModal.length) {
-      print('khac length');
       return true;
-    }
+    } else {
+      int len = _listOrderBoxItemsInModalAfterSaving.length;
+      for (int index = 0; index < len; index++) {
+        int amountBeforeModifying =
+            _listOrderBoxItemsInModalAfterSaving[index]['amount'];
+        int amountCurrent = _listOrderBoxItemsInModal[index]['amount'];
 
-    int len = _listOrderBoxItemsInModalAfterSaving.length;
-    for (int index = 0; index < len; index++) {
-      int amountBeforeModifying =
-          _listOrderBoxItemsInModalAfterSaving[index]['amount'];
-      int amountCurrent = _listOrderBoxItemsInModal[index]['amount'];
-
-      if (amountBeforeModifying != amountCurrent) {
-        print('khasc');
-        return true;
+        if (amountBeforeModifying != amountCurrent) {
+          return true;
+        }
       }
     }
 
@@ -401,7 +367,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   void initState() {
     super.initState();
 
-    getSubjectData();
+    getServiceDataMultiSelect();
 
     // String pathJsonData = 'assets/data/order_details_data.json';
     // fetchData(pathJsonData).then((data) {
@@ -642,14 +608,14 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           //
           SizedBox(height: 20.v),
           //
-          _buildFormInfo(),
+          formInfo(),
           //
         ],
       ),
     );
   }
 
-  Widget _buildFormInfo() {
+  Widget formInfo() {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
@@ -663,26 +629,26 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           //
-          _buildFormInfoInputTypeBox(),
+          formInfoInputTypeBox(),
           SizedBox(height: 20.v),
           //
-          _buildFormInfoInputModelBox(),
+          formInfoInputModelBox(),
           SizedBox(height: 20.v),
           //
-          _buildFormInfoInputService(),
+          formInfoInputService(),
           SizedBox(height: 20.v),
           //
-          _buildFormInfoInputOpenChooseItems(),
+          formInfoInputOpenChooseItems(),
           SizedBox(height: 20.v),
           //
-          _buildFormInfoAddBtn(),
+          formInfoAddBtn(),
           //
         ],
       ),
     );
   }
 
-  Widget _buildFormInfoAddBtn() {
+  Widget formInfoAddBtn() {
     return GestureDetector(
       onTap: () {
         onClickFormInfoCreateBtn();
@@ -708,7 +674,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
-  Widget _buildFormInfoInputTypeBox() {
+  Widget formInfoInputTypeBox() {
     return Container(
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
@@ -777,7 +743,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
-  Widget _buildFormInfoInputModelBox() {
+  Widget formInfoInputModelBox() {
     return Container(
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
@@ -859,7 +825,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
-  Widget _buildFormInfoInputService() {
+  Widget formInfoInputService() {
     late bool isPicked = false;
     return Container(
       height: isPicked ? 80.h : null,
@@ -925,13 +891,13 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
-  Widget _buildFormInfoInputOpenChooseItems() {
+  Widget formInfoInputOpenChooseItems() {
     return GestureDetector(
       onTap: () {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return _buildDialogOpenChooseItems();
+            return dialogOpenChooseItems();
           },
         );
       },
@@ -1004,7 +970,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
-  Widget _buildDialogOpenChooseItems() {
+  Widget dialogOpenChooseItems() {
     return AlertDialog(
       title: Center(
         child: Text(
@@ -1044,8 +1010,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                       ),
                       SizedBox(height: 15.v),
                       //
-                      _buildChooseItemsInfoView(
-                          _listOrderBoxSetState, dialogContext),
+                      chooseItemsInfoView(_listOrderBoxSetState, dialogContext),
                       //
                       SizedBox(height: 15.v),
                       //
@@ -1059,13 +1024,13 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                       ),
                       SizedBox(height: 15.v),
                       //
-                      _buildChooseItemsListItemsView(_listOrderBoxSetState),
+                      chooseItemsListItemsView(_listOrderBoxSetState),
                       //
                     ],
                   ),
                 ),
                 //
-                _buildChooseItemsCloseSaveBtns(),
+                chooseItemsCloseSaveBtns(),
               ],
             ),
           );
@@ -1075,7 +1040,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
-  Widget _buildChooseItemsCloseSaveBtns() {
+  Widget chooseItemsCloseSaveBtns() {
     return Row(
       children: [
         //
@@ -1140,7 +1105,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
-  Widget _buildChooseItemsInfoView(
+  Widget chooseItemsInfoView(
       StateSetter _setState, BuildContext dialogContext) {
     return Container(
       // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
@@ -1153,7 +1118,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
               //
               Flexible(
                   flex: 3,
-                  child: _buildChooseItemsInfoInput(_setState, dialogContext)),
+                  child: chooseItemsInfoInput(_setState, dialogContext)),
               //
               SizedBox(width: 15.h),
               //
@@ -1335,7 +1300,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
-  Widget _buildChooseItemsInfoInput(
+  Widget chooseItemsInfoInput(
       StateSetter _setState, BuildContext dialogContext) {
     return Container(
       height: 50.v,
@@ -1380,7 +1345,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
-  Widget _buildChooseItemsListItemsView(StateSetter _setState) {
+  Widget chooseItemsListItemsView(StateSetter _setState) {
     return Container(
       // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
       height: 300.v,
@@ -1413,7 +1378,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                             //
                             Flexible(
                               flex: 3,
-                              child: _buildChooseItemsDisplayCurrentItem(
+                              child: chooseItemsDisplayCurrentItem(
                                   _listOrderBoxItemsInModal[index]['item']
                                       .toString()),
                             ),
@@ -1543,7 +1508,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
-  Widget _buildChooseItemsDisplayCurrentItem(String item) {
+  Widget chooseItemsDisplayCurrentItem(String item) {
     return Container(
       height: 50.v,
       decoration: BoxDecoration(
@@ -1663,10 +1628,12 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
               GestureDetector(
                 onTap: () {
                   //
-                  // _listOrderBoxItems.clear();
+                  setState(() {
+                    _listOrderBoxItems.clear();
+                  });
                   //
                   // snackbar appears
-                  _showDelayedToast('Successfully deleted!');
+                  _showDelayedToast('Successfully deleted all items!');
                 },
                 child: Text(
                   'Delete all',
@@ -1679,6 +1646,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
               ),
             ],
           ),
+          SizedBox(height: 20.v),
           //
           SingleChildScrollView(
             child: Container(
@@ -1693,7 +1661,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
 
                       return ListView.builder(
                         shrinkWrap: true,
-                        // physics: NeverScrollableScrollPhysics(),
+                        physics: BouncingScrollPhysics(),
                         itemCount: _listOrderBoxItems.length,
                         itemBuilder: (context, index) {
                           return _orderBoxItem(_listOrderBoxItems[index]);
@@ -1720,10 +1688,17 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
       child: Row(
         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          //
-          Flexible(flex: 1, child: verticalDecIncBtn()),
-          //
-          Flexible(flex: 4, child: orderBoxContentItem()),
+          Flexible(
+            flex: 5,
+            child: Row(
+              children: [
+                //
+                Flexible(flex: 1, child: verticalDecIncBtn()),
+                //
+                Flexible(flex: 4, child: orderBoxContentItem()),
+              ],
+            ),
+          ),
           //
           VerticalDivider(),
           //
@@ -1747,8 +1722,15 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
 
   Widget orderBoxContentItem() {
     return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black),
+      ),
       child: Column(
-        children: [],
+        children: [
+          //
+
+          //
+        ],
       ),
     );
   }
