@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
 import 'package:lastapp/model/addressModel.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
@@ -7,10 +6,6 @@ import 'package:lastapp/widgets/custom_checkbox_button.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
-import '../get_back_address_screen/controller/get_back_address_controller.dart';
-import '../get_back_choose_box_screen/controller/get_back_choose_box_controller.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GetBackCheckingAndPaymentScreen extends StatefulWidget {
   @override
@@ -20,13 +15,139 @@ class GetBackCheckingAndPaymentScreen extends StatefulWidget {
 }
 
 class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
-  GetBackAddressController addressController =
-      Get.put(GetBackAddressController());
-  GetBackChooseBoxController chooseController =
-      Get.put(GetBackChooseBoxController());
+  // GetBackAddressController addressController =
+  //     Get.put(GetBackAddressController());
+  // GetBackChooseBoxController chooseController =
+  //     Get.put(GetBackChooseBoxController());
 
   bool checkTerms = false;
-  List<OrderModel> listOrders = <OrderModel>[];
+
+  AddressModel addressModel = AddressModel(
+      name: "Do Ngoc Long",
+      phoneNumber: "0123456789",
+      addressNumber: "Toa song Da, Pham Hung",
+      wardCodeId: 1,
+      districtId: 1,
+      cityId: 1);
+
+  List<OrderModel> listOrders = [
+    OrderModel(
+        orderId: 1,
+        status: "WaitingGetBack",
+        shipStatusName: "Finished",
+        boxes: [
+          BoxOrderModel(
+              boxId: 1,
+              boxTypeId: 1,
+              boxModelId: 1,
+              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+              boxServices: "Hang On, Washing",
+              weight: 0.1,
+              quantity: 1,
+              dimension: "Plastic Box | Large",
+              price: 50000),
+          BoxOrderModel(
+              boxId: 2,
+              boxTypeId: 1,
+              boxModelId: 1,
+              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+              boxServices: "Hang On, Washing",
+              weight: 0.1,
+              quantity: 1,
+              dimension: "Plastic Box | Large",
+              price: 80000)
+        ],
+        name: "Do Ngoc Long",
+        phoneNumber: "0123456789",
+        address: "Toa song Da, Pham Hung",
+        date: "2024-04-10",
+        toWardCode: "1",
+        toDistrictId: 1),
+    OrderModel(
+        orderId: 2,
+        status: "WaitingGetBack",
+        shipStatusName: "Processing",
+        boxes: [
+          BoxOrderModel(
+              boxId: 1,
+              boxTypeId: 1,
+              boxModelId: 1,
+              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+              boxServices: "Hang On, Washing",
+              weight: 0.1,
+              quantity: 1,
+              dimension: "Plastic Box | Large",
+              price: 50000),
+          BoxOrderModel(
+              boxId: 2,
+              boxTypeId: 1,
+              boxModelId: 1,
+              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+              boxServices: "Hang On, Washing",
+              weight: 0.1,
+              quantity: 1,
+              dimension: "Plastic Box | Large",
+              price: 80000),
+          BoxOrderModel(
+              boxId: 2,
+              boxTypeId: 1,
+              boxModelId: 1,
+              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+              boxServices: "Hang On, Washing",
+              weight: 0.1,
+              quantity: 1,
+              dimension: "Plastic Box | Large",
+              price: 80000)
+        ],
+        name: "Do Ngoc Long",
+        phoneNumber: "0123456789",
+        address: "Toa song Da, Pham Hung",
+        date: "2024-04-10",
+        toWardCode: "1",
+        toDistrictId: 1),
+    OrderModel(
+        orderId: 3,
+        status: "WaitingGetBack",
+        shipStatusName: "Delivered",
+        boxes: [
+          BoxOrderModel(
+              boxId: 1,
+              boxTypeId: 1,
+              boxModelId: 1,
+              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+              boxServices: "Hang On, Washing",
+              weight: 0.1,
+              quantity: 1,
+              dimension: "Plastic Box | Large",
+              price: 50000),
+          BoxOrderModel(
+              boxId: 2,
+              boxTypeId: 1,
+              boxModelId: 1,
+              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+              boxServices: "Hang On, Washing",
+              weight: 0.1,
+              quantity: 1,
+              dimension: "Plastic Box | Large",
+              price: 80000),
+          BoxOrderModel(
+              boxId: 2,
+              boxTypeId: 1,
+              boxModelId: 1,
+              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+              boxServices: "Hang On, Washing",
+              weight: 0.1,
+              quantity: 1,
+              dimension: "Plastic Box | Large",
+              price: 80000)
+        ],
+        name: "Do Ngoc Long",
+        phoneNumber: "0123456789",
+        address: "Toa song Da, Pham Hung",
+        date: "2024-04-10",
+        toWardCode: "1",
+        toDistrictId: 1)
+  ];
   List<int> idList = [];
 
   double heightItems = 0.v;
@@ -34,15 +155,6 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
 
   @override
   void initState() {
-    // for (var element in chooseController.listOrders) {
-    //   heightItems += element.boxes.length * 160.v;
-    //   for (var e in element.boxes) {
-    //     total += e.price;
-    //   }
-    //   idList.add(element.id);
-    // }
-    // print(idList);
-
     super.initState();
   }
 
@@ -70,17 +182,6 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
                 top: 100.v,
                 child: _buildContentPageCheckingAndPayment(),
               ),
-              //
-              // Positioned(
-              //   bottom: 60.v,
-              //   child: _buildAddress(),
-              // ),
-              // //
-              // Positioned(
-              //   bottom: 120.v,
-              //   child: _buildAgreethetermsofuse(),
-              // ),
-              //
               _buildArrowRightLeft(),
             ],
           ),
@@ -218,11 +319,17 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
   }
 
   Widget _buildContentPageCheckingAndPayment() {
+    int priceTotal = 0;
+    for (var order in listOrders) {
+      for (var box in order.boxes) {
+        priceTotal += box.price;
+      }
+    }
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.v, vertical: 10.v),
       decoration: AppDecoration.fillPrimary
           .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
-      height: SizeUtils.height - 250.v,
+      height: SizeUtils.height,
       width: SizeUtils.width,
       child: SingleChildScrollView(
         child: Column(
@@ -230,13 +337,10 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            //
             Text("Request Data", style: CustomTextStyles.titleLargeGray800),
-            //
             SizedBox(height: 10.v),
             Divider(),
             SizedBox(height: 10.v),
-            //
             Container(
               height: SizeUtils.height - 350.v,
               decoration: AppDecoration.fillPrimary
@@ -245,18 +349,33 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
                 physics: BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                    //
-                    _buildPackageRequirementsSection(),
-                    //
+                    _buildAddress(),
                     SizedBox(height: 10.v),
+                    _buildPackageRequirementsSection(),
+                    SizedBox(height: 10.v),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Transport",
+                          style: CustomTextStyles.labelLargeBold,
+                        ),
+                        Text(
+                          "20000 VND",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20.v),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 0.v),
                       child: Column(
                         children: [
-                          //
                           Divider(),
                           SizedBox(height: 20.v),
-                          //
                           Align(
                             alignment: Alignment.centerRight,
                             child: Padding(
@@ -269,7 +388,7 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
                                       style: theme.textTheme.titleSmall,
                                     ),
                                     TextSpan(
-                                      text: '${total} VND',
+                                      text: '${priceTotal + 20000} VND',
                                       style: theme.textTheme.titleSmall,
                                     ),
                                   ],
@@ -281,10 +400,29 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
                         ],
                       ),
                     ),
+                    SizedBox(height: 20.v),
+                    Divider(),
                     SizedBox(height: 10.v),
-                    //
-                    _buildAddress(),
-                    //
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Payment methods", style: CustomTextStyles.labelLargeBold),
+                        Row(
+                          children: [
+                            Text("Cash"),
+                            IconButton(
+                              icon: const Icon(Icons.arrow_forward_ios),
+                              onPressed: () {},
+                              tooltip: MaterialLocalizations.of(context)
+                                  .openAppDrawerTooltip,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10.v),
+                    Divider(),
+                    SizedBox(height: 50.v),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -304,7 +442,6 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
   Widget _buildPackageRequirementsSection() {
     return Column(
       children: [
-        //
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
@@ -313,319 +450,188 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
           ),
         ),
         SizedBox(height: 10.v),
-        //
-        Container(
-          height: heightItems > 150.v ? heightItems : 150.v,
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: chooseController.listOrders.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      height: chooseController.listOrders[index].boxes.length *
-                          155.v,
+        Column(
+          children: listOrders.map((order) {
+            int priceOrder = 0;
+            for (var box in order.boxes) {
+              priceOrder += box.price;
+            }
+            return Column(children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                width: SizeUtils.width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.elliptical(20, 20)),
+                  border:
+                      Border.all(width: 1, color: Colors.grey), // Đường viền
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'ID',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text('  ${order.orderId}',
+                            style: TextStyle(
+                              color: Colors.green.shade800,
+                              fontSize: 14,
+                            )),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Items',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
                       child: Column(
-                        children: [
-                          // Padding(
-                          //   padding: EdgeInsets.only(
-                          //       left: 0.h, right: 10.h, bottom: 10.h),
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //     children: [
-                          //       Text(
-                          //         "Order ID - " +
-                          //             chooseController.listOrders[index].id
-                          //                 .toString(),
-                          //         style: CustomTextStyles.labelLargeBold,
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: chooseController
-                                  .listOrders[index].boxes.length,
-                              itemBuilder: (context, i) {
-                                return _buildPackageRequirementsItem(
-                                    chooseController
-                                        .listOrders[index].boxes[i]);
-                              },
+                        children: order.boxes.map((box) {
+                          return Column(children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              width: SizeUtils.width,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.elliptical(10, 10)),
+                                border: Border.all(
+                                    width: 1, color: Colors.grey), // Đường viền
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${box.dimension} | ${box.weight}kg | ${box.boxServices}',
+                                    style: TextStyle(
+                                        color: Colors.blue.shade900,
+                                        fontSize: 13),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    '${box.listItem}',
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 13),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                            SizedBox(height: 10),
+                          ]);
+                        }).toList(),
                       ),
-                    );
-                  },
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Price:',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          '${priceOrder} VND',
+                          style: TextStyle(
+                            color: Colors.deepOrange,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+              SizedBox(height: 10),
+            ]);
+          }).toList(),
         ),
-      ],
-    );
-  }
-
-  Widget _buildPackageRequirementsItem(boxOrder) {
-    return Column(
-      children: [
-        //
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: EdgeInsets.only(left: 10.h),
-            child: Text(
-              'ID - ${boxOrder.id}',
-              style: CustomTextStyles.labelLargeGreen600,
-            ),
-          ),
-        ),
-        SizedBox(height: 10.v),
-
-        //
-        Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 10.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              //
-              Text(
-                "Dimension:",
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
-              //
-              RichText(
-                text: TextSpan(
-                  style: theme.textTheme.bodySmall!
-                      .copyWith(color: appTheme.amber900),
-                  text: '${boxOrder.dimension} | ${boxOrder.weight / 1000}kg',
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 10.v),
-
-        //
-        Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 10.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              //
-              Text(
-                "Items:",
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
-              //
-              Text(
-                boxOrder.items,
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 10.v),
-
-        //
-        Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 10.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              //
-              Text(
-                "Services:",
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
-              //
-              Text(
-                boxOrder.services,
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.blue500),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 10.v),
-
-        //
-        Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 10.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              //
-              Text(
-                "Price:",
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
-              //
-              Text(
-                '${boxOrder.price} VND',
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.redA200),
-              ),
-            ],
-          ),
-        ),
-
-        SizedBox(height: 10.v),
       ],
     );
   }
 
   Widget _buildAddress() {
-    return Container(
-      width: SizeUtils.width,
-      height: 220.v,
-      child: Column(
-        children: [
-          //
-          SizedBox(height: 10.v),
-          Divider(),
-          SizedBox(height: 10.v),
-          //
-          Container(
-            padding: EdgeInsets.only(left: 10.h),
-            child: Column(
-              children: [
-                //
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Address",
-                    style: CustomTextStyles.labelLargeBold,
-                  ),
-                ),
-                SizedBox(height: 10.v),
-                //
-                _buildAddressItem(addressController.tuyenListAddress[0]),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAddressItem(AddressModel address) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        //
-        Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 10.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              //
-              Text(
-                "Fullname:",
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
-              //
-              Text(
-                address.name,
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
-            ],
-          ),
+        Text(
+          "Address",
+          style: CustomTextStyles.labelLargeBold,
         ),
         SizedBox(height: 10.v),
-
-        //
-        Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 10.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              //
-              Text(
-                "Phone number:",
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
+        Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 10.h, right: 10.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Fullname:",
+                    style: theme.textTheme.bodySmall!
+                        .copyWith(color: appTheme.black900),
+                  ),
+                  Text(
+                    addressModel.name,
+                    style: theme.textTheme.bodySmall!
+                        .copyWith(color: appTheme.black900),
+                  ),
+                ],
               ),
-              //
-              Text(
-                address.phoneNumber,
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
+            ),
+            SizedBox(height: 10.v),
+            Padding(
+              padding: EdgeInsets.only(left: 10.h, right: 10.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Phone number:",
+                    style: theme.textTheme.bodySmall!
+                        .copyWith(color: appTheme.black900),
+                  ),
+                  Text(
+                    addressModel.phoneNumber,
+                    style: theme.textTheme.bodySmall!
+                        .copyWith(color: appTheme.black900),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 10.v),
+            Padding(
+              padding: EdgeInsets.only(left: 10.h, right: 10.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Address Number:",
+                    style: theme.textTheme.bodySmall!
+                        .copyWith(color: appTheme.black900),
+                  ),
+                  Text(
+                    addressModel.addressNumber,
+                    style: theme.textTheme.bodySmall!
+                        .copyWith(color: appTheme.black900),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         SizedBox(height: 10.v),
-
-        //
-        Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 10.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              //
-              Text(
-                "Address Number:",
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
-              //
-              Text(
-                address.addressNumber,
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 10.v),
-        Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 10.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              //
-              Text(
-                "Ward:",
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
-              //
-              // Text(
-              //   '${address.towardCode}',
-              //   style: theme.textTheme.bodySmall!
-              //       .copyWith(color: appTheme.black900),
-              // ),
-            ],
-          ),
-        ),
-        SizedBox(height: 10.v),
-        Padding(
-          padding: EdgeInsets.only(left: 10.h, right: 10.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              //
-              Text(
-                "District:",
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
-              //
-              Text(
-                '${address.districtId}',
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: appTheme.black900),
-              ),
-            ],
-          ),
-        ),
+        Divider(),
       ],
     );
   }
@@ -698,43 +704,43 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
 
   /// Navigates to the homeContainerScreen when the action is triggered.
   onTapBtnArrowRight() async {
-    if (checkTerms)
-      await createRequestSendBox().then((value) {
-        // Get.toNamed(
-        //   AppRoutes.homeContainerScreen,
-        // );
-      });
+    // if (checkTerms)
+    //   await createRequestSendBox().then((value) {
+    //     // Get.toNamed(
+    //     //   AppRoutes.homeContainerScreen,
+    //     // );
+    //   });
   }
 
-  Future<void> createRequestSendBox() async {
-    try {
-      var uri =
-          Uri.https(dotenv.get('HOST'), '/api/Order/GetBack');
-      final response = await http.post(
-        uri,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'ngrok-skip-browser-warning': '69420',
-        },
-        body: jsonEncode(<String, dynamic>{
-          "name": addressController.tuyenListAddress[0].name,
-          "phoneNumber": addressController.tuyenListAddress[0].phoneNumber,
-          "address": addressController.tuyenListAddress[0].addressNumber,
-          "date": "2024-04-07T05:04:47.315Z",
-          "toWardCode":
-              '510102', //addressController.tuyenListAddress[0].towardCode,
-          "toDistrictId": addressController.tuyenListAddress[0].districtId,
-          "orderId": idList
-        }),
-      );
+  // Future<void> createRequestSendBox() async {
+  //   try {
+  //     var uri =
+  //         Uri.https(dotenv.get('HOST'), '/api/Order/GetBack');
+  //     final response = await http.post(
+  //       uri,
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //         'ngrok-skip-browser-warning': '69420',
+  //       },
+  //       body: jsonEncode(<String, dynamic>{
+  //         "name": addressController.tuyenListAddress[0].name,
+  //         "phoneNumber": addressController.tuyenListAddress[0].phoneNumber,
+  //         "address": addressController.tuyenListAddress[0].addressNumber,
+  //         "date": "2024-04-07T05:04:47.315Z",
+  //         "toWardCode":
+  //             '510102', //addressController.tuyenListAddress[0].towardCode,
+  //         "toDistrictId": addressController.tuyenListAddress[0].districtId,
+  //         "orderId": idList
+  //       }),
+  //     );
 
-      if (response.statusCode == 200) {
-        print('Push thành công');
-      } else {
-        throw Exception('Failed to create album.');
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
+  //     if (response.statusCode == 200) {
+  //       print('Push thành công');
+  //     } else {
+  //       throw Exception('Failed to create album.');
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 }

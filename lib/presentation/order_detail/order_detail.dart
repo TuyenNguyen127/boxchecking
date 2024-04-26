@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lastapp/core/utils/image_constant.dart';
 import 'package:lastapp/core/utils/size_utils.dart';
 import 'package:lastapp/model/orderModel.dart';
+import 'package:lastapp/widgets/custom_image_view.dart';
 
 class OrderDetailPage extends StatelessWidget {
   final OrderModel order;
@@ -9,16 +11,28 @@ class OrderDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int priceTotal = 0;
+    for (var box in order.boxes) {
+      priceTotal += box.price;
+    }
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Order ID: ${order.orderId}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ],
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          },
+        ),
+        centerTitle: true,
+        title: Text(
+          'Order ID: ${order.orderId}',
+          style: TextStyle(
+              color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
@@ -39,11 +53,13 @@ class OrderDetailPage extends StatelessWidget {
                         Text(
                           '${order.status}',
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
                         ),
                         Text(
                           ' | Date: ${order.date}',
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(color: Colors.black, fontSize: 18),
                         ),
                       ],
                     ),
@@ -53,7 +69,7 @@ class OrderDetailPage extends StatelessWidget {
                       children: [
                         Text(
                           'Date: ${order.date}',
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(color: Colors.black, fontSize: 18),
                         ),
                       ],
                     ),
@@ -73,7 +89,9 @@ class OrderDetailPage extends StatelessWidget {
                     children: [
                       Text('Informations',
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold)),
                     ],
                   ),
                   SizedBox(height: 8),
@@ -88,41 +106,56 @@ class OrderDetailPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     'Name',
-                                    style: TextStyle(fontSize: 18),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 16),
                                   ),
                                   Text(
                                     '${order.name}',
-                                    style: TextStyle(fontSize: 18),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 16),
                                   ),
                                 ],
                               ),
+                              SizedBox(
+                                height: 5,
+                              ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     'Phone number',
-                                    style: TextStyle(fontSize: 18),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 16),
                                   ),
                                   Text(
                                     '${order.phoneNumber}',
-                                    style: TextStyle(fontSize: 18),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 16),
                                   ),
                                 ],
                               ),
+                              SizedBox(
+                                height: 5,
+                              ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     'Address',
-                                    style: TextStyle(fontSize: 18),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 16),
                                   ),
                                   Text(
                                     '${order.address}',
-                                    style: TextStyle(fontSize: 18),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 16),
                                   ),
                                 ],
                               ),
@@ -136,26 +169,25 @@ class OrderDetailPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10),
+            Divider(),
+            SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text('Items:',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
-                    ],
-                  ),
+                  Text('Items:',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold)),
                   SizedBox(height: 8),
                   Column(
                     children: order.boxes.map((box) {
                       return Column(children: [
                         Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
+                              horizontal: 18, vertical: 10),
                           width: SizeUtils.width,
                           decoration: BoxDecoration(
                             borderRadius:
@@ -166,13 +198,71 @@ class OrderDetailPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Box ID: ${box.boxId}'),
-                              Text('List Item: ${box.listItem}'),
-                              Text('Box Services: ${box.boxServices}'),
-                              Text('Weight: ${box.weight}'),
-                              Text('Quantity: ${box.quantity}'),
-                              Text('Dimension: ${box.dimension}'),
-                              Text('Price: ${box.price}'),
+                              Row(
+                                children: [
+                                  Text(
+                                    'ID',
+                                    style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text('  ${box.boxId}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 13,
+                                      )),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [
+                                  CustomImageView(
+                                    imagePath: ImageConstant.imgBookmark,
+                                    color: Colors.black54,
+                                    height: 12.v,
+                                    width: 11.h,
+                                  ),
+                                  Text('  ${box.listItem}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 13,
+                                      )),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [
+                                  CustomImageView(
+                                    imagePath: ImageConstant.imgGrid,
+                                    color: Colors.black54,
+                                    height: 12.v,
+                                    width: 11.h,
+                                  ),
+                                  Text(
+                                      '  ${box.dimension} | ${box.weight} | ${box.boxServices}',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 13,
+                                      )),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.attach_money_outlined,
+                                    size: 16.fSize,
+                                  ),
+                                  Text('  ${box.price} VND'),
+                                ],
+                              ),
                             ],
                           ),
                         ),
@@ -180,6 +270,28 @@ class OrderDetailPage extends StatelessWidget {
                       ]);
                     }).toList(),
                   ),
+                ],
+              ),
+            ),
+            SizedBox(height: 10),
+            Divider(),
+            SizedBox(height: 10),
+            Container(
+              width: SizeUtils.width,
+              padding: EdgeInsets.symmetric(horizontal: 25),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Price:',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold)),
+                  Text('${priceTotal} VND',
+                      style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold)),
                 ],
               ),
             ),

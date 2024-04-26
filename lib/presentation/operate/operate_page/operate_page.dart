@@ -382,15 +382,13 @@ class _OperatePageState extends State<OperatePage> {
       children: [
         _topfillter(listOrderWidget.length),
         listOrderWidget.length == 0
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                    Container(
-                        width: SizeUtils.width,
-                        height: SizeUtils.height - 250,
-                        child: Text("No order"))
-                  ])
+            ? Container(
+                decoration: BoxDecoration(
+                  color: Colors.green
+                ),
+                child: 
+                    Text("No order"))
+                  
             : Container(
                 width: SizeUtils.width,
                 height: SizeUtils.height - 250,
