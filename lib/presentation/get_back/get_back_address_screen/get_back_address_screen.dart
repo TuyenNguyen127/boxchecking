@@ -284,14 +284,14 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
           children: [
             //
             _buildFullName(),
-            SizedBox(height: 20.v),
+            SizedBox(height: 8.v),
             //
             _buildPhoneNumber(),
             //
-            SizedBox(height: 20.v),
+            SizedBox(height: 8.v),
             //
             _buildAddressCode(),
-            SizedBox(height: 20.v),
+            SizedBox(height: 8.v),
             //
             _buildAddressView(),
           ],
@@ -308,13 +308,18 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
         DropdownButtonFormField<int>(
           decoration: InputDecoration(
             labelText: 'Select Province',
-            contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+            contentPadding:
+                EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
             hintStyle: TextStyle(
               fontSize: 17,
               color: Colors.grey,
               fontWeight: FontWeight.w400,
             ),
             border: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.black,
+                width: 1,
+              ),
               borderRadius: BorderRadius.circular(10),
             ),
             // floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -331,9 +336,16 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
               ),
               borderRadius: BorderRadius.circular(10),
             ),
+            errorText: isErrorCity ? "Please select Province" : "",
             errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Colors.red,
+              borderSide: BorderSide(
+                color: isErrorCity ? Colors.red : Colors.grey,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: isErrorCity ? Colors.red : Colors.grey,
               ),
               borderRadius: BorderRadius.circular(10),
             ),
@@ -362,18 +374,20 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
           }).toList(),
           onChanged: (value) {
             setState(() {
+              isErrorCity = false;
               selectedProvinceId = value;
               selectedDistrictId = null; // Reset district selection
             });
           },
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 8),
 
         // District Dropdown
         DropdownButtonFormField<int>(
           decoration: InputDecoration(
             labelText: 'Select District',
-            contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+            contentPadding:
+                EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
             hintStyle: TextStyle(
               fontSize: 17,
               color: Colors.grey,
@@ -396,9 +410,16 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
               ),
               borderRadius: BorderRadius.circular(10),
             ),
+            errorText: isErrorDistrict ? "Please select District" : "",
             errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Colors.red,
+              borderSide: BorderSide(
+                color: isErrorDistrict ? Colors.red : Colors.grey,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: isErrorDistrict ? Colors.red : Colors.grey,
               ),
               borderRadius: BorderRadius.circular(10),
             ),
@@ -428,16 +449,18 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
             setState(() {
               selectedDistrictId = value;
               selectedWardId = null;
+              isErrorDistrict = false;
             });
           },
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 8),
 
         // Ward Dropdown
         DropdownButtonFormField<int>(
           decoration: InputDecoration(
             labelText: 'Select Ward',
-            contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+            contentPadding:
+                EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
             hintStyle: TextStyle(
               fontSize: 17,
               color: Colors.grey,
@@ -460,9 +483,16 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
               ),
               borderRadius: BorderRadius.circular(10),
             ),
+            errorText: isErrorWardCode ? "Please select Ward" : "",
             errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Colors.red,
+              borderSide: BorderSide(
+                color: isErrorWardCode ? Colors.red : Colors.grey,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: isErrorWardCode ? Colors.red : Colors.grey,
               ),
               borderRadius: BorderRadius.circular(10),
             ),
@@ -494,14 +524,8 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
           onChanged: (value) {
             setState(() {
               selectedWardId = value;
+              isErrorWardCode = false;
             });
-          },
-          validator: (value) {
-            // Validate if value is null or empty
-            if (value == null || value == '') {
-              return 'Please select a ward';
-            }
-            return null;
           },
         ),
       ],
@@ -514,6 +538,11 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
       showCursor: true,
       cursorColor: Colors.black,
       controller: phoneNumberController,
+      onChanged: (value) {
+        setState(() {
+          isErrorPhoneNumber = false;
+        });
+      },
       style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.w400,
@@ -521,12 +550,13 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
       decoration: InputDecoration(
         labelText: 'Phone Number',
         labelStyle: TextStyle(
-              fontSize: 17,
-              color: Colors.grey,
-              fontWeight: FontWeight.w400,
-            ),
+          fontSize: 17,
+          color: Colors.grey,
+          fontWeight: FontWeight.w400,
+        ),
         hintText: 'Enter your phone number',
-        contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+        contentPadding:
+            EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
         hintStyle: TextStyle(
           fontSize: 14,
           color: Colors.grey,
@@ -549,9 +579,16 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
           ),
           borderRadius: BorderRadius.circular(10),
         ),
+        errorText: isErrorPhoneNumber ? "Please enter correct phone number" : "",
         errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.red,
+          borderSide: BorderSide(
+            color: isErrorPhoneNumber ? Colors.red : Colors.grey,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: isErrorPhoneNumber ? Colors.red : Colors.grey,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -566,6 +603,11 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
       showCursor: true,
       cursorColor: Colors.black,
       controller: fullNameController,
+      onChanged: (value) {
+        setState(() {
+          isErrorFullname = false;
+        });
+      },
       style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.w400,
@@ -573,11 +615,12 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
       decoration: InputDecoration(
         labelText: 'Full Name',
         labelStyle: TextStyle(
-              fontSize: 17,
-              color: Colors.grey,
-              fontWeight: FontWeight.w400,
-            ),
-        contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+          fontSize: 17,
+          color: Colors.grey,
+          fontWeight: FontWeight.w400,
+        ),
+        contentPadding:
+            EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
         hintText: 'Enter your full name',
         hintStyle: TextStyle(
           fontSize: 14,
@@ -601,9 +644,16 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
           ),
           borderRadius: BorderRadius.circular(10),
         ),
+        errorText: isErrorFullname ? "Please enter your full name" : "",
         errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.red,
+          borderSide: BorderSide(
+            color: isErrorFullname ? Colors.red : Colors.grey,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: isErrorFullname ? Colors.red : Colors.grey,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -618,6 +668,11 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
       showCursor: true,
       cursorColor: Colors.black,
       controller: addressController,
+      onChanged: (value) {
+        setState(() {
+          isErrorAddress = false;
+        });
+      },
       style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.w400,
@@ -625,11 +680,12 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
       decoration: InputDecoration(
         labelText: 'Address',
         labelStyle: TextStyle(
-              fontSize: 17,
-              color: Colors.grey,
-              fontWeight: FontWeight.w400,
-            ),
-        contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+          fontSize: 17,
+          color: Colors.grey,
+          fontWeight: FontWeight.w400,
+        ),
+        contentPadding:
+            EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
         hintText: 'Enter your address',
         hintStyle: TextStyle(
           fontSize: 16,
@@ -653,9 +709,16 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
           ),
           borderRadius: BorderRadius.circular(10),
         ),
+        errorText: isErrorAddress ? "Please enter address street, No,..." : "",
         errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.red,
+          borderSide: BorderSide(
+            color: isErrorAddress ? Colors.red : Colors.grey,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: isErrorAddress ? Colors.red : Colors.grey,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -667,7 +730,7 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
   /// Section Widget
   Widget _buildArrowRightLeft(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 45.v),
+      padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 35.v),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -711,11 +774,11 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
     //
     // Navigator.pop(context);
 
-    Get.toNamed(
-      AppRoutes.getBackChooseBoxScreen,
-    );
+    // Get.toNamed(
+    //   AppRoutes.getBackChooseBoxScreen,
+    // );
 
-    //checkValidationData();
+    checkValidationData();
   }
 
   bool validateData() {
@@ -746,7 +809,7 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
       });
     }
 
-    if (wardCode.isEmpty) {
+    if (selectedWardId == null) {
       print('trong ward');
       print(wardCode);
 
@@ -755,7 +818,7 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
       });
     }
 
-    if (district.isEmpty) {
+    if (selectedDistrictId == null) {
       print('trong district');
       print(district);
 
@@ -764,7 +827,7 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
       });
     }
 
-    if (city.isEmpty) {
+    if (selectedProvinceId == null) {
       print('trong city');
       print(city);
 
