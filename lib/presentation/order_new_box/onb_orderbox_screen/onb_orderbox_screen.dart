@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lastapp/core/app_export.dart';
@@ -41,7 +43,18 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   dynamic modelBox = null;
   int maxAmountItemsCanHandle = 50;
 
-  // BoxOrderModel boxOrder = BoxOrderModel();
+  BoxOrderModel boxOrder = BoxOrderModel(
+    boxId: 1,
+    boxTypeId: 1,
+    boxModelId: 1,
+    listItem: '',
+    boxServices: '',
+    weight: 0,
+    quantity: 0,
+    dimension: '',
+    price: 0,
+  );
+
   List<BoxOrderModel> listBoxOrder = <BoxOrderModel>[];
 
   final TextEditingController _chooseItemsTextToFillController =
@@ -1627,7 +1640,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
       }
 
       if (acceptForCreatingNewOrder) {
-        String boxId = UniqueKey().toString();
+        int boxId = Random().nextInt(100000000);
 
         customDeepClone(
             _listOrderBoxItems, _listOrderBoxItemsInModalAfterSaving);
@@ -1638,18 +1651,18 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           return '${amount}x${name[0].toUpperCase()}${name.substring(1)}';
         }).join(' | ');
 
-        // boxOrder = BoxOrderModel(
-        //   boxId: boxId,
-        //   boxTypeId: selectedTypeBoxId ?? 0,
-        //   boxModelId: selectedModelBoxId ?? 0,
-        //   listItem: listItems ?? '',
-        //   boxServices: services ?? '',
-        //   weight: 50,
-        //   quantity: 1,
-        //   dimension: services ?? '',
-        //   price: 100,
-        // );
-        // listBoxOrder.add(boxOrder);
+        boxOrder = BoxOrderModel(
+          boxId: boxId,
+          boxTypeId: selectedTypeBoxId,
+          boxModelId: selectedModelBoxId,
+          listItem: listItems,
+          boxServices: services,
+          weight: 50,
+          quantity: 1,
+          dimension: services,
+          price: 100,
+        );
+        listBoxOrder.add(boxOrder);
 
         // empty data from form info
         services = '';
