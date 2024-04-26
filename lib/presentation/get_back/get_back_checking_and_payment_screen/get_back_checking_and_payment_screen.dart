@@ -10,6 +10,7 @@ import 'package:lastapp/core/app_export.dart';
 import '../get_back_address_screen/controller/get_back_address_controller.dart';
 import '../get_back_choose_box_screen/controller/get_back_choose_box_controller.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GetBackCheckingAndPaymentScreen extends StatefulWidget {
   @override
@@ -708,7 +709,7 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
   Future<void> createRequestSendBox() async {
     try {
       var uri =
-          Uri.https('529d-118-70-128-84.ngrok-free.app', '/api/Order/GetBack');
+          Uri.https(dotenv.get('HOST'), '/api/Order/GetBack');
       final response = await http.post(
         uri,
         headers: <String, String>{

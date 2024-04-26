@@ -59,7 +59,7 @@ class BoxOrderModel {
   int boxTypeId;
   int boxModelId;
   String listItem;
-  List<String> boxServices;
+  String boxServices;
   double weight;
   int quantity;
   String dimension;
@@ -86,8 +86,8 @@ class BoxOrderModel {
       boxTypeId: json['boxTypeId'],
       boxModelId: json['boxModelId'],
       listItem: json['listItem'],
-      boxServices:
-          boxServicesJson.map((service) => service.toString()).toList(),
+      boxServices: json['boxServices'],
+          //boxServicesJson.map((service) => service.toString()).toList(),
       weight: json['weight'],
       quantity: json['quantity'],
       dimension: json['dimension'],

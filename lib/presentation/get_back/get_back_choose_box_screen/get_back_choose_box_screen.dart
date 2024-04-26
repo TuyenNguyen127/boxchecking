@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'controller/get_back_choose_box_controller.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GetBackChooseBoxScreen extends StatefulWidget {
   @override
@@ -26,7 +27,7 @@ class MainGetBackBox extends State<GetBackChooseBoxScreen>
 
   Future<void> requestOrder() async {
     try {
-      var uri = Uri.https('529d-118-70-128-84.ngrok-free.app',
+      var uri = Uri.https(dotenv.get('HOST'),
           '/api/Order/GetListOrderByUserId', {'userId': '1', 'statusId': '4'});
       final response = await http.get(
         uri,

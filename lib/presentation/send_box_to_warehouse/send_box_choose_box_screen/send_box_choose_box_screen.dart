@@ -11,6 +11,7 @@ import 'package:lastapp/widgets/custom_icon_button.dart';
 
 import 'controller/send_box_choose_box_controller.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SendBoxChooseBoxScreen extends StatefulWidget {
   @override
@@ -29,7 +30,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
 
   Future<void> requestOrder() async {
     try {
-      var uri = Uri.https('529d-118-70-128-84.ngrok-free.app',
+      var uri = Uri.https(dotenv.get('HOST'),
           '/api/Order/GetListOrderByUserId', {'userId': '1', 'statusId': '4'});
       final response = await http.get(
         uri,

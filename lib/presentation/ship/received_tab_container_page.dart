@@ -3,20 +3,16 @@ import 'package:intl/intl.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
-import 'package:lastapp/presentation/order_detail/order_detail.dart';
 
-class OperatePage extends StatefulWidget {
-  OperatePage({Key? key})
-      : super(
-          key: key,
-        );
+class RecivedTabContainerPage extends StatefulWidget {
+  RecivedTabContainerPage({Key? key}) : super(key: key);
 
   @override
-  State<OperatePage> createState() => _OperatePageState();
+  State<RecivedTabContainerPage> createState() => _RecivedTabContainerPage();
 }
 
-class _OperatePageState extends State<OperatePage> {
-  int? selectedDate = 1000;
+class _RecivedTabContainerPage extends State<RecivedTabContainerPage> {
+  int? selectedDate = 7;
 
   final List<String> tabs = [
     'Processing',
@@ -262,10 +258,10 @@ class _OperatePageState extends State<OperatePage> {
             ),
             body: TabBarView(
               children: [
-                _orderShip('Processing'),
-                _orderShip('Awaiting shipping'),
-                _orderShip('Delivered'),
-                _orderShip('Cancelled'),
+                _procressing(),
+                _orderShip2(),
+                _orderShip3(),
+                _orderShip4(),
               ],
             ),
           ),
@@ -282,7 +278,7 @@ class _OperatePageState extends State<OperatePage> {
       automaticallyImplyLeading: false,
       title: Center(
         child: Text(
-          'Operator',
+          'Ship',
           style: TextStyle(
             color: Colors.white,
             fontSize: 22,
@@ -375,9 +371,9 @@ class _OperatePageState extends State<OperatePage> {
     ]);
   }
 
-  Widget _orderShip(String status) {
+  Widget _procressing() {
     List<OrderModel> listOrderWidget =
-        fillDataWithDate(orderStatusList[status]!);
+        fillDataWithDate(orderStatusList['Processing']!);
     return Column(
       children: [
         _topfillter(listOrderWidget.length),
@@ -410,7 +406,65 @@ class _OperatePageState extends State<OperatePage> {
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
-                              orderItemWidget(listOrderWidget[index]),
+                              recivedItemWidget(listOrderWidget[index]),
+                              Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () => {print('da an')},
+                                    child: Container(
+                                      width: 143.h,
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 9.v),
+                                      decoration: AppDecoration.outlineGray,
+                                      child: Center(
+                                        child: Text(
+                                          '',
+                                          style: CustomTextStyles
+                                              .labelLargePrimaryContainer,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 104.h,
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 9.v),
+                                    decoration: AppDecoration.outlineGray,
+                                    child: Center(
+                                      child: Text(
+                                        'Edit order',
+                                        style: CustomTextStyles
+                                            .labelLargePrimaryContainer,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 94.h,
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 9.v),
+                                    decoration: AppDecoration.outlineGray,
+                                    child: Center(
+                                      child: Text(
+                                        'Cancel',
+                                        style: CustomTextStyles
+                                            .labelLargePrimaryContainer,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 43.h,
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 9.v),
+                                    decoration: AppDecoration.outlineGray,
+                                    child: Center(
+                                      child: Text(
+                                        '...',
+                                        style: theme.textTheme.labelLarge,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           );
                         },
@@ -423,11 +477,155 @@ class _OperatePageState extends State<OperatePage> {
     );
   }
 
-  Widget orderItemWidget(OrderModel orderModel) {
-    int priceTotal = 0;
-    for (var box in orderModel.boxes) {
-      priceTotal += box.price;
-    }
+  Widget _orderShip2() {
+    List<OrderModel> listOrderWidget =
+        fillDataWithDate(orderStatusList['Awaiting shipping']!);
+    return Column(
+      children: [
+        _topfillter(listOrderWidget.length),
+        listOrderWidget.length == 0
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                    Container(
+                        width: SizeUtils.width,
+                        height: SizeUtils.height - 250,
+                        child: Text("No order"))
+                  ])
+            : Container(
+                width: SizeUtils.width,
+                height: SizeUtils.height - 250,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ListView.separated(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        separatorBuilder: (
+                          context,
+                          index,
+                        ) {
+                          return SizedBox(height: 5.v);
+                        },
+                        itemCount: listOrderWidget.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              recivedItemWidget(listOrderWidget[index]),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+      ],
+    );
+  }
+
+  Widget _orderShip3() {
+    List<OrderModel> listOrderWidget =
+        fillDataWithDate(orderStatusList['Delivered']!);
+    return Column(
+      children: [
+        _topfillter(listOrderWidget.length),
+        listOrderWidget.length == 0
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                    Container(
+                        width: SizeUtils.width,
+                        height: SizeUtils.height - 250,
+                        child: Text("No order"))
+                  ])
+            : Container(
+                width: SizeUtils.width,
+                height: SizeUtils.height - 250,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ListView.separated(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        separatorBuilder: (
+                          context,
+                          index,
+                        ) {
+                          return SizedBox(height: 5.v);
+                        },
+                        itemCount: listOrderWidget.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              recivedItemWidget(listOrderWidget[index]),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+      ],
+    );
+  }
+
+  Widget _orderShip4() {
+    List<OrderModel> listOrderWidget =
+        fillDataWithDate(orderStatusList['Cancelled']!);
+    return Column(
+      children: [
+        _topfillter(listOrderWidget.length),
+        listOrderWidget.length == 0
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                    Container(
+                        width: SizeUtils.width,
+                        height: SizeUtils.height - 250,
+                        child: Text("No order"))
+                  ])
+            : Container(
+                width: SizeUtils.width,
+                height: SizeUtils.height - 250,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ListView.separated(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        separatorBuilder: (
+                          context,
+                          index,
+                        ) {
+                          return SizedBox(height: 5.v);
+                        },
+                        itemCount: listOrderWidget.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              recivedItemWidget(listOrderWidget[index]),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+      ],
+    );
+  }
+
+  // Widget _buildRecived(listOrders) {
+  //   return
+  // }
+
+  Widget recivedItemWidget(OrderModel orderModel) {
     return Container(
       width: SizeUtils.width,
       decoration: AppDecoration.fillPrimary,
@@ -495,21 +693,83 @@ class _OperatePageState extends State<OperatePage> {
                           ],
                         ),
                         GestureDetector(
-                            onTap: () => {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          OrderDetailPage(order: orderModel),
-                                    ),
-                                  )
-                                },
+                            onTap: () => {print('da an')},
                             child: Text("More details"))
                       ],
                     ),
                   ),
                   //
-
+                  SizedBox(height: 10.v),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomImageView(
+                        imagePath: ImageConstant.imgLockBlueGray300,
+                        color: Colors.black54,
+                        height: 12.adaptSize,
+                        width: 12.adaptSize,
+                        margin: EdgeInsets.symmetric(vertical: 1.v),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 13.h),
+                        child: Container(
+                          width: SizeUtils.width - 30.h * 2,
+                          child: Text(orderModel.name,
+                              overflow: TextOverflow.clip,
+                              style: TextStyle(color: Colors.black)),
+                        ),
+                      ),
+                    ],
+                  ),
+                  //
+                  SizedBox(height: 10.v),
+                  Row(
+                    children: [
+                      CustomImageView(
+                        imagePath: ImageConstant.imgCall,
+                        color: Colors.black54,
+                        height: 12.v,
+                        width: 11.h,
+                        margin: EdgeInsets.symmetric(vertical: 1.v),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 10.h),
+                        child: Container(
+                          width: SizeUtils.width - 30.h * 2,
+                          child: Text(orderModel.phoneNumber,
+                              overflow: TextOverflow.clip,
+                              style: TextStyle(color: Colors.black)
+                              //style: CustomTextStyles.labelLargeOrangeA700,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  //
+                  SizedBox(height: 10.v),
+                  Row(
+                    children: [
+                      CustomImageView(
+                        imagePath: ImageConstant.imgLinkedin,
+                        color: Colors.black54,
+                        height: 14.v,
+                        width: 11.h,
+                        margin: EdgeInsets.only(bottom: 1.v),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 10.h),
+                        child: Container(
+                          width: SizeUtils.width - 30.h * 2,
+                          child: Text(orderModel.address,
+                              overflow: TextOverflow.clip,
+                              style: TextStyle(color: Colors.black)
+                              //style: CustomTextStyles.labelLargeTeal900,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  //
                   SizedBox(height: 10.v),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -544,45 +804,14 @@ class _OperatePageState extends State<OperatePage> {
                                     context,
                                     index,
                                   ) {
-                                    return SizedBox(height: 10.v);
+                                    return SizedBox(height: 3.v);
                                   },
                                   itemCount: orderModel.boxes.length,
                                   itemBuilder: (context, index) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.elliptical(10, 10)),
-                                        border: Border.all(
-                                            width: 1,
-                                            color: Colors.grey), // Đường viền
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'ID - ${orderModel.boxes[index].boxId}',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 13),
-                                            ),
-                                            Text(
-                                              '${orderModel.boxes[index].dimension} | ${orderModel.boxes[index].weight}kg | ${orderModel.boxes[index].boxServices}',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 13),
-                                            ),
-                                            Text(
-                                              '${orderModel.boxes[index].listItem}',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 13),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                    return Text(
+                                      '${index + 1}. ${orderModel.boxes[index].dimension} | ${orderModel.boxes[index].weight}kg | ${orderModel.boxes[index].boxServices}',
+                                      style: TextStyle(
+                                          color: Colors.green, fontSize: 12),
                                     );
                                   },
                                 ),
@@ -592,24 +821,6 @@ class _OperatePageState extends State<OperatePage> {
                         ),
                       ),
                     ],
-                  ),
-                  SizedBox(height: 10.v),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Start at: ${orderModel.date}',
-                          style: TextStyle(color: Colors.black87),
-                        ),
-                        Text(
-                          'Price: ${priceTotal} VND',
-                          style: TextStyle(
-                              color: Colors.green, fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
                   ),
                   //
                   SizedBox(height: 10.v),
