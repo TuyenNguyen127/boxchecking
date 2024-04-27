@@ -1,23 +1,14 @@
 import 'dart:math';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lastapp/core/app_export.dart';
-import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
-import 'package:lastapp/widgets/custom_drop_down.dart';
-import 'package:lastapp/widgets/custom_elevated_button.dart';
-import 'package:lastapp/widgets/custom_icon_button.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
-
-import 'controller/onb_orderbox_controller.dart';
-import 'models/subject_model.dart';
-
-import 'dart:convert'; // for JSON decoding
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:lastapp/model/boxOrderModel.dart';
-import 'package:lastapp/model/orderModel.dart';
+import 'package:lastapp/core/app_export.dart';
+import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
+
+import '../../../widgets/custom_icon_button.dart';
 
 // ignore: must_be_immutable
 class OnbOrderboxScreen extends StatefulWidget {
@@ -31,40 +22,18 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   //==============================================================================
   // DECLARE VARIABLES
 
+  // LAYOUT VARIABLES
+  final APPBAR_HEIGHT = 60.v;
+  final TRACKPROGRESS_HEIGHT = 60.v + 18.v;
+  final BACKGR_COMBINE_WITH_TRACKPROGRESS_HEIGHT = 20.v;
+  final INFO_SECTION_HEIGHT = 350.v;
+
+  // LOGICAL VARIABLES
+  int maxAmountItemsCanHandle = 50;
+
   late StateSetter _listOrderBoxSetState;
 
   int initialAmountInput = 1;
-
-  dynamic selectedTypeBoxId = null;
-  dynamic selectedModelBoxId = null;
-
-  String services = "";
-  dynamic typeBox = null;
-  dynamic modelBox = null;
-  int maxAmountItemsCanHandle = 50;
-
-  BoxOrderModel boxOrder = BoxOrderModel(
-    boxId: 1,
-    boxTypeId: 1,
-    boxModelId: 1,
-    listItem: '',
-    boxServices: '',
-    weight: 0,
-    quantity: 0,
-    dimension: '',
-    price: 0,
-  );
-
-  List<BoxOrderModel> listBoxOrder = <BoxOrderModel>[];
-
-  final TextEditingController _chooseItemsTextToFillController =
-      TextEditingController();
-  List<Map<String, dynamic>> _listOrderBoxItemsInModal = [];
-  List<Map<String, dynamic>> _listOrderBoxItemsInModalAfterSaving = [];
-  List<Map<String, dynamic>> _listOrderBoxItems = [];
-
-  final List<Map<String, dynamic>> data = [];
-  Map<String, dynamic> boxOrder_jsonData = {};
 
   List<dynamic> dataTypeBox = [
     {
@@ -76,7 +45,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
       "name": "Carton box",
     },
   ];
-
   List<dynamic> dataModelBox = [
     {
       "id": 1,
@@ -121,64 +89,40 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
       "size": "30x30x50",
     },
   ];
-
-  List<SubjectModel> subjectData = [];
-  List<SubjectModel> tempSubjectData = [];
-  List<MultiSelectItem> dropDownData = [];
-  List<dynamic> dropDownService = [
-    {
-      "subject_id": "1",
-      "service_name": "Hang On",
-    },
-    {
-      "subject_id": "2",
-      "service_name": "Washing",
-    },
-    {
-      "subject_id": "3",
-      "service_name": "Chemistry",
-    },
+  List<String> listServices = [
+    'Hang On',
+    'Keep In Shape',
+    'Washing',
   ];
 
+  List<BoxOrderModel> listBoxOrder = <BoxOrderModel>[];
+  BoxOrderModel boxOrder = BoxOrderModel(
+    boxId: 1,
+    boxTypeId: 1,
+    boxModelId: 1,
+    listItem: '',
+    boxServices: '',
+    weight: 0,
+    quantity: 0,
+    dimension: '',
+    price: 0,
+  );
+
+  dynamic selectedTypeBoxId = null;
+  dynamic selectedModelBoxId = null;
+  dynamic typeBox = null;
+  dynamic modelBox = null;
+
+  final TextEditingController _chooseItemsTextToFillController =
+      TextEditingController();
+  List<Map<String, dynamic>> _listOrderBoxItemsInModal = [];
+  List<Map<String, dynamic>> _listOrderBoxItemsInModalAfterSaving = [];
+  List<Map<String, dynamic>> _listOrderBoxItems = [];
+
+  List<String> _listSelectedServicesInModal = [];
+  List<String> _listSelectedServicesInModalAfterSaving = [];
+
   //==============================================================================
-
-  void getServiceDataMultiSelect() {
-    subjectData.clear();
-    dropDownData.clear();
-
-    Map<String, dynamic> apiResponse = {
-      "code": 200,
-      "message": "Course subject lists.",
-      "data": [
-        {"subject_id": "1", "service_name": "Hang On"},
-        {"subject_id": "2", "service_name": "Washing"},
-        {"subject_id": "3", "service_name": "Chemistry"},
-      ]
-    };
-
-    if (apiResponse['code'] == 200) {
-      List<SubjectModel> tempSubjectData = [];
-      apiResponse['data'].forEach(
-        (data) => {
-          tempSubjectData.add(
-            SubjectModel(
-              subjectId: data['subject_id'],
-              subjectName: data['service_name'],
-            ),
-          )
-        },
-      );
-      subjectData.addAll(tempSubjectData);
-
-      dropDownData = subjectData.map((subjectdata) {
-        return MultiSelectItem(subjectdata, subjectdata.subjectName);
-      }).toList();
-    } else if (apiResponse['code'] == 400) {
-      print("Show error model why error occurred");
-    } else {
-      print("Show some error model like something went wrong");
-    }
-  }
 
   Future<Map<String, dynamic>> fetchData(pathJsonData) async {
     try {
@@ -202,8 +146,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   void initState() {
     super.initState();
 
-    getServiceDataMultiSelect();
-
     // String pathJsonData = 'assets/data/order_details_data.json';
     // fetchData(pathJsonData).then((data) {
     //   OrderModel orderData = OrderModel.fromJson(data);
@@ -217,116 +159,80 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     //   builder: (context, ref, _) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: theme.colorScheme.primary,
         appBar: _buildAppBarPageOrderbox(),
-        //
-        body: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            //
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: _buildSectionTrackProgress(),
+
+        // upgrade from prototype
+        body: Container(
+          width: SizeUtils.width,
+          height: SizeUtils.height,
+          decoration: AppDecoration.fillGray,
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Positioned(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: _buildSectionTrackProgress(),
+                ),
               ),
-            ),
-            //
-            CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Container(
-                    height: 200.v,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: List.generate(
-                        2,
-                        (index) => ListTile(
-                          title: Text(
-                            'Item $index',
-                            style: TextStyle(color: Colors.black),
-                          ),
+              //
+              Positioned(
+                top: 60.v,
+                child: Column(
+                  children: [
+                    //
+                    Container(
+                      height: BACKGR_COMBINE_WITH_TRACKPROGRESS_HEIGHT,
+                      width: SizeUtils.width,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                SliverFillRemaining(
-                  hasScrollBody: true,
-                  child: Container(
-                    color: Colors.amber,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: List.generate(
-                          2,
-                          (index) => ListTile(
-                            title: Text(
-                              'Item $index',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ),
+                    //
+                    Container(
+                      height: SizeUtils.height - APPBAR_HEIGHT * 2,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            //
+                            _buildFormInfoSection(),
+                            SizedBox(height: 10.v),
+                            //
+                            _buildListOrderBox(),
+                            SizedBox(height: 10.v),
+                          ],
                         ),
                       ),
                     ),
+                    //
+                  ],
+                ),
+              ),
+              //
+              Container(
+                padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 25.v),
+                child: CustomIconButton(
+                  height: 60.adaptSize,
+                  width: 60.adaptSize,
+                  padding: EdgeInsets.all(15.h),
+                  alignment: Alignment.bottomRight,
+                  onTap: () {
+                    onTapBtnArrowRight(context);
+                  },
+                  child: CustomImageView(
+                    imagePath: ImageConstant.imgArrowRight,
                   ),
                 ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
-        //
-        // body:
-        //     // Consumer(
-        //     //   builder: (context, newBoxOrder, _) {
-        //     //     return
-        //     Container(
-        //   width: SizeUtils.width,
-        //   height: SizeUtils.height,
-        //   decoration: AppDecoration.fillGray,
-        //   child: Stack(
-        //     alignment: Alignment.bottomCenter,
-        //     children: [
-        //       Positioned.fill(
-        //         child: Align(
-        //           alignment: Alignment.topCenter,
-        //           child: _buildSectionTrackProgress(),
-        //         ),
-        //       ),
-        //       //
-        //       Positioned(
-        //         top: 70.v,
-        //         child: Container(
-        //           child: Column(
-        //             children: [
-        //               //
-        //               _buildFormInfoSection(),
-        //               SizedBox(height: 10.v),
-        //               //
-        //               _buildListOrderBox(),
-        //               SizedBox(height: 10.v),
-        //             ],
-        //           ),
-        //         ),
-        //       ),
-        //       //
-        //       Container(
-        //         padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 25.v),
-        //         child: CustomIconButton(
-        //           height: 60.adaptSize,
-        //           width: 60.adaptSize,
-        //           padding: EdgeInsets.all(15.h),
-        //           alignment: Alignment.bottomRight,
-        //           onTap: () {
-        //             onTapBtnArrowRight(context);
-        //           },
-        //           child: CustomImageView(
-        //             imagePath: ImageConstant.imgArrowRight,
-        //           ),
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        //
+
         //
         //     );
         //   },
@@ -340,128 +246,10 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   //==============================================================================
   // WIDGETS
 
-  List<String> items = [
-    'Hang On',
-    'Keep In Shape',
-    'Washing',
-  ];
-  List<String> _selectedItems = [];
-  List<String> _tempSelectedItems = [];
-
-  void _showSelectionDialog() {
-    print(_selectedItems.length);
-    _tempSelectedItems = List.from(_selectedItems);
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-            builder: (BuildContext dialogContext, StateSetter _setState) {
-          _listOrderBoxSetState = setState;
-
-          return AlertDialog(
-            title: Text('Select Items'),
-            content: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  for (var item in items)
-                    ListTile(
-                      title: Text(item),
-                      trailing: Icon(
-                        _tempSelectedItems.contains(item)
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked,
-                        color: _tempSelectedItems.contains(item)
-                            ? Colors.green
-                            : null,
-                      ),
-                      onTap: () {
-                        _setState(() {
-                          if (_tempSelectedItems.contains(item)) {
-                            _tempSelectedItems.remove(item);
-                          } else {
-                            _tempSelectedItems.add(item);
-                          }
-                        });
-                      },
-                    ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              GestureDetector(
-                child: Text('OK'),
-                onTap: () {
-                  setState(() {
-                    _selectedItems = List.from(_tempSelectedItems);
-                    print(_selectedItems.length);
-                  });
-                  Navigator.of(dialogContext).pop();
-                },
-              ),
-            ],
-          );
-        });
-      },
-    );
-  }
-
-  Widget selectServices() {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: _showSelectionDialog,
-          child: Container(
-              width: SizeUtils.width,
-              height: 55.v,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: EdgeInsets.only(left: 10.h),
-              child: Row(
-                children: [
-                  Text(
-                    'Select Services',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18.fSize,
-                    ),
-                  ),
-                ],
-              )),
-        ),
-        SizedBox(height: 5),
-        Container(
-          padding: EdgeInsets.all(8),
-          // decoration: BoxDecoration(
-          //   border: Border.all(color: Colors.blue),
-          //   borderRadius: BorderRadius.circular(8),
-          // ),
-          child: Wrap(
-            spacing: 8,
-            children: _selectedItems
-                .map((item) => Chip(
-                      label: Text(item),
-                      onDeleted: () {
-                        setState(() {
-                          _selectedItems.remove(item);
-                        });
-                      },
-                    ))
-                .toList(),
-          ),
-        ),
-      ],
-    );
-  }
-
   // app bar
   PreferredSizeWidget _buildAppBarPageOrderbox() {
     return AppBar(
+      toolbarHeight: APPBAR_HEIGHT,
       centerTitle: true,
       elevation: 0,
       backgroundColor: appTheme.redA200,
@@ -487,8 +275,9 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   /// track progress
   Widget _buildSectionTrackProgress() {
     return Container(
-      height: 160.v,
-      padding: EdgeInsets.only(left: 60.v, right: 60.v, top: 10.v),
+      height: TRACKPROGRESS_HEIGHT,
+      padding:
+          EdgeInsets.only(left: 60.v, right: 60.v, top: 10.v, bottom: 10.v),
       decoration: BoxDecoration(color: appTheme.redA200),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -571,20 +360,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
               ),
             ],
           ),
-
-          // SizedBox(height: 10),
-
-          // //
-          // Center(
-          //   child: Text(
-          //     'Order box',
-          //     style: TextStyle(
-          //       fontSize: 16,
-          //       fontWeight: FontWeight.w600,
-          //       color: theme.colorScheme.primary,
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
@@ -595,14 +370,15 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.primary,
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(30),
-          topLeft: Radius.circular(30),
-        ),
+        // borderRadius: BorderRadius.only(
+        //   topRight: Radius.circular(30),
+        //   topLeft: Radius.circular(30),
+        // ),
       ),
       width: SizeUtils.width,
       padding:
-          EdgeInsets.only(left: 20.h, right: 20.h, bottom: 20.v, top: 20.v),
+          // EdgeInsets.only(left: 20.h, right: 20.h, bottom: 20.v, top: 20.v),
+          EdgeInsets.only(left: 20.h, right: 20.h, bottom: 20.v, top: 0.v),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -630,8 +406,10 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
+  /// form info
   Widget formInfo() {
     return Container(
+      height: INFO_SECTION_HEIGHT,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(30),
@@ -656,8 +434,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           formInfoInputOpenChooseItems(),
           SizedBox(height: 20.v),
           //
-          selectServices(),
-          SizedBox(height: 5),
           formInfoAddBtn(),
           //
         ],
@@ -665,6 +441,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
+  /// select services
   Widget formInfoAddBtn() {
     return GestureDetector(
       onTap: () {
@@ -691,11 +468,12 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
+  /// select type box
   Widget formInfoInputTypeBox() {
     return Container(
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
-          labelText: 'Choose type of box *',
+          labelText: 'Select type of box *',
           contentPadding:
               EdgeInsets.only(left: 10.h, right: 10.h, bottom: 15.v, top: 15.v),
           hintStyle: TextStyle(
@@ -760,161 +538,309 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
+  /// select model box
   Widget formInfoInputModelBox() {
-    return Container(
-      child: DropdownButtonFormField<int>(
-        decoration: InputDecoration(
-          labelText: 'Choose model of box *',
-          contentPadding:
-              EdgeInsets.only(left: 10.h, right: 10.h, bottom: 15.v, top: 15.v),
-          hintStyle: TextStyle(
-            fontSize: 17.fSize,
-            color: Colors.black87,
-            fontWeight: FontWeight.w500,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          // floatingLabelBehavior: FloatingLabelBehavior.never,
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.grey,
-              width: 1,
+    return GestureDetector(
+      onTap: () {
+        if (typeBox == null) {
+          _showDelayedToast(
+            'Sorry. You should select type of box before select model of box.',
+            'top',
+          );
+        }
+      },
+      child: Container(
+        child: DropdownButtonFormField<int>(
+          decoration: InputDecoration(
+            labelText: 'Select model of box *',
+            contentPadding: EdgeInsets.only(
+                left: 10.h, right: 10.h, bottom: 15.v, top: 15.v),
+            hintStyle: TextStyle(
+              fontSize: 17.fSize,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
             ),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.black,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.red,
-            ),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          labelStyle: TextStyle(
-            fontSize: 17.fSize,
-            color: Colors.grey,
-            fontWeight: FontWeight.w500,
-          ),
-          hintText: 'Model of box',
-        ),
-        focusColor: Colors.amberAccent,
-        value: selectedModelBoxId,
-        items: dataModelBox
-            .where((modelBoxItem) =>
-                modelBoxItem['idTypeBox'] == selectedTypeBoxId)
-            .map((modelBoxItem) {
-          return DropdownMenuItem(
-              value: modelBoxItem['id'] as int,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    modelBoxItem['name'],
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17.fSize,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    ' (' + modelBoxItem['description'] + ')',
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontSize: 15.fSize,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ));
-        }).toList(),
-        onChanged: (value) {
-          setState(() {
-            selectedModelBoxId = value;
-            modelBox = value;
-          });
-        },
-      ),
-    );
-  }
-
-  Widget formInfoInputService() {
-    late bool isPickedServices = false;
-    return Container(
-      height: isPickedServices ? 60.h : null,
-      child: Column(
-        children: [
-          MultiSelectDialogField(
-            dialogHeight: 150.v,
-            dialogWidth: 90.h,
-            items: dropDownData,
-            title: Text(
-              "Select service",
-              style: TextStyle(
+            // floatingLabelBehavior: FloatingLabelBehavior.never,
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
                 color: Colors.grey,
-                fontSize: 14.fSize,
-              ),
-            ),
-            selectedColor: appTheme.blue500,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              border: Border.all(
-                color: appTheme.gray500,
                 width: 1,
               ),
+              borderRadius: BorderRadius.circular(10),
             ),
-            buttonIcon: Icon(
-              Icons.arrow_drop_down,
-              color: Colors.grey,
-            ),
-            buttonText: Text(
-              "Select service",
-              style: TextStyle(
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
                 color: Colors.black,
-                fontSize: 14,
               ),
+              borderRadius: BorderRadius.circular(10),
             ),
-            onConfirm: (results) {
-              setState(() {
-                services = '';
-                if (results.length > 0) {
-                  isPickedServices = true;
-                }
-                for (var i = 0; i < results.length; i++) {
-                  SubjectModel data = results[i] as SubjectModel;
-                  services += data.subjectName;
-                  if (i < results.length - 1) {
-                    services += ", ";
-                  }
-                }
-              });
-            },
-            chipDisplay: MultiSelectChipDisplay(
-              chipColor: Color.fromARGB(14, 227, 227, 227),
-              textStyle: TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.w700,
-                fontSize: 14.fSize,
+            errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.red,
               ),
+              borderRadius: BorderRadius.circular(10),
             ),
+            labelStyle: TextStyle(
+              fontSize: 17.fSize,
+              color: Colors.grey,
+              fontWeight: FontWeight.w500,
+            ),
+            hintText: 'Model of box',
           ),
-        ],
+          focusColor: Colors.amberAccent,
+          value: selectedModelBoxId,
+          items: dataModelBox
+              .where((modelBoxItem) =>
+                  modelBoxItem['idTypeBox'] == selectedTypeBoxId)
+              .map((modelBoxItem) {
+            return DropdownMenuItem(
+                value: modelBoxItem['id'] as int,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      modelBoxItem['name'],
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17.fSize,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      ' (' + modelBoxItem['description'] + ')',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 15.fSize,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ));
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              selectedModelBoxId = value;
+              modelBox = value;
+            });
+          },
+        ),
       ),
     );
   }
 
+  /// dialog - select services
+  Widget selectionServiceDialog() {
+    return StatefulBuilder(
+        builder: (BuildContext dialogContext, StateSetter _setState) {
+      _listOrderBoxSetState = setState;
+
+      return AlertDialog(
+        title: Center(
+          child: Text(
+            'Select Items',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 22.fSize,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              for (var item in listServices)
+                ListTile(
+                  title: Text(
+                    item,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18.fSize,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  trailing: Icon(
+                    _listSelectedServicesInModal.contains(item)
+                        ? Icons.check_circle
+                        : Icons.radio_button_unchecked,
+                    color: _listSelectedServicesInModal.contains(item)
+                        ? Colors.green
+                        : null,
+                  ),
+                  onTap: () {
+                    _setState(() {
+                      if (_listSelectedServicesInModal.contains(item)) {
+                        _listSelectedServicesInModal.remove(item);
+                      } else {
+                        _listSelectedServicesInModal.add(item);
+                      }
+                    });
+                  },
+                ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          //
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              //
+              GestureDetector(
+                onTap: () {
+                  onClickSelectServiceBtnCancel(dialogContext);
+                },
+                child: Container(
+                  width: 100.v,
+                  padding: EdgeInsets.fromLTRB(0.h, 10.v, 0.h, 10.v),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black38),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16.fSize,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              //
+              GestureDetector(
+                child: Container(
+                  width: 100.v,
+                  padding: EdgeInsets.fromLTRB(0.h, 10.v, 0.h, 10.v),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black38),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'OK',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16.fSize,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  onClickSelectServiceBtnSave(dialogContext);
+                },
+              ),
+              //
+            ],
+          ),
+          //
+          SizedBox(height: 10.v),
+        ],
+      );
+    });
+  }
+
+  /// select services
+  Widget formInfoInputService() {
+    return Column(
+      children: [
+        //
+        GestureDetector(
+          onTap: _showSelectionDialog,
+          child: Container(
+              width: SizeUtils.width,
+              height: 55.v,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.grey,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.only(left: 10.h),
+              child: Row(
+                children: [
+                  _listSelectedServicesInModalAfterSaving.length == 0
+                      ? Text(
+                          'Select services',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 17.fSize,
+                          ),
+                        )
+                      : Container(
+                          child: Wrap(
+                            spacing: 8,
+                            children: _listSelectedServicesInModalAfterSaving
+                                .map((item) => Chip(
+                                      labelPadding: EdgeInsets.only(
+                                          left: 5.h, right: 5.h),
+                                      backgroundColor: Colors.grey[200],
+                                      label: Text(
+                                        item,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      onDeleted: () {
+                                        setState(() {
+                                          _listSelectedServicesInModalAfterSaving
+                                              .remove(item);
+                                        });
+                                      },
+                                    ))
+                                .toList(),
+                          ),
+                        ),
+                ],
+              )),
+        ),
+        //
+        // if (_listSelectedServicesInModalAfterSaving.length != 0)
+        //   Container(
+        //     margin: EdgeInsets.only(top: 5.v),
+        //     child: Wrap(
+        //       spacing: 8,
+        //       children: _listSelectedServicesInModalAfterSaving
+        //           .map((item) => Chip(
+        //                 labelPadding: EdgeInsets.only(left: 5.h, right: 5.h),
+        //                 backgroundColor: Colors.grey[200],
+        //                 label: Text(
+        //                   item,
+        //                   style: TextStyle(
+        //                     color: Colors.black,
+        //                     fontWeight: FontWeight.w500,
+        //                   ),
+        //                 ),
+        //                 onDeleted: () {
+        //                   setState(() {
+        //                     _listSelectedServicesInModalAfterSaving
+        //                         .remove(item);
+        //                   });
+        //                 },
+        //               ))
+        //           .toList(),
+        //     ),
+        //   ),
+        //
+      ],
+    );
+  }
+
+  /// select choose items
   Widget formInfoInputOpenChooseItems() {
     return GestureDetector(
       onTap: () {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return dialogOpenChooseItems();
+            return chooseItemsOpenDialog();
           },
         );
       },
@@ -951,7 +877,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                         ),
                       )
                     : Text(
-                        'Choose items',
+                        'Select items',
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 17.fSize,
@@ -970,7 +896,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
             //       border: Border.all(color: Colors.black38),
             //     ),
             //     child: Text(
-            //       "Choose items",
+            //       "Select items",
             //       style: TextStyle(
             //         color: Colors.black54,
             //         fontSize: 14.fSize,
@@ -987,12 +913,12 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
-  /// dialog section
-  Widget dialogOpenChooseItems() {
+  /// dialog - select items
+  Widget chooseItemsOpenDialog() {
     return AlertDialog(
       title: Center(
         child: Text(
-          'Choose items',
+          'Select items',
           style: TextStyle(
             color: Colors.black,
             fontSize: 20.fSize,
@@ -1142,7 +1068,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
               //
               Flexible(
                 flex: 1,
-                // child: incDecButtons("1"),
                 child: Container(
                   height: 50.v,
                   decoration: BoxDecoration(
@@ -1200,13 +1125,17 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
 
                               // show toast
                               _showDelayedToast(
-                                  'Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle');
+                                'Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle',
+                                'top',
+                              );
                             } else {
                               // số lượng có thể chứa thêm 1
                               if (maxAmountItemsCanHandle - countAmount == 1) {
                                 // initialAmountInput = 1;
                                 _showDelayedToast(
-                                    'Okay fen, this box can handle more this item with quantity of only 1');
+                                  'Okay fen, this box can handle more this item with quantity of only 1',
+                                  'bottom',
+                                );
                               }
                               // số lượng có thể chứa hơn 1
                               if (maxAmountItemsCanHandle - countAmount > 1) {
@@ -1215,7 +1144,9 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                                   initialAmountInput = initialAmountInput + 1;
                                 } else {
                                   _showDelayedToast(
-                                      'Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle');
+                                    'Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle',
+                                    'top',
+                                  );
                                 }
                               }
                             }
@@ -1480,7 +1411,9 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
 
                                           // show toast
                                           _showDelayedToast(
-                                              'Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle');
+                                            'Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle',
+                                            'top',
+                                          );
                                         } else {
                                           // số lượng có thể chứa hơn 1
                                           if (maxAmountItemsCanHandle -
@@ -1494,7 +1427,9 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                                             initialAmountInput = 1;
                                           } else {
                                             _showDelayedToast(
-                                                'Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle');
+                                              'Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle',
+                                              'top',
+                                            );
                                           }
                                         }
                                       });
@@ -1591,7 +1526,10 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                       },
                     );
                   } else {
-                    _showDelayedToast("There's no any items here.");
+                    _showDelayedToast(
+                      "There's no any items here.",
+                      'top',
+                    );
                   }
                 },
                 child: Text(
@@ -1610,14 +1548,12 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           listBoxOrder.length != 0
               ? SingleChildScrollView(
                   child: Container(
-                    height: 250.v,
+                    // height: 250.v,
                     child: Column(
                       children: [
                         StatefulBuilder(
                           builder: (BuildContext dialogContext,
                               StateSetter setState) {
-                            // _listOrderBoxSetState = setState;
-
                             return ListView.builder(
                               shrinkWrap: true,
                               physics: BouncingScrollPhysics(),
@@ -1633,12 +1569,18 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                     ),
                   ),
                 )
-              : Text(
-                  'Cart is empty',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16.fSize,
+              : Container(
+                  height: 200.v,
+                  //
+                  child: Center(
+                    child: Text(
+                      'Cart is empty',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18.fSize,
+                      ),
+                    ),
                   ),
                 ),
           //
@@ -1667,6 +1609,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                   Navigator.of(context).pop();
                 },
                 child: Container(
+                  width: 80.h,
                   height: 50.v,
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -1680,7 +1623,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                       'No',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 17.fSize,
+                        fontSize: 18.fSize,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1698,6 +1641,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                   Navigator.of(context).pop();
                 },
                 child: Container(
+                  width: 80.h,
                   height: 50.v,
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -1711,7 +1655,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                       'Yes',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 17.fSize,
+                        fontSize: 18.fSize,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1782,19 +1726,21 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
         children: [
           //
           Text(
-            '${getStringValueById(boxOrderItem.boxTypeId!, 'type')} | ${getStringValueById(boxOrderItem.boxModelId!, 'model')} | ${boxOrderItem.boxServices}',
+            '${getStringValueById(boxOrderItem.boxTypeId, 'type')} | ${getStringValueById(boxOrderItem.boxModelId, 'model')} | ${boxOrderItem.boxServices}',
             style: TextStyle(
               color: Colors.black,
-              fontSize: 14.fSize,
+              fontSize: 16.fSize,
               fontWeight: FontWeight.w500,
             ),
           ),
+          //
+          SizedBox(height: 5.v),
           //
           Text(
             '${boxOrderItem.listItem}',
             style: TextStyle(
               color: Colors.black54,
-              fontSize: 14.fSize,
+              fontSize: 16.fSize,
               fontWeight: FontWeight.normal,
             ),
           ),
@@ -1811,7 +1757,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
         border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(8),
       ),
-      // margin: EdgeInsets.only(left: 5.h, right: 5.h),
       margin: EdgeInsets.only(left: 5.h),
       child: Column(
         children: [
@@ -1819,15 +1764,13 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           GestureDetector(
             onTap: () {
               setState(() {
-                if (boxOrderItem.quantity! > 1) {
-                  boxOrderItem.quantity = boxOrderItem.quantity! - 1;
-                }
+                boxOrderItem.quantity = boxOrderItem.quantity + 1;
               });
             },
             child: Container(
-              margin: EdgeInsets.only(top: 5.v),
+              margin: EdgeInsets.only(top: 5.v, bottom: 5.v),
               child: Icon(
-                Icons.remove,
+                Icons.add,
                 color: Colors.black,
                 size: 20.fSize,
               ),
@@ -1835,7 +1778,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           ),
           // number of amount
           Text(
-            '${boxOrderItem.quantity!}',
+            '${boxOrderItem.quantity}',
             style: TextStyle(
               color: Colors.black,
               fontSize: 16.fSize,
@@ -1846,13 +1789,15 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           GestureDetector(
             onTap: () {
               setState(() {
-                boxOrderItem.quantity = boxOrderItem.quantity! + 1;
+                if (boxOrderItem.quantity > 1) {
+                  boxOrderItem.quantity = boxOrderItem.quantity - 1;
+                }
               });
             },
             child: Container(
               margin: EdgeInsets.only(bottom: 5.v),
               child: Icon(
-                Icons.add,
+                Icons.remove,
                 color: Colors.black,
                 size: 20.fSize,
               ),
@@ -1867,48 +1812,87 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   // FUNCTIONS
 
   // dialog appears in a few seconds
-  void _showDelayedToast(String text) {
-    Fluttertoast.showToast(
-      msg: text,
-      // toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.TOP_LEFT,
-      timeInSecForIosWeb: 5,
-      backgroundColor: Colors.black26,
-      textColor: Colors.white,
-      fontSize: 14.fSize,
+  void _showDelayedToast(String text, String position) {
+    if (position.toLowerCase() == 'top') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 5,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    } else if (position.toLowerCase() == 'bottom') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 5,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    }
+  }
+
+  // select services
+  void _showSelectionDialog() {
+    // _listSelectedServicesInModal =
+    //     List.from(_listSelectedServicesInModalAfterSaving);
+
+    customDeepCloneBetweenTwoStringLists(
+        _listSelectedServicesInModal, _listSelectedServicesInModalAfterSaving);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return selectionServiceDialog();
+      },
     );
   }
 
+  // Form Info Create Btn
   void onClickFormInfoCreateBtn() {
-    // print('FormInfoAddBtn');
-
     setState(() {
       bool acceptForCreatingNewOrder = true;
 
       if (selectedTypeBoxId == null) {
         acceptForCreatingNewOrder = false;
-        _showDelayedToast('You missed the type of box');
+        _showDelayedToast(
+          'You missed the type of box',
+          'top',
+        );
       }
 
       if (selectedModelBoxId == null) {
         acceptForCreatingNewOrder = false;
-        _showDelayedToast('You missed the model of box');
+        _showDelayedToast(
+          'You missed the model of box',
+          'top',
+        );
       }
 
-      if (services == '') {
+      if (_listSelectedServicesInModalAfterSaving.length == 0) {
         acceptForCreatingNewOrder = false;
-        _showDelayedToast('You missed the services');
+        _showDelayedToast(
+          'You missed the services',
+          'top',
+        );
       }
 
       if (_listOrderBoxItemsInModal.length == 0) {
         acceptForCreatingNewOrder = false;
-        _showDelayedToast('You missed the items');
+        _showDelayedToast(
+          'You missed the items',
+          'top',
+        );
       }
 
       if (acceptForCreatingNewOrder) {
         int boxId = Random().nextInt(100000000);
 
-        customDeepClone(
+        customDeepCloneBetweenTwoMapLists(
             _listOrderBoxItems, _listOrderBoxItemsInModalAfterSaving);
 
         String listItems = _listOrderBoxItems.map((orderBoxItem) {
@@ -1916,6 +1900,10 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           String amount = orderBoxItem['amount'].toString();
           return '${amount}x${name[0].toUpperCase()}${name.substring(1)}';
         }).join(' | ');
+
+        String services = _listSelectedServicesInModalAfterSaving
+            .map((serviceItem) => serviceItem)
+            .join(', ');
 
         boxOrder = BoxOrderModel(
           boxId: boxId,
@@ -1931,7 +1919,8 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
         listBoxOrder.add(boxOrder);
 
         // empty data from form info
-        services = '';
+        _listSelectedServicesInModalAfterSaving.clear();
+
         typeBox = null;
         selectedTypeBoxId = null;
         modelBox = null;
@@ -1941,11 +1930,105 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
         _listOrderBoxItemsInModalAfterSaving.clear();
         _listOrderBoxItemsInModal.clear();
 
-        _showDelayedToast('Successfully created!');
+        _showDelayedToast(
+          'Successfully created!',
+          'bottom',
+        );
       }
     });
   }
 
+  // select services
+  void onClickSelectServiceBtnCancel(BuildContext dialogContext) {
+    if (onChangedListString(_listSelectedServicesInModalAfterSaving,
+        _listSelectedServicesInModal)) {
+      customDeepCloneBetweenTwoStringLists(_listSelectedServicesInModal,
+          _listSelectedServicesInModalAfterSaving);
+    }
+
+    Navigator.of(dialogContext).pop();
+  }
+
+  void onClickSelectServiceBtnSave(BuildContext dialogContext) {
+    if (_listSelectedServicesInModalAfterSaving.length == 0) {
+      if (_listSelectedServicesInModal.length != 0) {
+        setState(() {
+          customDeepCloneBetweenTwoStringLists(
+              _listSelectedServicesInModalAfterSaving,
+              _listSelectedServicesInModal);
+        });
+
+        _showDelayedToast(
+          'Successfully selected services',
+          'bottom',
+        );
+      } else {
+        _showDelayedToast(
+          "Are you sure? You haven't chose any services yet",
+          'top',
+        );
+      }
+    } else if (onChangedListString(_listSelectedServicesInModalAfterSaving,
+        _listSelectedServicesInModal)) {
+      setState(() {
+        customDeepCloneBetweenTwoStringLists(
+            _listSelectedServicesInModalAfterSaving,
+            _listSelectedServicesInModal);
+      });
+
+      _showDelayedToast(
+        "Successfully modified services!",
+        'bottom',
+      );
+
+      if (_listSelectedServicesInModalAfterSaving.length == 0) {
+        _showDelayedToast(
+          "Are you sure? You haven't chose any services yet",
+          'top',
+        );
+      }
+    } else if (!onChangedListString(_listSelectedServicesInModalAfterSaving,
+        _listSelectedServicesInModal)) {
+      _showDelayedToast(
+        "There's no changes!",
+        'bottom',
+      );
+    }
+
+    Navigator.of(dialogContext).pop();
+  }
+
+  void customDeepCloneBetweenTwoStringLists(
+      List<String> listNeedToClone, List<String> listPrototype) {
+    setState(() {
+      listNeedToClone.clear();
+
+      for (int index = 0; index < listPrototype.length; index++) {
+        String string = listPrototype[index];
+        listNeedToClone.add(string);
+      }
+    });
+  }
+
+  bool onChangedListString(
+      List<String> _listAfterSaving, List<String> _listCanBeModified) {
+    if (_listAfterSaving.length != _listCanBeModified.length) {
+      return true;
+    } else {
+      int len = _listAfterSaving.length;
+      for (int index = 0; index < len; index++) {
+        String amountBeforeModifying = _listAfterSaving[index];
+        String amountCurrent = _listCanBeModified[index];
+
+        if (amountBeforeModifying != amountCurrent) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  // choose items
   void onClickChooseItemsAddBtn(
       StateSetter _setState, BuildContext dialogContext) {
     String inputText = _chooseItemsTextToFillController.text;
@@ -1967,15 +2050,22 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
         });
       } else {
         if (_listOrderBoxItemsInModal.length >= 5) {
-          _showDelayedToast("Sorry, you've just added enough 5 items");
+          _showDelayedToast(
+            "Sorry, you've just added enough 5 items",
+            'top',
+          );
         } else if (!(countAmount < maxAmountItemsCanHandle)) {
           _showDelayedToast(
-              "Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle");
+            "Sorry, total of all items is over the limit quantity of $maxAmountItemsCanHandle",
+            'top',
+          );
         }
       }
     } else {
       _showDelayedToast(
-          "You should type the name of item before adding any items");
+        "You should type the name of item before adding any items",
+        'top',
+      );
     }
 
     _chooseItemsTextToFillController.clear();
@@ -1987,9 +2077,9 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
       _listOrderBoxItemsInModal.clear();
     }
 
-    if (onChangedListItems(
+    if (onChangedListMap(
         _listOrderBoxItemsInModalAfterSaving, _listOrderBoxItemsInModal)) {
-      customDeepClone(
+      customDeepCloneBetweenTwoMapLists(
           _listOrderBoxItemsInModal, _listOrderBoxItemsInModalAfterSaving);
     }
 
@@ -2002,28 +2092,43 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     if (_listOrderBoxItemsInModalAfterSaving.length == 0) {
       if (_listOrderBoxItemsInModal.length != 0) {
         setState(() {
-          customDeepClone(
+          customDeepCloneBetweenTwoMapLists(
               _listOrderBoxItemsInModalAfterSaving, _listOrderBoxItemsInModal);
         });
 
-        _showDelayedToast("Successfully saved!");
+        _showDelayedToast(
+          "Successfully saved!",
+          'bottom',
+        );
       } else {
-        _showDelayedToast("Are you sure? You haven't chose any items yet");
+        _showDelayedToast(
+          "Are you sure? You haven't chose any items yet",
+          'top',
+        );
       }
-    } else if (onChangedListItems(
+    } else if (onChangedListMap(
         _listOrderBoxItemsInModalAfterSaving, _listOrderBoxItemsInModal)) {
       setState(() {
-        customDeepClone(
+        customDeepCloneBetweenTwoMapLists(
             _listOrderBoxItemsInModalAfterSaving, _listOrderBoxItemsInModal);
       });
 
-      _showDelayedToast("Successfully modified!");
+      _showDelayedToast(
+        "Successfully modified!",
+        'bottom',
+      );
       if (_listOrderBoxItemsInModalAfterSaving.length == 0) {
-        _showDelayedToast("Are you sure? You haven't chose any items yet");
+        _showDelayedToast(
+          "Are you sure? You haven't chose any items yet",
+          'top',
+        );
       }
-    } else if (!onChangedListItems(
+    } else if (!onChangedListMap(
         _listOrderBoxItemsInModalAfterSaving, _listOrderBoxItemsInModal)) {
-      _showDelayedToast("There's no changes!");
+      _showDelayedToast(
+        "There's no changes!",
+        'top',
+      );
     }
 
     initialAmountInput = 1;
@@ -2031,7 +2136,8 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     Navigator.of(context).pop();
   }
 
-  void customDeepClone(List<Map<String, dynamic>> listNeedToClone,
+  void customDeepCloneBetweenTwoMapLists(
+      List<Map<String, dynamic>> listNeedToClone,
       List<Map<String, dynamic>> listPrototype) {
     setState(() {
       listNeedToClone.clear();
@@ -2045,27 +2151,25 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     });
   }
 
-  bool onChangedListItems(
-      _listOrderBoxItemsInModalAfterSaving, _listOrderBoxItemsInModal) {
-    if (_listOrderBoxItemsInModalAfterSaving.length !=
-        _listOrderBoxItemsInModal.length) {
+  bool onChangedListMap(List<Map<String, dynamic>> _listAfterSaving,
+      List<Map<String, dynamic>> _listCanBeModified) {
+    if (_listAfterSaving.length != _listCanBeModified.length) {
       return true;
     } else {
-      int len = _listOrderBoxItemsInModalAfterSaving.length;
+      int len = _listAfterSaving.length;
       for (int index = 0; index < len; index++) {
-        int amountBeforeModifying =
-            _listOrderBoxItemsInModalAfterSaving[index]['amount'];
-        int amountCurrent = _listOrderBoxItemsInModal[index]['amount'];
+        int amountBeforeModifying = _listAfterSaving[index]['amount'];
+        int amountCurrent = _listCanBeModified[index]['amount'];
 
         if (amountBeforeModifying != amountCurrent) {
           return true;
         }
       }
     }
-
     return false;
   }
 
+  // list order box
   String getStringValueById(int id, String typeOrModel) {
     String valueResult = '';
     if (typeOrModel.toLowerCase() == 'type') {
@@ -2088,17 +2192,20 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
 
   void deleteListBoxOrder() {
     setState(() {
-      // boxOrder.clearData();
       listBoxOrder.clear();
     });
 
     // notify success
-    _showDelayedToast('Successfully deleted all items!');
+    _showDelayedToast(
+      'Successfully deleted all items!',
+      'bottom',
+    );
 
     // notify can undo
     // need a trashListBoxOrder to save old data before deleting
   }
 
+  // navigators
   /// Navigates to the typeRequestScreen when the action is triggered.
   onClickBackToHomepageBtn() {
     // Get.toNamed(
