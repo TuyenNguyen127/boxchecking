@@ -218,58 +218,116 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: _buildAppBarPageOrderbox(),
-        body:
-            // Consumer(
-            //   builder: (context, newBoxOrder, _) {
-            //     return
-            Container(
-          width: SizeUtils.width,
-          height: SizeUtils.height,
-          decoration: AppDecoration.fillGray,
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Positioned.fill(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: _buildSectionTrackProgress(),
-                ),
+        //
+        body: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            //
+            Positioned.fill(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: _buildSectionTrackProgress(),
               ),
-              //
-              Positioned(
-                top: 70.v,
-                child: Container(
-                  child: Column(
-                    children: [
-                      //
-                      _buildFormInfoSection(),
-                      SizedBox(height: 10.v),
-                      //
-                      _buildListOrderBox(),
-                      SizedBox(height: 10.v),
-                    ],
+            ),
+            //
+            CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Container(
+                    height: 200.v,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: List.generate(
+                        2,
+                        (index) => ListTile(
+                          title: Text(
+                            'Item $index',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              //
-              Container(
-                padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 25.v),
-                child: CustomIconButton(
-                  height: 60.adaptSize,
-                  width: 60.adaptSize,
-                  padding: EdgeInsets.all(15.h),
-                  alignment: Alignment.bottomRight,
-                  onTap: () {
-                    onTapBtnArrowRight(context);
-                  },
-                  child: CustomImageView(
-                    imagePath: ImageConstant.imgArrowRight,
+                SliverFillRemaining(
+                  hasScrollBody: true,
+                  child: Container(
+                    color: Colors.amber,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: List.generate(
+                          2,
+                          (index) => ListTile(
+                            title: Text(
+                              'Item $index',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
+          ],
         ),
+        //
+        // body:
+        //     // Consumer(
+        //     //   builder: (context, newBoxOrder, _) {
+        //     //     return
+        //     Container(
+        //   width: SizeUtils.width,
+        //   height: SizeUtils.height,
+        //   decoration: AppDecoration.fillGray,
+        //   child: Stack(
+        //     alignment: Alignment.bottomCenter,
+        //     children: [
+        //       Positioned.fill(
+        //         child: Align(
+        //           alignment: Alignment.topCenter,
+        //           child: _buildSectionTrackProgress(),
+        //         ),
+        //       ),
+        //       //
+        //       Positioned(
+        //         top: 70.v,
+        //         child: Container(
+        //           child: Column(
+        //             children: [
+        //               //
+        //               _buildFormInfoSection(),
+        //               SizedBox(height: 10.v),
+        //               //
+        //               _buildListOrderBox(),
+        //               SizedBox(height: 10.v),
+        //             ],
+        //           ),
+        //         ),
+        //       ),
+        //       //
+        //       Container(
+        //         padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 25.v),
+        //         child: CustomIconButton(
+        //           height: 60.adaptSize,
+        //           width: 60.adaptSize,
+        //           padding: EdgeInsets.all(15.h),
+        //           alignment: Alignment.bottomRight,
+        //           onTap: () {
+        //             onTapBtnArrowRight(context);
+        //           },
+        //           child: CustomImageView(
+        //             imagePath: ImageConstant.imgArrowRight,
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        //
+        //
         //     );
         //   },
         // ),
@@ -1525,7 +1583,16 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
               //
               GestureDetector(
                 onTap: () {
-                  deleteListBoxOrder();
+                  if (listBoxOrder.length != 0) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return showModalDeleteAll();
+                      },
+                    );
+                  } else {
+                    _showDelayedToast("There's no any items here.");
+                  }
                 },
                 child: Text(
                   'Delete all',
@@ -1577,6 +1644,84 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           //
         ],
       ),
+    );
+  }
+
+  Widget showModalDeleteAll() {
+    return AlertDialog(
+      title: Center(
+        child: Text(
+          'Are you sure about that?',
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
+      ),
+      actions: [
+        Row(
+          children: [
+            //
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Container(
+                  height: 50.v,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black26,
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'No',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17.fSize,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            //
+            SizedBox(width: 10.h),
+            //
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  deleteListBoxOrder();
+                  Navigator.of(context).pop();
+                },
+                child: Container(
+                  height: 50.v,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black26,
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Yes',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17.fSize,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
