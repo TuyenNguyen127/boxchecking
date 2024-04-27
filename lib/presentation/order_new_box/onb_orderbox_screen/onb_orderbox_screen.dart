@@ -340,6 +340,125 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   //==============================================================================
   // WIDGETS
 
+  List<String> items = [
+    'Hang On',
+    'Keep In Shape',
+    'Washing',
+  ];
+  List<String> _selectedItems = [];
+  List<String> _tempSelectedItems = [];
+
+  void _showSelectionDialog() {
+    print(_selectedItems.length);
+    _tempSelectedItems = List.from(_selectedItems);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+            builder: (BuildContext dialogContext, StateSetter _setState) {
+          _listOrderBoxSetState = setState;
+
+          return AlertDialog(
+            title: Text('Select Items'),
+            content: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  for (var item in items)
+                    ListTile(
+                      title: Text(item),
+                      trailing: Icon(
+                        _tempSelectedItems.contains(item)
+                            ? Icons.check_circle
+                            : Icons.radio_button_unchecked,
+                        color: _tempSelectedItems.contains(item)
+                            ? Colors.green
+                            : null,
+                      ),
+                      onTap: () {
+                        _setState(() {
+                          if (_tempSelectedItems.contains(item)) {
+                            _tempSelectedItems.remove(item);
+                          } else {
+                            _tempSelectedItems.add(item);
+                          }
+                        });
+                      },
+                    ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              GestureDetector(
+                child: Text('OK'),
+                onTap: () {
+                  setState(() {
+                    _selectedItems = List.from(_tempSelectedItems);
+                    print(_selectedItems.length);
+                  });
+                  Navigator.of(dialogContext).pop();
+                },
+              ),
+            ],
+          );
+        });
+      },
+    );
+  }
+
+  Widget selectServices() {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: _showSelectionDialog,
+          child: Container(
+              width: SizeUtils.width,
+              height: 55.v,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.grey,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.only(left: 10.h),
+              child: Row(
+                children: [
+                  Text(
+                    'Select Services',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18.fSize,
+                    ),
+                  ),
+                ],
+              )),
+        ),
+        SizedBox(height: 5),
+        Container(
+          padding: EdgeInsets.all(8),
+          // decoration: BoxDecoration(
+          //   border: Border.all(color: Colors.blue),
+          //   borderRadius: BorderRadius.circular(8),
+          // ),
+          child: Wrap(
+            spacing: 8,
+            children: _selectedItems
+                .map((item) => Chip(
+                      label: Text(item),
+                      onDeleted: () {
+                        setState(() {
+                          _selectedItems.remove(item);
+                        });
+                      },
+                    ))
+                .toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
   // app bar
   PreferredSizeWidget _buildAppBarPageOrderbox() {
     return AppBar(
@@ -537,6 +656,8 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           formInfoInputOpenChooseItems(),
           SizedBox(height: 20.v),
           //
+          selectServices(),
+          SizedBox(height: 5),
           formInfoAddBtn(),
           //
         ],
