@@ -28,7 +28,7 @@ class MainGetBackBox extends State<GetBackChooseBoxScreen>
   Future<void> requestOrder() async {
     try {
       var uri = Uri.https(dotenv.get('HOST'),
-          '/api/Order/GetListOrderByUserId', {'userId': '1', 'statusId': '4'});
+          '/api/Order/GetListOrderByUserId', {'userId': '1', 'statusId': '7'});
       final response = await http.get(
         uri,
         headers: <String, String>{
@@ -37,6 +37,7 @@ class MainGetBackBox extends State<GetBackChooseBoxScreen>
         },
       );
       if (response.statusCode == 200) {
+        print(response.body);
         List<OrderModel> orders = [];
 
         List<dynamic> jsonList = jsonDecode(response.body);
