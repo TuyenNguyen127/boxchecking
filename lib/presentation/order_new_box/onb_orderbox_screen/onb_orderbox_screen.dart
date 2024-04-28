@@ -249,7 +249,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   // app bar
   PreferredSizeWidget _buildAppBarPageOrderbox() {
     return AppBar(
-      toolbarHeight: APPBAR_HEIGHT,
       centerTitle: true,
       elevation: 0,
       backgroundColor: appTheme.redA200,

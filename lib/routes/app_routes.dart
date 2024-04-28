@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import '../presentation/home_container_screen/home_container_screen.dart';
 import '../presentation/home_container_screen/binding/home_container_binding.dart';
+import '../presentation/order_new_box/onb_checking_and_payment_screen/onb_checking_and_payment_screen.dart';
 import '../presentation/order_new_box/onb_orderbox_screen/onb_orderbox_screen.dart';
 import '../presentation/order_new_box/onb_address_screen/onb_address_screen.dart';
 import '../presentation/order_new_box/onb_address_screen/binding/onb_address_binding.dart';
@@ -90,13 +91,13 @@ class AppRoutes {
         OnbAddressBinding(),
       ],
     ),
-    // GetPage(
-    //   name: onbCheckingAndPaymentScreen,
-    //   page: () => OnbCheckingAndPaymentScreen(),
-    //   bindings: [
-    //     OnbCheckingAndPaymentBinding(),
-    //   ],
-    // ),
+    GetPage(
+      name: onbCheckingAndPaymentScreen,
+      page: () => OnbCheckingAndPaymentScreen(),
+      // bindings: [
+      //   OnbCheckingAndPaymentBinding(),
+      // ],
+    ),
     // GetPage(
     //   name: typeRequestScreen,
     //   page: () => TypeRequestScreen(),
