@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:js';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
@@ -310,12 +311,50 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
     );
   }
 
-  Widget _topfillter(int count) {
+  Widget _topfillter(List<OrderModel> listOrders) {
+    int countChecked = 0;
+    for (var order in listOrders) {
+      if (order.checked!) countChecked++;
+      if (countChecked == listOrders.length) {
+        setState(() {
+          checkAll = true;
+        });
+      }
+    }
     return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      width: SizeUtils.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('${count} orders'),
+          Row(
+            children: [
+              GestureDetector(
+                  onTap: () => setState(() {
+                        checkAll = !checkAll;
+                        for (var order in listOrders) {
+                          order.checked = checkAll;
+                        }
+                      }),
+                  child: Icon(
+                    checkAll
+                        ? Icons.check_box_outlined
+                        : Icons.check_box_outline_blank,
+                    size: 20,
+                    color: Colors.black,
+                  )),
+              SizedBox(
+                width: 10,
+              ),
+              Text(
+                '${listOrders.length} orders',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 20),
+              ),
+            ],
+          ),
           SizedBox(
             height: 40,
             width: 140,
@@ -332,7 +371,6 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                // floatingLabelBehavior: FloatingLabelBehavior.never,
                 enabledBorder: OutlineInputBorder(
                   borderSide: const BorderSide(
                     color: Colors.grey,
@@ -377,6 +415,10 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
               onChanged: (value) {
                 setState(() {
                   selectedDate = value;
+                  for (var order in listOrders) {
+                    order.checked = false;
+                    checkAll = false;
+                  }
                 });
               },
             ),
@@ -419,7 +461,6 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 10.v),
           _buildListOrder(context),
         ],
       ),
@@ -427,26 +468,11 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
   }
 
   Widget _buildListOrder(context) {
-    List<OrderModel> listOrderWidget =
-        fillDataWithDate(listOrders);
+    List<OrderModel> listOrderWidget = fillDataWithDate(listOrders);
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: CheckboxListTile(
-            controlAffinity: ListTileControlAffinity.leading,
-            title: _topfillter(listOrderWidget.length),
-            value: checkAll,
-            onChanged: (value) => setState(() {
-              checkAll = value!;
-              for (var order in listOrderWidget) {
-                order.checked = value;
-              }
-            }),
-          ),
-        ),
+        _topfillter(listOrderWidget),
         Container(
-          //padding: EdgeInsets.symmetric(horizontal: 20.h),
           height: 600.v,
           child: Column(
             children: [
@@ -455,7 +481,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                   itemCount: listOrderWidget.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(0.0),
                       child: Column(
                         children: [
                           Divider(),
@@ -473,38 +499,50 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
     );
   }
 
-  Widget checkBoxCustom(bool check, Widget title) {
-    return Row(
-      
+  Widget checkBoxCustom(int index) {
+    return GestureDetector(
+      onTap: () => setState(() {
+        listOrders[index].checked = !listOrders[index].checked!;
+        sendBoxChooseBoxController.listOrders[index].checked =
+            listOrders[index].checked;
+        if (listOrders[index].checked == false) checkAll = false;
+      }),
+      child: Icon(
+        listOrders[index].checked!
+            ? Icons.check_box_outlined
+            : Icons.check_box_outline_blank,
+        size: 20,
+        color: Colors.black,
+      ),
     );
   }
 
   Widget _buildOrderBox(context, index) {
     return Container(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CheckboxListTile(
-            controlAffinity: ListTileControlAffinity.leading,
-            title: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 0.h),
-                  child: Text('Order ID:',
-                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400)),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                child: Row(
+                  children: [
+                    checkBoxCustom(index),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text('Order ID: ${listOrders[index].orderId}',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400)),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 5.h),
-                  child: Text(listOrders[index].orderId.toString(),
-                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400)),
-                ),
-              ],
-            ),
-            value: listOrders[index].checked,
-            onChanged: (value) => setState(() {
-              if (value == false) checkAll = false;
-              listOrders[index].checked = value!;
-            }),
+              ),
+            ],
           ),
           Container(
             height: listOrders[index].boxes.length * 125.v + 23,
@@ -514,10 +552,12 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: Text(
-                          'Boxes in order:',
-                          style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400)),
+                      padding: const EdgeInsets.only(left: 50.0),
+                      child: Text('Boxes in order:',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400)),
                     ),
                   ],
                 ),
@@ -527,7 +567,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                     itemBuilder: (context, i) {
                       return Padding(
                         padding: const EdgeInsets.only(
-                            left: 40, right: 20, top: 8, bottom: 8),
+                            left: 50, right: 20, top: 8, bottom: 8),
                         child: _buildItem(listOrders[index].boxes[i]),
                       );
                     },
@@ -540,7 +580,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 20.0),
+                padding: const EdgeInsets.only(left: 50.0, bottom: 8),
                 child: Text(
                     'Created at: ${listOrders[index].date.substring(0, 10)}',
                     style: TextStyle(color: Colors.grey, fontSize: 16)),
