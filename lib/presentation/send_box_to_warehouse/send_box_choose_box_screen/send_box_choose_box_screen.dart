@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:js';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
@@ -137,7 +136,9 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: _buildAppBarPageSendChooseBox(),
+        //
+        appBar: _buildAppBar(),
+        //
         body: Container(
           height: SizeUtils.height,
           width: SizeUtils.width,
@@ -154,7 +155,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
               ),
               //
               Positioned(
-                top: 100.v,
+                top: 70.v,
                 child: _buildBodySection(),
               ),
               //
@@ -182,7 +183,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
   }
 
   // app bar
-  PreferredSizeWidget _buildAppBarPageSendChooseBox() {
+  PreferredSizeWidget _buildAppBar() {
     return AppBar(
       centerTitle: true,
       elevation: 0,
@@ -196,10 +197,10 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
         },
       ),
       title: Text(
-        'Send box',
+        'Send box to warehouse',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 22,
+          fontSize: 24.fSize,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -229,7 +230,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                   child: Text(
                     '1',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18.fSize,
                       fontWeight: FontWeight.w600,
                       color: appTheme.redA200,
                     ),
@@ -256,7 +257,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                   child: Text(
                     '2',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18.fSize,
                       fontWeight: FontWeight.w600,
                       color: theme.colorScheme.primary,
                     ),
@@ -283,7 +284,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                   child: Text(
                     '3',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18.fSize,
                       fontWeight: FontWeight.w600,
                       color: theme.colorScheme.primary,
                     ),
@@ -292,26 +293,65 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
               ),
             ],
           ),
-
-          SizedBox(height: 10),
-
           //
-          Center(
-            child: Text(
-              'Order box',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.primary,
-              ),
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Widget _topfillter(List<OrderModel> listOrders) {
+  /// Section Widget
+  Widget _buildBodySection() {
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary,
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(30),
+          topLeft: Radius.circular(30),
+        ),
+      ),
+      height: SizeUtils.height,
+      width: SizeUtils.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildListOrder(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildListOrder(context) {
+    List<OrderModel> listOrderWidget = fillDataWithDate(listOrders);
+    return Column(
+      children: [
+        //
+        _buildFilterList(listOrderWidget),
+        //
+        Container(
+          height: SizeUtils.height - 60.v - 80.v,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: listOrderWidget.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Divider(),
+                        _buildOrderBoxItem(context, index),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFilterList(List<OrderModel> listOrders) {
     int countChecked = 0;
     for (var order in listOrders) {
       if (order.checked!) countChecked++;
@@ -321,9 +361,11 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
         });
       }
     }
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      height: 80.v,
       width: SizeUtils.width,
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -336,23 +378,40 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                           order.checked = checkAll;
                         }
                       }),
-                  child: Icon(
-                    checkAll
-                        ? Icons.check_box_outlined
-                        : Icons.check_box_outline_blank,
-                    size: 20,
-                    color: Colors.black,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Icon(
+                      checkAll ? Icons.check : null,
+                      size: 20,
+                      color: Colors.black,
+                    ),
                   )),
               SizedBox(
                 width: 10,
               ),
-              Text(
-                '${listOrders.length} orders',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20),
-              ),
+              listOrders.length > 0
+                  ? Text(
+                      'Total orders: ${listOrders.length} ',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20.fSize,
+                      ),
+                    )
+                  : Text(
+                      'Orders',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20.fSize,
+                      ),
+                    ),
             ],
           ),
           SizedBox(
@@ -364,9 +423,9 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                 contentPadding:
                     EdgeInsets.only(top: 5, left: 15, right: 10, bottom: 5),
                 hintStyle: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12.fSize,
                   color: Colors.grey,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -391,9 +450,9 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                   borderRadius: BorderRadius.circular(20),
                 ),
                 labelStyle: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12.fSize,
                   color: Colors.grey,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               focusColor: Colors.white,
@@ -404,9 +463,10 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                   child: Text(
                     date['time'] as String,
                     style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 13),
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13.fSize,
+                    ),
                     maxLines: 1, // Limit the number of lines to 1
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -428,77 +488,6 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
     );
   }
 
-  /// Section Widget
-  Widget _buildBodySection() {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            offset: const Offset(
-              0.5,
-              0.5,
-            ),
-            blurRadius: 1.0,
-            spreadRadius: 0.5,
-          ),
-          BoxShadow(
-            color: Colors.white,
-            offset: const Offset(0.0, 0.0),
-            blurRadius: 0.0,
-            spreadRadius: 0.0,
-          ), //BoxShadow
-        ],
-        color: theme.colorScheme.primary,
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(30),
-          topLeft: Radius.circular(30),
-        ),
-      ),
-      height: SizeUtils.height,
-      width: SizeUtils.width,
-      //padding: EdgeInsets.symmetric(horizontal: 20.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildListOrder(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildListOrder(context) {
-    List<OrderModel> listOrderWidget = fillDataWithDate(listOrders);
-    return Column(
-      children: [
-        _topfillter(listOrderWidget),
-        Container(
-          height: 600.v,
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: listOrderWidget.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(0.0),
-                      child: Column(
-                        children: [
-                          Divider(),
-                          _buildOrderBox(context, index),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget checkBoxCustom(int index) {
     return GestureDetector(
       onTap: () => setState(() {
@@ -507,17 +496,24 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
             listOrders[index].checked;
         if (listOrders[index].checked == false) checkAll = false;
       }),
-      child: Icon(
-        listOrders[index].checked!
-            ? Icons.check_box_outlined
-            : Icons.check_box_outline_blank,
-        size: 20,
-        color: Colors.black,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black,
+            width: 1.5,
+          ),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Icon(
+          listOrders[index].checked! ? Icons.check : null,
+          size: 20,
+          color: Colors.black,
+        ),
       ),
     );
   }
 
-  Widget _buildOrderBox(context, index) {
+  Widget _buildOrderBoxItem(context, index) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -525,50 +521,61 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Row(
                   children: [
                     checkBoxCustom(index),
                     SizedBox(
                       width: 8,
                     ),
-                    Text('Order ID: ${listOrders[index].orderId}',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400)),
+                    Text(
+                      'Order ID: ${listOrders[index].orderId}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16.fSize,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
+          //
           Container(
-            height: listOrders[index].boxes.length * 125.v + 23,
+            // height: listOrders[index].boxes.length * 125.v + 60.v,
+            height: listOrders[index].boxes.length * 160.v,
             child: Column(
               children: [
+                //
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 50.0),
-                      child: Text('Boxes in order:',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400)),
+                      child: Text(
+                        'Boxes in order:',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.fSize,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ],
                 ),
+                //
                 Expanded(
                   child: ListView.builder(
                     itemCount: listOrders[index].boxes.length,
                     itemBuilder: (context, i) {
                       return Padding(
-                        padding: const EdgeInsets.only(
-                            left: 50, right: 20, top: 8, bottom: 8),
-                        child: _buildItem(listOrders[index].boxes[i]),
+                        padding: EdgeInsets.only(
+                            left: 50, right: 20, top: 5, bottom: 5),
+                        child: _buildBoxItem(
+                          listOrders[index].boxes[i],
+                        ),
                       );
                     },
                   ),
@@ -576,14 +583,19 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
               ],
             ),
           ),
+          //
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 50.0, bottom: 8),
+                padding: const EdgeInsets.only(left: 50.0, bottom: 10),
                 child: Text(
-                    'Created at: ${listOrders[index].date.substring(0, 10)}',
-                    style: TextStyle(color: Colors.grey, fontSize: 16)),
+                  'Created at: ${listOrders[index].date.substring(0, 10)}',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 16.fSize,
+                  ),
+                ),
               ),
             ],
           ),
@@ -593,52 +605,76 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
   }
 
   /// Section Widget
-  Widget _buildItem(BoxOrderModel boxOrder) {
+  Widget _buildBoxItem(BoxOrderModel boxOrder) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          border: Border.all(color: Colors.grey)),
-      child: Padding(
-        padding: EdgeInsets.only(left: 9.h, bottom: 5.v, top: 5.v, right: 9.v),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        border: Border.all(color: Colors.grey),
+      ),
+      child: Container(
+        padding:
+            EdgeInsets.only(left: 10.h, bottom: 10.v, top: 10.v, right: 10.v),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildId(
-              iD: 'ID',
-              widget: boxOrder.boxId.toString(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 20.v,
+                  width: 20.h,
+                  child: Text(
+                    'ID',
+                    style: TextStyle(
+                      color: appTheme.blueGray300,
+                      fontSize: 15.fSize,
+                    ),
+                  ),
+                ),
+                Text(
+                  boxOrder.boxId.toString(),
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.fSize,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 10.v),
             //
-            Padding(
-              padding: EdgeInsets.only(left: 1.h),
-              child: _buildContentItem(
-                imageService: ImageConstant.imgGrid,
-                text: boxOrder.listItem,
-                textStyleService: CustomTextStyles.labelLargeGray80002
-                    .copyWith(color: appTheme.gray80002),
+            SizedBox(height: 10.v),
+            _buildContentItemWithPicture(
+              imageService: ImageConstant.imgGrid,
+              text: boxOrder.listItem,
+              textStyleService: TextStyle(
+                color: appTheme.gray80002,
+                fontSize: 15.fSize,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 10.v),
             //
-            Padding(
-              padding: EdgeInsets.only(left: 1.h),
-              child: _buildContentItem(
-                imageService: ImageConstant.imgThumbsUp,
-                text: boxOrder.boxServices,
-                textStyleService: CustomTextStyles.labelLargeLightblue800
-                    .copyWith(color: appTheme.lightBlue800),
+            SizedBox(height: 10.v),
+            _buildContentItemWithPicture(
+              imageService: ImageConstant.imgThumbsUp,
+              text: boxOrder.boxServices,
+              textStyleService: TextStyle(
+                color: appTheme.lightBlue800,
+                fontSize: 15.fSize,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 10.v),
             //
-            Padding(
-              padding: EdgeInsets.only(left: 1.h),
-              child: _buildContentItem(
-                imageService: ImageConstant.imgThumbsUpBlueGray300,
-                text: boxOrder.listItem,
-                textStyleService: CustomTextStyles.labelLargeOrangeA700,
+            SizedBox(height: 10.v),
+            _buildContentItemWithPicture(
+              imageService: ImageConstant.imgThumbsUpBlueGray300,
+              text: boxOrder.listItem,
+              textStyleService: TextStyle(
+                color: appTheme.orangeA700,
+                fontSize: 15.fSize,
+                fontWeight: FontWeight.w500,
               ),
             ),
+            //
           ],
         ),
       ),
@@ -646,56 +682,36 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
   }
 
   /// Common widget
-  Widget _buildId({
-    required String iD,
-    required String widget,
-  }) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          iD,
-          style: CustomTextStyles.labelLargeBluegray300
-              .copyWith(color: appTheme.blueGray300),
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 9),
-          child: Text(
-            widget,
-            style:
-                theme.textTheme.labelLarge!.copyWith(color: appTheme.black900),
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Common widget
-  Widget _buildContentItem({
+  Widget _buildContentItemWithPicture({
     required String imageService,
     required String text,
     required TextStyle textStyleService,
   }) {
     return Container(
-      width: 400.adaptSize,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomImageView(
-            imagePath: imageService,
-            height: 10.v,
-            width: 10.h,
-            margin: EdgeInsets.only(top: 2.v, bottom: 2.v),
+          Container(
+            width: 20.h,
+            height: 20.v,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CustomImageView(
+                  imagePath: imageService,
+                  height: 10.v,
+                  width: 10.h,
+                  margin: EdgeInsets.only(top: 2.v, bottom: 2.v),
+                ),
+              ],
+            ),
           ),
           Expanded(
-            child: Container(
-              padding: EdgeInsets.only(left: 10.h),
-              child: Text(
-                text,
-                overflow: TextOverflow.clip,
-                style: textStyleService,
-              ),
+            child: Text(
+              text,
+              overflow: TextOverflow.clip,
+              style: textStyleService,
             ),
           ),
         ],

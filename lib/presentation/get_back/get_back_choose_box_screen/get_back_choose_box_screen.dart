@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
-import 'package:lastapp/widgets/custom_drop_down.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
@@ -211,7 +210,7 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
         'Take back box',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 22.fSize,
+          fontSize: 24.fSize,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -241,7 +240,7 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
                   child: Text(
                     '1',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18.fSize,
                       fontWeight: FontWeight.w600,
                       color: appTheme.redA200,
                     ),
@@ -310,28 +309,121 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
     );
   }
 
-  Widget _topfillter(int count) {
+  /// Section Widget
+  Widget _buildBodySection() {
     return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary,
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(30),
+          topLeft: Radius.circular(30),
+        ),
+      ),
+      height: SizeUtils.height,
+      width: SizeUtils.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildListOrder(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildListOrder(context) {
+    List<OrderModel> listOrderWidget = fillDataWithDate(listOrders);
+    return Column(
+      children: [
+        //
+        _buildFilterList(listOrderWidget),
+        //
+        Container(
+          height: SizeUtils.height - 60.v - 80.v,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: listOrderWidget.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Divider(),
+                        _buildOrderBoxItem(context, index),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFilterList(List<OrderModel> listOrders) {
+    int countChecked = 0;
+    for (var order in listOrders) {
+      if (order.checked!) countChecked++;
+      if (countChecked == listOrders.length) {
+        setState(() {
+          checkAll = true;
+        });
+      }
+    }
+
+    return Container(
+      height: 80.v,
+      width: SizeUtils.width,
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          count > 0
-              ? Text(
-                  'Total orders: ${count}',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.fSize,
-                    fontWeight: FontWeight.w600,
-                  ),
-                )
-              : Text(
-                  'Orders',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.fSize,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+          Row(
+            children: [
+              GestureDetector(
+                  onTap: () => setState(() {
+                        checkAll = !checkAll;
+                        for (var order in listOrders) {
+                          order.checked = checkAll;
+                        }
+                      }),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Icon(
+                      checkAll ? Icons.check : null,
+                      size: 20,
+                      color: Colors.black,
+                    ),
+                  )),
+              SizedBox(
+                width: 10,
+              ),
+              listOrders.length > 0
+                  ? Text(
+                      'Total orders: ${listOrders.length} ',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20.fSize,
+                      ),
+                    )
+                  : Text(
+                      'Orders',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20.fSize,
+                      ),
+                    ),
+            ],
+          ),
           SizedBox(
             height: 40,
             width: 140,
@@ -341,14 +433,13 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
                 contentPadding:
                     EdgeInsets.only(top: 5, left: 15, right: 10, bottom: 5),
                 hintStyle: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12.fSize,
                   color: Colors.grey,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                // floatingLabelBehavior: FloatingLabelBehavior.never,
                 enabledBorder: OutlineInputBorder(
                   borderSide: const BorderSide(
                     color: Colors.grey,
@@ -369,9 +460,9 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
                   borderRadius: BorderRadius.circular(20),
                 ),
                 labelStyle: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12.fSize,
                   color: Colors.grey,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               focusColor: Colors.white,
@@ -383,7 +474,7 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
                     date['time'] as String,
                     style: TextStyle(
                       color: Colors.black,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       fontSize: 13.fSize,
                     ),
                     maxLines: 1, // Limit the number of lines to 1
@@ -394,6 +485,10 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
               onChanged: (value) {
                 setState(() {
                   selectedDate = value;
+                  for (var order in listOrders) {
+                    order.checked = false;
+                    checkAll = false;
+                  }
                 });
               },
             ),
@@ -403,139 +498,94 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
     );
   }
 
-  /// Section Widget
-  Widget _buildBodySection() {
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary,
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(30),
-          topLeft: Radius.circular(30),
+  Widget checkBoxCustom(int index) {
+    return GestureDetector(
+      onTap: () => setState(() {
+        listOrders[index].checked = !listOrders[index].checked!;
+        getBackChooseBoxController.listOrders[index].checked =
+            listOrders[index].checked;
+        if (listOrders[index].checked == false) checkAll = false;
+      }),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black,
+            width: 1.5,
+          ),
+          borderRadius: BorderRadius.circular(4),
         ),
-      ),
-      height: SizeUtils.height,
-      width: SizeUtils.width,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 10.v),
-          _buildListOrder(context),
-        ],
+        child: Icon(
+          listOrders[index].checked! ? Icons.check : null,
+          size: 20,
+          color: Colors.black,
+        ),
       ),
     );
   }
 
-  Widget _buildListOrder(context) {
-    List<OrderModel> listOrderWidget = fillDataWithDate(listOrders);
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: CheckboxListTile(
-            controlAffinity: ListTileControlAffinity.leading,
-            title: _topfillter(listOrderWidget.length),
-            value: checkAll,
-            onChanged: (value) => setState(() {
-              checkAll = value!;
-              for (var order in listOrderWidget) {
-                order.checked = value;
-              }
-            }),
-          ),
-        ),
-        Container(
-          //padding: EdgeInsets.symmetric(horizontal: 20.h),
-          height: 600.v,
-          child: Column(
+  Widget _buildOrderBoxItem(context, index) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: listOrderWidget.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Divider(),
-                          _buildOrderBox(context, index),
-                        ],
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Row(
+                  children: [
+                    checkBoxCustom(index),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      'Order ID: ${listOrders[index].orderId}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16.fSize,
+                        fontWeight: FontWeight.w500,
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildOrderBox(context, index) {
-    return Container(
-      child: Column(
-        children: [
-          CheckboxListTile(
-            controlAffinity: ListTileControlAffinity.leading,
-            title: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 0.h),
-                  child: Text(
-                    'Order ID:',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16.fSize,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 5.h),
-                  child: Text(
-                    listOrders[index].orderId.toString(),
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16.fSize,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            value: listOrders[index].checked,
-            onChanged: (value) => setState(() {
-              if (value == false) checkAll = false;
-              listOrders[index].checked = value!;
-            }),
-          ),
+          //
           Container(
-            height: listOrders[index].boxes.length * 125.v + 23,
+            // height: listOrders[index].boxes.length * 125.v + 60.v,
+            height: listOrders[index].boxes.length * 160.v,
             child: Column(
               children: [
+                //
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: Text('Boxes in order:',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16.fSize,
-                            fontWeight: FontWeight.w400,
-                          )),
+                      padding: const EdgeInsets.only(left: 50.0),
+                      child: Text(
+                        'Boxes in order:',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.fSize,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ],
                 ),
+                //
                 Expanded(
                   child: ListView.builder(
                     itemCount: listOrders[index].boxes.length,
                     itemBuilder: (context, i) {
                       return Padding(
-                        padding: const EdgeInsets.only(
-                            left: 40, right: 20, top: 8, bottom: 8),
-                        child: _buildItem(listOrders[index].boxes[i]),
+                        padding: EdgeInsets.only(
+                            left: 50, right: 20, top: 5, bottom: 5),
+                        child: _buildBoxItem(
+                          listOrders[index].boxes[i],
+                        ),
                       );
                     },
                   ),
@@ -543,17 +593,19 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
               ],
             ),
           ),
+          //
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 20.0),
+                padding: const EdgeInsets.only(left: 50.0, bottom: 10),
                 child: Text(
-                    'Created at: ${listOrders[index].date.substring(0, 10)}',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16.fSize,
-                    )),
+                  'Created at: ${listOrders[index].date.substring(0, 10)}',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 16.fSize,
+                  ),
+                ),
               ),
             ],
           ),
@@ -563,52 +615,76 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
   }
 
   /// Section Widget
-  Widget _buildItem(BoxOrderModel boxOrder) {
+  Widget _buildBoxItem(BoxOrderModel boxOrder) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          border: Border.all(color: Colors.grey)),
-      child: Padding(
-        padding: EdgeInsets.only(left: 9.h, bottom: 5.v, top: 5.v, right: 9.v),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        border: Border.all(color: Colors.grey),
+      ),
+      child: Container(
+        padding:
+            EdgeInsets.only(left: 10.h, bottom: 10.v, top: 10.v, right: 10.v),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildId(
-              iD: 'ID',
-              widget: boxOrder.boxId.toString(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 20.v,
+                  width: 20.h,
+                  child: Text(
+                    'ID',
+                    style: TextStyle(
+                      color: appTheme.blueGray300,
+                      fontSize: 15.fSize,
+                    ),
+                  ),
+                ),
+                Text(
+                  boxOrder.boxId.toString(),
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15.fSize,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 10.v),
             //
-            Padding(
-              padding: EdgeInsets.only(left: 1.h),
-              child: _buildContentItem(
-                imageService: ImageConstant.imgGrid,
-                text: boxOrder.listItem,
-                textStyleService: CustomTextStyles.labelLargeGray80002
-                    .copyWith(color: appTheme.gray80002),
+            SizedBox(height: 10.v),
+            _buildContentItemWithPicture(
+              imageService: ImageConstant.imgGrid,
+              text: boxOrder.listItem,
+              textStyleService: TextStyle(
+                color: appTheme.gray80002,
+                fontSize: 15.fSize,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 10.v),
             //
-            Padding(
-              padding: EdgeInsets.only(left: 1.h),
-              child: _buildContentItem(
-                imageService: ImageConstant.imgThumbsUp,
-                text: boxOrder.boxServices,
-                textStyleService: CustomTextStyles.labelLargeLightblue800
-                    .copyWith(color: appTheme.lightBlue800),
+            SizedBox(height: 10.v),
+            _buildContentItemWithPicture(
+              imageService: ImageConstant.imgThumbsUp,
+              text: boxOrder.boxServices,
+              textStyleService: TextStyle(
+                color: appTheme.lightBlue800,
+                fontSize: 15.fSize,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 10.v),
             //
-            Padding(
-              padding: EdgeInsets.only(left: 1.h),
-              child: _buildContentItem(
-                imageService: ImageConstant.imgThumbsUpBlueGray300,
-                text: boxOrder.listItem,
-                textStyleService: CustomTextStyles.labelLargeOrangeA700,
+            SizedBox(height: 10.v),
+            _buildContentItemWithPicture(
+              imageService: ImageConstant.imgThumbsUpBlueGray300,
+              text: boxOrder.listItem,
+              textStyleService: TextStyle(
+                color: appTheme.orangeA700,
+                fontSize: 15.fSize,
+                fontWeight: FontWeight.w500,
               ),
             ),
+            //
           ],
         ),
       ),
@@ -616,56 +692,36 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
   }
 
   /// Common widget
-  Widget _buildId({
-    required String iD,
-    required String widget,
-  }) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          iD,
-          style: CustomTextStyles.labelLargeBluegray300
-              .copyWith(color: appTheme.blueGray300),
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 9),
-          child: Text(
-            widget,
-            style:
-                theme.textTheme.labelLarge!.copyWith(color: appTheme.black900),
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Common widget
-  Widget _buildContentItem({
+  Widget _buildContentItemWithPicture({
     required String imageService,
     required String text,
     required TextStyle textStyleService,
   }) {
     return Container(
-      width: 400.adaptSize,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomImageView(
-            imagePath: imageService,
-            height: 10.v,
-            width: 10.h,
-            margin: EdgeInsets.only(top: 2.v, bottom: 2.v),
+          Container(
+            width: 20.h,
+            height: 20.v,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CustomImageView(
+                  imagePath: imageService,
+                  height: 10.v,
+                  width: 10.h,
+                  margin: EdgeInsets.only(top: 2.v, bottom: 2.v),
+                ),
+              ],
+            ),
           ),
           Expanded(
-            child: Container(
-              padding: EdgeInsets.only(left: 10.h),
-              child: Text(
-                text,
-                overflow: TextOverflow.clip,
-                style: textStyleService,
-              ),
+            child: Text(
+              text,
+              overflow: TextOverflow.clip,
+              style: textStyleService,
             ),
           ),
         ],
