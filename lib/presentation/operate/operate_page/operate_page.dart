@@ -16,7 +16,6 @@ class OperatePage extends StatefulWidget {
 }
 
 class _OperatePageState extends State<OperatePage> {
-  int? selectedDate = 1000;
 
   final List<String> tabs = [
     'Processing',
@@ -25,6 +24,7 @@ class _OperatePageState extends State<OperatePage> {
     'Cancelled'
   ];
 
+  int? selectedDate = 1000;
   final List<String> dateSort = [
     '7 days ago',
     '1 months ago',
