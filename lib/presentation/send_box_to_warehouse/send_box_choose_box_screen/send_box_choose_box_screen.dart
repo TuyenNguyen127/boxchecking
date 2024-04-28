@@ -40,21 +40,26 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
         },
       );
       if (response.statusCode == 200) {
-        List<OrderModel> orders = [];
+    print(response.body.runtimeType);
+    final dynamic jsonResponse = jsonDecode(response.body);
 
-        List<dynamic> jsonList = jsonDecode(response.body);
-        orders = jsonList.map((json) => OrderModel.fromJson(json)).toList();
+    // if (jsonResponse is List) {
+    //     List<OrderModel> orders = jsonResponse.map((json) => OrderModel.fromJson(json)).toList();
 
-        setState(() {
-          listOrders = orders;
-          for (var element in orders) {
-            sendBoxChooseBoxController.listOrders.add(element);
-          }
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}');
-        throw Exception('Failed to make API request.');
-      }
+    //     setState(() {
+    //         listOrders = orders;
+    //         for (var element in orders) {
+    //             sendBoxChooseBoxController.listOrders.add(element);
+    //         }
+    //     });
+    // } else {
+    //     print('Dữ liệu không phải là một danh sách');
+    //     // Xử lý trường hợp dữ liệu không phải là một danh sách
+    // }
+} else {
+    print('Request failed with status: ${response.statusCode}');
+    throw Exception('Failed to make API request.');
+}
     } catch (e) {
       print('Error occurred: $e');
     }
