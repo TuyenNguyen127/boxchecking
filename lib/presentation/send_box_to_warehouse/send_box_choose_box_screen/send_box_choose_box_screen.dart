@@ -574,7 +574,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 50.0),
+                padding: const EdgeInsets.only(left: 50.0, bottom: 8),
                 child: Text(
                     'Created at: ${listOrders[index].date.substring(0, 10)}',
                     style: TextStyle(color: Colors.grey, fontSize: 16)),
