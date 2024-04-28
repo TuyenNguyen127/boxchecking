@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:js';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
-import 'package:lastapp/widgets/custom_drop_down.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 
 import 'controller/send_box_choose_box_controller.dart';
@@ -28,10 +28,42 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
   List<OrderModel> listOrders = <OrderModel>[];
   bool checkAll = false;
 
+  int? selectedDate = 1000;
+
+  List<dynamic> dataProdateSortince = [
+    {
+      "time": "7 days ago",
+      "id": 7,
+    },
+    {
+      "time": "1 months ago",
+      "id": 30,
+    },
+    {
+      "time": "3 months ago",
+      "id": 90,
+    },
+    {
+      "time": "All time",
+      "id": 1000,
+    }
+  ];
+
+  List<OrderModel> fillDataWithDate(List<OrderModel> listOrders) {
+    List<OrderModel> filteredItems = listOrders.where((item) {
+      String itemDate = item.date;
+      DateTime parsedItemDate = DateFormat("yyyy-MM-dd").parse(itemDate);
+      DateTime now = DateTime.now();
+      DateTime startDate = now.subtract(Duration(days: selectedDate!));
+      return parsedItemDate.isAfter(startDate) && parsedItemDate.isBefore(now);
+    }).toList();
+    return filteredItems;
+  }
+
   Future<void> requestOrder() async {
     try {
-      var uri = Uri.https(dotenv.get('HOST'),
-          '/api/Order/GetListOrderByUserId', {'userId': '1', 'statusId': '4'});
+      var uri = Uri.https(dotenv.get('HOST'), '/api/Order/GetListOrderByUserId',
+          {'userId': '1', 'statusId': '7'});
       final response = await http.get(
         uri,
         headers: <String, String>{
@@ -40,26 +72,52 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
         },
       );
       if (response.statusCode == 200) {
-    print(response.body.runtimeType);
-    final dynamic jsonResponse = jsonDecode(response.body);
+        List<dynamic> jsonResponse = jsonDecode(response.body);
+        List<OrderModel> orders = [];
+        for (var json in jsonResponse) {
+          List<dynamic> boxes = json['boxs'];
+          List<BoxOrderModel> listBoxes = [];
+          for (var box in boxes) {
+            String services = '';
+            for (var service in box['boxServices']) {
+              services += service.toString() + ", ";
+            }
+            if (services.length > 0)
+              services = services.substring(0, services.length - 2);
+            listBoxes.add(BoxOrderModel(
+                boxId: box['boxId'],
+                boxTypeId: box['boxTypeId'],
+                boxModelId: box['boxModelId'],
+                listItem: box['listItem'],
+                boxServices: services,
+                weight: box['weight'],
+                quantity: box['quantity'],
+                dimension: box['dimension'],
+                price: box['price']));
+          }
+          orders.add(OrderModel(
+              orderId: json['orderId'],
+              status: json['status'],
+              shipStatusName: json['shipStatusName'] ?? '',
+              boxes: listBoxes,
+              name: json['name'],
+              phoneNumber: json['phoneNumber'],
+              address: json['address'],
+              date: json['date'],
+              toWardCode: json['toWardCode'],
+              toDistrictId: json['toDistrictId']));
+        }
+        for (var element in orders) {
+          setState(() {
+            listOrders.add(element);
+          });
 
-    // if (jsonResponse is List) {
-    //     List<OrderModel> orders = jsonResponse.map((json) => OrderModel.fromJson(json)).toList();
-
-    //     setState(() {
-    //         listOrders = orders;
-    //         for (var element in orders) {
-    //             sendBoxChooseBoxController.listOrders.add(element);
-    //         }
-    //     });
-    // } else {
-    //     print('Dữ liệu không phải là một danh sách');
-    //     // Xử lý trường hợp dữ liệu không phải là một danh sách
-    // }
-} else {
-    print('Request failed with status: ${response.statusCode}');
-    throw Exception('Failed to make API request.');
-}
+          sendBoxChooseBoxController.listOrders.add(element);
+        }
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        throw Exception('Failed to make API request.');
+      }
     } catch (e) {
       print('Error occurred: $e');
     }
@@ -100,7 +158,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
               ),
               //
               Positioned(
-                bottom: 45.v,
+                bottom: 35.v,
                 right: 35.v,
                 child: CustomIconButton(
                   height: 60.adaptSize,
@@ -252,6 +310,82 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
     );
   }
 
+  Widget _topfillter(int count) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('${count} orders'),
+          SizedBox(
+            height: 40,
+            width: 140,
+            child: DropdownButtonFormField<int>(
+              decoration: InputDecoration(
+                //labelText: 'Select Province',
+                contentPadding:
+                    EdgeInsets.only(top: 5, left: 15, right: 10, bottom: 5),
+                hintStyle: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w400,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                // floatingLabelBehavior: FloatingLabelBehavior.never,
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.grey,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.black,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.red,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                labelStyle: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              focusColor: Colors.white,
+              value: selectedDate,
+              items: dataProdateSortince.map((date) {
+                return DropdownMenuItem(
+                  value: date['id'] as int,
+                  child: Text(
+                    date['time'] as String,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 13),
+                    maxLines: 1, // Limit the number of lines to 1
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedDate = value;
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// Section Widget
   Widget _buildBodySection() {
     return Container(
@@ -265,7 +399,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
             ),
             blurRadius: 1.0,
             spreadRadius: 0.5,
-          ), //BoxShadow
+          ),
           BoxShadow(
             color: Colors.white,
             offset: const Offset(0.0, 0.0),
@@ -281,215 +415,192 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
       ),
       height: SizeUtils.height,
       width: SizeUtils.width,
-      padding: EdgeInsets.symmetric(horizontal: 20.h),
+      //padding: EdgeInsets.symmetric(horizontal: 20.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //
-          //_buildBoxSearch(),
-          SizedBox(height: 15.v),
-          //
-          Padding(
-            padding: EdgeInsets.only(left: 0.h),
-            child: CustomDropDown(
-              width: 95.h,
-              hintText: "lbl_14_days_ago".tr,
-              items: sendBoxChooseBoxController
-                  .sendBoxChooseBoxModelObj.value.dropdownItemList1.value,
-              onChanged: (value) {
-                sendBoxChooseBoxController.onSelected1(value);
-              },
-            ),
-          ),
-          SizedBox(height: 25.v),
+          SizedBox(height: 10.v),
           _buildListOrder(context),
         ],
       ),
     );
   }
 
-  // Widget _buildBoxSearch() {
-  //   return Padding(
-  //     padding: EdgeInsets.only(left: 0.h, right: 0.h, top: 20.h),
-  //     child: CustomDropDown(
-  //       icon: Container(
-  //         margin: EdgeInsets.fromLTRB(30.h, 19.v, 21.h, 19.v),
-  //         child: CustomImageView(
-  //           imagePath: ImageConstant.imgSave,
-  //           height: 12.v,
-  //           width: 19.h,
-  //         ),
-  //       ),
-  //       hintStyle: TextStyle(),
-  //       hintText: "lbl_search_by_id".tr,
-  //       alignment: Alignment.center,
-  //       items:
-  //           controller.sendBoxChooseBoxModelObj.value.dropdownItemList!.value,
-  //       contentPadding: EdgeInsets.only(left: 20.h, top: 15.v, bottom: 15.v),
-  //       onChanged: (value) {
-  //         controller.onSelected(value);
-  //       },
-  //     ),
-  //   );
-  // }
-
   Widget _buildListOrder(context) {
+    List<OrderModel> listOrderWidget =
+        fillDataWithDate(listOrders);
     return Column(
       children: [
-        // CheckboxListTile(
-        //   controlAffinity: ListTileControlAffinity.leading,
-        //   title: Row(
-        //     mainAxisAlignment: MainAxisAlignment.start,
-        //     children: [
-        //       Padding(
-        //         padding: EdgeInsets.only(left: 12.h),
-        //         child: Text('${checkAll ? 'Unselect all' : 'Select all'}',
-        //             style: CustomTextStyles.titleSmallBlack900Medium),
-        //       ),
-        //       // CustomImageView(
-        //       //   imagePath: ImageConstant.imgBookmark,
-        //       //   height: 13.v,
-        //       //   width: 11.h,
-        //       //   margin: EdgeInsets.only(left: 6.h, top: 3.v, bottom: 3.v),
-        //       // ),
-        //     ],
-        //   ),
-        //   value: checkAll,
-        //   onChanged: (value) => setState(() {
-        //     checkAll = value!;
-        //     listOrders.forEach((element) {
-        //       element.checked = value;
-        //       element.boxes.forEach((e) {
-        //         e.selected = value;
-        //       });
-        //     });
-        //   }),
-        // ),
-        // SizedBox(height: 12.v),
-        // Container(
-        //   height: 600.v,
-        //   decoration: AppDecoration.outlineBluegray300,
-        //   child: Column(
-        //     children: [
-        //       Expanded(
-        //         child: ListView.builder(
-        //           itemCount: listOrders.length,
-        //           itemBuilder: (context, index) {
-        //             return Column(
-        //               children: [
-        //                 CheckboxListTile(
-        //                   controlAffinity: ListTileControlAffinity.leading,
-        //                   title: Row(
-        //                     crossAxisAlignment: CrossAxisAlignment.start,
-        //                     children: [
-        //                       Padding(
-        //                         padding: EdgeInsets.only(left: 12.h),
-        //                         child: Text("lbl_id".tr,
-        //                             style: CustomTextStyles
-        //                                 .titleSmallBlack900Medium),
-        //                       ),
-        //                       Padding(
-        //                         padding: EdgeInsets.only(left: 5.h),
-        //                         child: Text(listOrders[index].id.toString(),
-        //                             style: CustomTextStyles
-        //                                 .titleSmallBlack900Medium),
-        //                       ),
-        //                       CustomImageView(
-        //                         imagePath: ImageConstant.imgBookmark,
-        //                         height: 13.v,
-        //                         width: 11.h,
-        //                         margin: EdgeInsets.only(
-        //                             left: 6.h, top: 3.v, bottom: 3.v),
-        //                       ),
-        //                     ],
-        //                   ),
-        //                   value: listOrders[index].checked,
-        //                   onChanged: (value) => setState(() {
-        //                     if (value == false) checkAll = false;
-        //                     listOrders[index].checked = value!;
-        //                     listOrders[index].boxes.forEach((element) {
-        //                       element.selected = value;
-        //                     });
-        //                   }),
-        //                 ),
-        //                 SizedBox(height: 12.v),
-        //                 Container(
-        //                   height: listOrders[index].boxes.length * 150.v,
-        //                   child: Column(
-        //                     children: [
-        //                       Expanded(
-        //                         child: ListView.builder(
-        //                           itemCount: listOrders[index].boxes.length,
-        //                           itemBuilder: (context, i) {
-        //                             return _buildItem(
-        //                                 listOrders[index].boxes[i]);
-        //                           },
-        //                         ),
-        //                       ),
-        //                     ],
-        //                   ),
-        //                 ),
-        //               ],
-        //             );
-        //           },
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: CheckboxListTile(
+            controlAffinity: ListTileControlAffinity.leading,
+            title: _topfillter(listOrderWidget.length),
+            value: checkAll,
+            onChanged: (value) => setState(() {
+              checkAll = value!;
+              for (var order in listOrderWidget) {
+                order.checked = value;
+              }
+            }),
+          ),
+        ),
+        Container(
+          //padding: EdgeInsets.symmetric(horizontal: 20.h),
+          height: 600.v,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: listOrderWidget.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Divider(),
+                          _buildOrderBox(context, index),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
+    );
+  }
+
+  Widget checkBoxCustom(bool check, Widget title) {
+    return Row(
+      
+    );
+  }
+
+  Widget _buildOrderBox(context, index) {
+    return Container(
+      child: Column(
+        children: [
+          CheckboxListTile(
+            controlAffinity: ListTileControlAffinity.leading,
+            title: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 0.h),
+                  child: Text('Order ID:',
+                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400)),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 5.h),
+                  child: Text(listOrders[index].orderId.toString(),
+                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400)),
+                ),
+              ],
+            ),
+            value: listOrders[index].checked,
+            onChanged: (value) => setState(() {
+              if (value == false) checkAll = false;
+              listOrders[index].checked = value!;
+            }),
+          ),
+          Container(
+            height: listOrders[index].boxes.length * 125.v + 23,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: Text(
+                          'Boxes in order:',
+                          style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400)),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: listOrders[index].boxes.length,
+                    itemBuilder: (context, i) {
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                            left: 40, right: 20, top: 8, bottom: 8),
+                        child: _buildItem(listOrders[index].boxes[i]),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: Text(
+                    'Created at: ${listOrders[index].date.substring(0, 10)}',
+                    style: TextStyle(color: Colors.grey, fontSize: 16)),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
   /// Section Widget
   Widget _buildItem(BoxOrderModel boxOrder) {
     return Container(
-      padding: EdgeInsets.fromLTRB(5.h, 10.v, 10.h, 10.v),
-      decoration: AppDecoration.outlineBluegray300,
-      width: SizeUtils.width - 150.adaptSize,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          border: Border.all(color: Colors.grey)),
       child: Padding(
-        padding: EdgeInsets.only(left: 9.h, bottom: 1.v),
-        // child: Column(
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     _buildId(
-        //       iD: "lbl_id".tr,
-        //       widget: boxOrder.id.toString(),
-        //     ),
-        //     SizedBox(height: 10.v),
-        //     //
-        //     Padding(
-        //       padding: EdgeInsets.only(left: 1.h),
-        //       child: _buildContentItem(
-        //         imageService: ImageConstant.imgThumbsUp,
-        //         text: boxOrder.items,
-        //         textStyleService: CustomTextStyles.labelLargeGray80002
-        //             .copyWith(color: appTheme.gray80002),
-        //       ),
-        //     ),
-        //     SizedBox(height: 10.v),
-        //     //
-        //     Padding(
-        //       padding: EdgeInsets.only(left: 1.h),
-        //       child: _buildContentItem(
-        //         imageService: ImageConstant.imgThumbsUp,
-        //         text: boxOrder.services,
-        //         textStyleService: CustomTextStyles.labelLargeLightblue800
-        //             .copyWith(color: appTheme.lightBlue800),
-        //       ),
-        //     ),
-        //     SizedBox(height: 10.v),
-        //     //
-        //     Padding(
-        //       padding: EdgeInsets.only(left: 1.h),
-        //       child: _buildContentItem(
-        //         imageService: ImageConstant.imgThumbsUpBlueGray300,
-        //         text: boxOrder.items,
-        //         textStyleService: CustomTextStyles.labelLargeOrangeA700,
-        //       ),
-        //     ),
-        //   ],
-        // ),
+        padding: EdgeInsets.only(left: 9.h, bottom: 5.v, top: 5.v, right: 9.v),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildId(
+              iD: 'ID',
+              widget: boxOrder.boxId.toString(),
+            ),
+            SizedBox(height: 10.v),
+            //
+            Padding(
+              padding: EdgeInsets.only(left: 1.h),
+              child: _buildContentItem(
+                imageService: ImageConstant.imgGrid,
+                text: boxOrder.listItem,
+                textStyleService: CustomTextStyles.labelLargeGray80002
+                    .copyWith(color: appTheme.gray80002),
+              ),
+            ),
+            SizedBox(height: 10.v),
+            //
+            Padding(
+              padding: EdgeInsets.only(left: 1.h),
+              child: _buildContentItem(
+                imageService: ImageConstant.imgThumbsUp,
+                text: boxOrder.boxServices,
+                textStyleService: CustomTextStyles.labelLargeLightblue800
+                    .copyWith(color: appTheme.lightBlue800),
+              ),
+            ),
+            SizedBox(height: 10.v),
+            //
+            Padding(
+              padding: EdgeInsets.only(left: 1.h),
+              child: _buildContentItem(
+                imageService: ImageConstant.imgThumbsUpBlueGray300,
+                text: boxOrder.listItem,
+                textStyleService: CustomTextStyles.labelLargeOrangeA700,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -508,18 +619,12 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
               .copyWith(color: appTheme.blueGray300),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 8.h),
+          padding: EdgeInsets.only(left: 9),
           child: Text(
             widget,
             style:
                 theme.textTheme.labelLarge!.copyWith(color: appTheme.black900),
           ),
-        ),
-        CustomImageView(
-          imagePath: ImageConstant.imgComputer,
-          height: 13.v,
-          width: 11.h,
-          margin: EdgeInsets.only(left: 4.h),
         ),
       ],
     );
