@@ -415,6 +415,10 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
               onChanged: (value) {
                 setState(() {
                   selectedDate = value;
+                  for (var order in listOrders) {
+                    order.checked = false;
+                    checkAll = false;
+                  }
                 });
               },
             ),
@@ -495,14 +499,16 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
     );
   }
 
-  Widget checkBoxCustom(OrderModel orderModel) {
+  Widget checkBoxCustom(int index) {
     return GestureDetector(
       onTap: () => setState(() {
-        orderModel.checked = !orderModel.checked!;
-        if (orderModel.checked == false) checkAll = false;
+        listOrders[index].checked = !listOrders[index].checked!;
+        sendBoxChooseBoxController.listOrders[index].checked =
+            listOrders[index].checked;
+        if (listOrders[index].checked == false) checkAll = false;
       }),
       child: Icon(
-        orderModel.checked!
+        listOrders[index].checked!
             ? Icons.check_box_outlined
             : Icons.check_box_outline_blank,
         size: 20,
@@ -524,7 +530,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 child: Row(
                   children: [
-                    checkBoxCustom(listOrders[index]),
+                    checkBoxCustom(index),
                     SizedBox(
                       width: 8,
                     ),
