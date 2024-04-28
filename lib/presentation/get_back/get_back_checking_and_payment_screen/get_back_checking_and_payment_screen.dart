@@ -15,20 +15,16 @@ class GetBackCheckingAndPaymentScreen extends StatefulWidget {
 }
 
 class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
-  // GetBackAddressController addressController =
-  //     Get.put(GetBackAddressController());
-  // GetBackChooseBoxController chooseController =
-  //     Get.put(GetBackChooseBoxController());
-
   bool checkTerms = false;
 
   AddressModel addressModel = AddressModel(
-      name: "Do Ngoc Long",
-      phoneNumber: "0123456789",
-      addressNumber: "Toa song Da, Pham Hung",
-      wardCodeId: 1,
-      districtId: 1,
-      cityId: 1);
+    name: "Do Ngoc Long",
+    phoneNumber: "0123456789",
+    addressNumber: "Toa song Da, Pham Hung",
+    wardCodeId: 1,
+    districtId: 1,
+    cityId: 1,
+  );
 
   List<OrderModel> listOrders = [
     OrderModel(
@@ -37,25 +33,27 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
         shipStatusName: "Finished",
         boxes: [
           BoxOrderModel(
-              boxId: 1,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 50000),
+            boxId: 1,
+            boxTypeId: 1,
+            boxModelId: 1,
+            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+            boxServices: "Hang On, Washing",
+            weight: 0.1,
+            quantity: 1,
+            dimension: "Plastic Box | Large",
+            price: 50000,
+          ),
           BoxOrderModel(
-              boxId: 2,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 80000)
+            boxId: 2,
+            boxTypeId: 1,
+            boxModelId: 1,
+            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+            boxServices: "Hang On, Washing",
+            weight: 0.1,
+            quantity: 1,
+            dimension: "Plastic Box | Large",
+            price: 80000,
+          ),
         ],
         name: "Do Ngoc Long",
         phoneNumber: "0123456789",
@@ -69,35 +67,38 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
         shipStatusName: "Processing",
         boxes: [
           BoxOrderModel(
-              boxId: 1,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 50000),
+            boxId: 1,
+            boxTypeId: 1,
+            boxModelId: 1,
+            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+            boxServices: "Hang On, Washing",
+            weight: 0.1,
+            quantity: 1,
+            dimension: "Plastic Box | Large",
+            price: 50000,
+          ),
           BoxOrderModel(
-              boxId: 2,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 80000),
+            boxId: 2,
+            boxTypeId: 1,
+            boxModelId: 1,
+            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+            boxServices: "Hang On, Washing",
+            weight: 0.1,
+            quantity: 1,
+            dimension: "Plastic Box | Large",
+            price: 80000,
+          ),
           BoxOrderModel(
-              boxId: 2,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 80000)
+            boxId: 2,
+            boxTypeId: 1,
+            boxModelId: 1,
+            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+            boxServices: "Hang On, Washing",
+            weight: 0.1,
+            quantity: 1,
+            dimension: "Plastic Box | Large",
+            price: 80000,
+          ),
         ],
         name: "Do Ngoc Long",
         phoneNumber: "0123456789",
@@ -111,35 +112,38 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
         shipStatusName: "Delivered",
         boxes: [
           BoxOrderModel(
-              boxId: 1,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 50000),
+            boxId: 1,
+            boxTypeId: 1,
+            boxModelId: 1,
+            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+            boxServices: "Hang On, Washing",
+            weight: 0.1,
+            quantity: 1,
+            dimension: "Plastic Box | Large",
+            price: 50000,
+          ),
           BoxOrderModel(
-              boxId: 2,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 80000),
+            boxId: 2,
+            boxTypeId: 1,
+            boxModelId: 1,
+            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+            boxServices: "Hang On, Washing",
+            weight: 0.1,
+            quantity: 1,
+            dimension: "Plastic Box | Large",
+            price: 80000,
+          ),
           BoxOrderModel(
-              boxId: 2,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 80000)
+            boxId: 2,
+            boxTypeId: 1,
+            boxModelId: 1,
+            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
+            boxServices: "Hang On, Washing",
+            weight: 0.1,
+            quantity: 1,
+            dimension: "Plastic Box | Large",
+            price: 80000,
+          ),
         ],
         name: "Do Ngoc Long",
         phoneNumber: "0123456789",
@@ -162,7 +166,9 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        //
         appBar: _buildAppBar(),
+        //
         body: Container(
           decoration: AppDecoration.fillGray,
           width: SizeUtils.width,
@@ -174,18 +180,21 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
               Positioned.fill(
                 child: Align(
                   alignment: Alignment.topCenter,
-                  child: _buildSectionTrackProgress(),
+                  child: _buildTrackProgressSection(),
                 ),
               ),
               //
               Positioned(
-                top: 100.v,
-                child: _buildContentPageCheckingAndPayment(),
+                top: 70.v,
+                child: _buildPageContent(),
               ),
+              //
               _buildArrowRightLeft(),
+              //
             ],
           ),
         ),
+        //
       ),
     );
   }
@@ -203,17 +212,17 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
         onTap: () => onTapVector(),
       ),
       title: Text(
-        'Get back',
+        'Checking and Payment',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 22,
+          fontSize: 22.fSize,
           fontWeight: FontWeight.w600,
         ),
       ),
     );
   }
 
-  Widget _buildSectionTrackProgress() {
+  Widget _buildTrackProgressSection() {
     return Container(
       height: 160.v,
       padding: EdgeInsets.only(left: 60.v, right: 60.v, top: 10.v),
@@ -236,7 +245,7 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
                   child: Text(
                     '1',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18.fSize,
                       fontWeight: FontWeight.w600,
                       color: theme.colorScheme.primary,
                     ),
@@ -263,7 +272,7 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
                   child: Text(
                     '2',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18.fSize,
                       fontWeight: FontWeight.w600,
                       color: theme.colorScheme.primary,
                     ),
@@ -290,7 +299,7 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
                   child: Text(
                     '3',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18.fSize,
                       fontWeight: FontWeight.w600,
                       color: appTheme.redA200,
                     ),
@@ -299,277 +308,312 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
               ),
             ],
           ),
-
-          SizedBox(height: 10),
-
           //
-          Center(
-            child: Text(
-              'Checking and Payment',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.primary,
-              ),
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildContentPageCheckingAndPayment() {
-    int priceTotal = 0;
-    for (var order in listOrders) {
-      for (var box in order.boxes) {
-        priceTotal += box.price;
-      }
-    }
+  /// Section Widget
+  Widget _buildPageContent() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.v, vertical: 10.v),
       decoration: AppDecoration.fillPrimary
           .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
       height: SizeUtils.height,
       width: SizeUtils.width,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Request Data", style: CustomTextStyles.titleLargeGray800),
-            SizedBox(height: 10.v),
-            Divider(),
-            SizedBox(height: 10.v),
-            Container(
-              height: SizeUtils.height - 350.v,
-              decoration: AppDecoration.fillPrimary
-                  .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
-              child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          SizedBox(height: 20.v),
+          //
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Order details",
+                style: TextStyle(
+                  fontSize: 22.fSize,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+          //
+          SizedBox(height: 20.v),
+          //
+          Container(
+            height: SizeUtils.height - 320.v,
+            decoration: AppDecoration.fillPrimary
+                .copyWith(borderRadius: BorderRadiusStyle.customBorderTL20),
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Container(
                 child: Column(
                   children: [
-                    _buildAddress(),
-                    SizedBox(height: 10.v),
-                    _buildPackageRequirementsSection(),
-                    SizedBox(height: 10.v),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Transport",
-                          style: CustomTextStyles.labelLargeBold,
-                        ),
-                        Text(
-                          "20000 VND",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    ),
+                    //
+                    _buildOrderDetailsSection(),
+                    //
                     SizedBox(height: 20.v),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 0.v),
-                      child: Column(
-                        children: [
-                          Divider(),
-                          SizedBox(height: 20.v),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 3.h),
-                              child: RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: "Total: ",
-                                      style: theme.textTheme.titleSmall,
-                                    ),
-                                    TextSpan(
-                                      text: '${priceTotal + 20000} VND',
-                                      style: theme.textTheme.titleSmall,
-                                    ),
-                                  ],
-                                ),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20.v),
-                    Divider(),
-                    SizedBox(height: 10.v),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Payment methods", style: CustomTextStyles.labelLargeBold),
-                        Row(
-                          children: [
-                            Text("Cash"),
-                            IconButton(
-                              icon: const Icon(Icons.arrow_forward_ios),
-                              onPressed: () {},
-                              tooltip: MaterialLocalizations.of(context)
-                                  .openAppDrawerTooltip,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.v),
-                    Divider(),
-                    SizedBox(height: 50.v),
+                    _buildPaymentMethodSection(),
+                    //
+                    SizedBox(height: 30.v),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildAgreethetermsofuse(),
+                        _buildAgreeTheTermsOfUseSection(),
                       ],
                     ),
                   ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+          //
+        ],
       ),
     );
   }
 
-  Widget _buildPackageRequirementsSection() {
+  /// Section Widget
+  Widget _buildOrderDetailsSection() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 25.h),
+      child: Column(
+        children: [
+          //
+          addressOrderDetailContent(),
+          SizedBox(height: 20.v),
+          //
+          packageRequirementsOrderDetailContent(),
+          SizedBox(height: 20.v),
+          //
+          transportOrderDetailContent(),
+          SizedBox(height: 20.v),
+          //
+          totalPriceOrderDetailContent(),
+        ],
+      ),
+    );
+  }
+
+  Widget packageRequirementsOrderDetailContent() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
             "Packaging requirements",
-            style: CustomTextStyles.labelLargeBold,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18.fSize,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-        SizedBox(height: 10.v),
+        //
         Column(
           children: listOrders.map((order) {
             int priceOrder = 0;
+
             for (var box in order.boxes) {
               priceOrder += box.price;
             }
-            return Column(children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                width: SizeUtils.width,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.elliptical(20, 20)),
-                  border:
-                      Border.all(width: 1, color: Colors.grey), // Đường viền
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'ID',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text('  ${order.orderId}',
-                            style: TextStyle(
-                              color: Colors.green.shade800,
-                              fontSize: 14,
-                            )),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Items',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: Column(
-                        children: order.boxes.map((box) {
-                          return Column(children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              width: SizeUtils.width,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.elliptical(10, 10)),
-                                border: Border.all(
-                                    width: 1, color: Colors.grey), // Đường viền
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${box.dimension} | ${box.weight}kg | ${box.boxServices}',
-                                    style: TextStyle(
-                                        color: Colors.blue.shade900,
-                                        fontSize: 13),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    '${box.listItem}',
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 13),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                          ]);
-                        }).toList(),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Price:',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          '${priceOrder} VND',
-                          style: TextStyle(
-                            color: Colors.deepOrange,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 15.h, vertical: 20.v),
+              margin: EdgeInsets.only(top: 15.v),
+              width: SizeUtils.width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border:
+                    Border.all(width: 1, color: Colors.black26), // Đường viền
               ),
-              SizedBox(height: 10),
-            ]);
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //
+                  Row(
+                    children: [
+                      //
+                      Text(
+                        'ID',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15.fSize,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      //
+                      SizedBox(width: 10.h),
+                      //
+                      Text(
+                        '${order.orderId}',
+                        style: TextStyle(
+                          color: Colors.green.shade800,
+                          fontSize: 15.fSize,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  //
+                  listOrderItemsOrderDetailContent(order),
+                  //
+                  SizedBox(height: 10),
+                  Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //
+                      Text(
+                        'Prices:',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.fSize,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      //
+                      SizedBox(width: 10),
+                      //
+                      Text(
+                        '${priceOrder} VND',
+                        style: TextStyle(
+                          color: appTheme.redA200,
+                          fontSize: 16.fSize,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
           }).toList(),
         ),
       ],
     );
   }
 
-  Widget _buildAddress() {
+  Widget listOrderItemsOrderDetailContent(OrderModel order) {
+    return Column(
+      children: [
+        //
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Items',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 15.fSize,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        //
+        Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Column(
+            children: order.boxes.map((box) {
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.h, vertical: 10.v),
+                margin: EdgeInsets.only(top: 10.v),
+                width: SizeUtils.width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  border:
+                      Border.all(width: 1, color: Colors.black26), // Đường viền
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${box.dimension} | ${box.weight}kg | ${box.boxServices}',
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(
+                        color: Color(0xff309cff),
+                        fontSize: 15.fSize,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      '${box.listItem}',
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15.fSize,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget totalPriceOrderDetailContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Divider(),
+        SizedBox(height: 20.v),
+        //
+        Text(
+          "Total: ${20000} VND",
+          style: TextStyle(
+            color: appTheme.greenA700,
+            fontSize: 18.fSize,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget transportOrderDetailContent() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "Transport",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18.fSize,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Text(
+          "20000 VND",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18.fSize,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget addressOrderDetailContent() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           "Address",
-          style: CustomTextStyles.labelLargeBold,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18.fSize,
+            fontWeight: FontWeight.w600,
+          ),
         ),
-        SizedBox(height: 10.v),
+        SizedBox(height: 15.v),
         Column(
           children: [
             Padding(
@@ -579,13 +623,17 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
                 children: [
                   Text(
                     "Fullname:",
-                    style: theme.textTheme.bodySmall!
-                        .copyWith(color: appTheme.black900),
+                    style: TextStyle(
+                      color: appTheme.black900,
+                      fontSize: 16.fSize,
+                    ),
                   ),
                   Text(
                     addressModel.name,
-                    style: theme.textTheme.bodySmall!
-                        .copyWith(color: appTheme.black900),
+                    style: TextStyle(
+                      color: appTheme.black900,
+                      fontSize: 16.fSize,
+                    ),
                   ),
                 ],
               ),
@@ -598,13 +646,17 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
                 children: [
                   Text(
                     "Phone number:",
-                    style: theme.textTheme.bodySmall!
-                        .copyWith(color: appTheme.black900),
+                    style: TextStyle(
+                      color: appTheme.black900,
+                      fontSize: 16.fSize,
+                    ),
                   ),
                   Text(
                     addressModel.phoneNumber,
-                    style: theme.textTheme.bodySmall!
-                        .copyWith(color: appTheme.black900),
+                    style: TextStyle(
+                      color: appTheme.black900,
+                      fontSize: 16.fSize,
+                    ),
                   ),
                 ],
               ),
@@ -617,13 +669,17 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
                 children: [
                   Text(
                     "Address Number:",
-                    style: theme.textTheme.bodySmall!
-                        .copyWith(color: appTheme.black900),
+                    style: TextStyle(
+                      color: appTheme.black900,
+                      fontSize: 16.fSize,
+                    ),
                   ),
                   Text(
                     addressModel.addressNumber,
-                    style: theme.textTheme.bodySmall!
-                        .copyWith(color: appTheme.black900),
+                    style: TextStyle(
+                      color: appTheme.black900,
+                      fontSize: 16.fSize,
+                    ),
                   ),
                 ],
               ),
@@ -631,13 +687,66 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
           ],
         ),
         SizedBox(height: 10.v),
-        Divider(),
       ],
     );
   }
 
   /// Section Widget
-  Widget _buildAgreethetermsofuse() {
+  Widget _buildPaymentMethodSection() {
+    return Column(
+      children: [
+        Divider(),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 25.h, vertical: 10.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Payment methods",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18.fSize,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {},
+                child: Tooltip(
+                  message: 'Open cash payment',
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black26),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    padding: EdgeInsets.fromLTRB(10.h, 10.v, 10.h, 10.v),
+                    child: Row(
+                      children: [
+                        //
+                        Text(
+                          "Cash",
+                          style: TextStyle(
+                            color: Color(0xff309cff),
+                            fontSize: 18.fSize,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        //
+                        Icon(Icons.arrow_forward_ios, size: 20.v),
+                        //
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Section Widget
+  Widget _buildAgreeTheTermsOfUseSection() {
     return CustomCheckboxButton(
       text1: "Agree the",
       color1: 0xff000000,
