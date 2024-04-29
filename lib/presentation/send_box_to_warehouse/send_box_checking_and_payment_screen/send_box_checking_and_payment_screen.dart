@@ -7,6 +7,9 @@ import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
 
+import '../send_box_address_screen/controller/send_box_address_controller.dart';
+import '../send_box_choose_box_screen/controller/send_box_choose_box_controller.dart';
+
 class SendBoxCheckingAndPaymentScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -15,7 +18,19 @@ class SendBoxCheckingAndPaymentScreen extends StatefulWidget {
 }
 
 class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
+  SendBoxChooseBoxController sendBoxChooseBoxController =
+      Get.put(SendBoxChooseBoxController());
+  SendBoxAddressController addressGetXController =
+      Get.put(SendBoxAddressController());
+
   bool checkTerms = false;
+
+  final dataKey1 = new GlobalKey();
+  @override
+  void dispose() {
+    //dataKey1 = null;
+    super.dispose();
+  }
 
   AddressModel addressModel = AddressModel(
       name: "Do Ngoc Long",
@@ -150,6 +165,19 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
 
   @override
   void initState() {
+    addressModel.addressFull = "";
+    if (addressGetXController.tuyenListAddress.isNotEmpty) {
+      print(1);
+      addressModel = addressGetXController.tuyenListAddress[0];
+    }
+
+    if (sendBoxChooseBoxController.listOrders.isNotEmpty) {
+      listOrders.clear();
+      for (var order in sendBoxChooseBoxController.listOrders) {
+        listOrders.add(order);
+      }
+    }
+    
     super.initState();
   }
 
@@ -552,6 +580,7 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
 
   Widget addressOrderDetailContent() {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -614,20 +643,25 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
             Padding(
               padding: EdgeInsets.only(left: 10.h, right: 10.h),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Address Number:",
+                    "Address detail:",
                     style: TextStyle(
                       color: appTheme.black900,
                       fontSize: 16.fSize,
                     ),
                   ),
-                  Text(
-                    addressModel.addressNumber,
-                    style: TextStyle(
-                      color: appTheme.black900,
-                      fontSize: 16.fSize,
+                  Container(
+                    width: SizeUtils.width / 2,
+                    child: Text(
+                      addressModel.addressFull!,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: appTheme.black900,
+                        fontSize: 16.fSize,
+                      ),
                     ),
                   ),
                 ],
@@ -697,6 +731,7 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
   /// Section Widget
   Widget _buildAgreeTheTermsOfUseSection() {
     return CustomCheckboxButton(
+      key: dataKey1,
       text1: "Agree the",
       color1: 0xff000000,
       text2: "term of use",
@@ -762,10 +797,16 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
 
   /// Navigates to the homeContainerScreen when the action is triggered.
   onTapBtnArrowRight() {
-    //if (checkTerms) createRequestSendBox();
-    // Get.toNamed(
-    //   AppRoutes.homeContainerScreen,
-    // );
+    if (checkTerms)
+      Get.toNamed(
+        AppRoutes.homeContainerScreen,
+      );
+    else
+      Scrollable.ensureVisible(
+        dataKey1.currentContext!,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
   }
 
   // Future<void> createRequestSendBox() async {
