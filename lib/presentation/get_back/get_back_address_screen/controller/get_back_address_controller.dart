@@ -20,14 +20,21 @@ class GetBackAddressController extends GetxController {
   RxList<String> towardCodeStringList = <String>[].obs;
   TextEditingController towardCodeController = TextEditingController();
 
+  RxList<String> provinceStringList = <String>[].obs;
+  TextEditingController provinceController = TextEditingController();
+
   RxList<String> districtIdStringList = <String>[].obs;
   TextEditingController districtIdController = TextEditingController();
 
-  RxList<DateTime> dateTimeList = <DateTime>[].obs;
-  Rx<DateTime> dateController = DateTime.now().obs;
-
-  RxList<AddressModel> tuyenListAddress = <AddressModel>[].obs;
+  late RxList<AddressModel> tuyenListAddress = <AddressModel>[].obs;
   late AddressModel newAddress;
+
+  List<dynamic> dataProvince = [];
+  List<dynamic> dataDistrict = [];
+  List<dynamic> dataWard = [];
+  late int? selectedProvinceId = null;
+  late int? selectedDistrictId = null;
+  late int? selectedWardId = null;
 
   @override
   void onClose() {
@@ -36,9 +43,8 @@ class GetBackAddressController extends GetxController {
     fullNameController.dispose();
     addressController.dispose();
     towardCodeController.dispose();
-    // addressController1.dispose();
     districtIdController.dispose();
-    // typeController.dispose();
+    provinceController.dispose();
   }
 
   @override
@@ -60,11 +66,12 @@ class GetBackAddressController extends GetxController {
     districtIdController = TextEditingController(
       text: districtIdStringList.length > 0 ? districtIdStringList.last : '',
     );
+    provinceController = TextEditingController(
+      text: provinceStringList.length > 0 ? provinceStringList.last : '',
+    );
     // typeController = TextEditingController(
     //   text: typeStringList.length > 0 ? typeStringList.last : '',
     // );
-    dateController.value =
-        dateTimeList.length > 0 ? dateTimeList.last : DateTime.now();
   }
 
   void addFullname(value) {
@@ -107,22 +114,8 @@ class GetBackAddressController extends GetxController {
     districtIdStringList.add(value);
   }
 
-  void addDate(value) {
-    if (dateTimeList.length > 0) {
-      dateTimeList.clear();
-    }
-
-    dateTimeList.add(value);
-  }
-
   void addNewAddress(newAddress) {
-    print(newAddress.name);
-    print(newAddress.phoneNumber);
-    print(newAddress.date);
-    print(newAddress.address);
-    print(newAddress.towardCode);
-    print(newAddress.districtId);
-
+    print('oke');
     tuyenListAddress.add(newAddress);
   }
 

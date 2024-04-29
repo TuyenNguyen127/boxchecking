@@ -1,7 +1,14 @@
+import 'dart:convert';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
+import 'package:lastapp/model/addressModel.dart';
+import 'package:http/http.dart' as http;
+
+import 'controller/get_back_address_controller.dart';
 
 // ignore_for_file: must_be_immutable
 class GetBackAddressScreen extends StatefulWidget {
@@ -12,11 +19,8 @@ class GetBackAddressScreen extends StatefulWidget {
 }
 
 class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
-  TextEditingController controller = TextEditingController();
-
-  // OnbAddressController onbAddressController = Get.put(OnbAddressController());
-
-  late bool isPickedDate = false;
+  GetBackAddressController addressGetXController =
+      Get.put(GetBackAddressController());
 
   TextEditingController phoneNumberController = TextEditingController();
   bool isErrorPhoneNumber = false;
@@ -38,54 +42,97 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
 
   List<dynamic> dataProvince = [
     {
-      "name": "Ha Noi",
-      "idProvince": 201,
+      "ProvinceName": "0",
+      "ProvinceID": 0,
     },
-    {
-      "name": "Vinh Phuc",
-      "idProvince": 202,
-    },
-    {
-      "name": "Hai Duong",
-      "idProvince": 203,
-    },
-    {
-      "name": "Yen Bai",
-      "idProvince": 204,
-    }
   ];
 
   List<dynamic> dataDistrict = [
-    {"idProvince": 201, "idDistrict": 101, "name": "Thanh Xuan"},
-    {"idProvince": 201, "idDistrict": 102, "name": "Cau Giay"},
-    {"idProvince": 202, "idDistrict": 103, "name": "Binh Xuyen"},
-    {"idProvince": 202, "idDistrict": 104, "name": "Lap Thach"},
-    {"idProvince": 203, "idDistrict": 105, "name": "Hai Duong City"},
-    {"idProvince": 203, "idDistrict": 106, "name": "Bai Bien"},
-    {"idProvince": 204, "idDistrict": 107, "name": "Muong Te"},
-    {"idProvince": 204, "idDistrict": 108, "name": "Doc Lo"}
+    {"ProvinceID": 0, "DistrictID": 1, "DistrictName": ""},
   ];
 
   List<dynamic> dataWard = [
-    {"idProvince": 201, "idDistrict": 101, "idWard": 1, "name": "Quan Nhan"},
-    {"idProvince": 201, "idDistrict": 102, "idWard": 2, "name": "Quan Nho"},
-    {
-      "idProvince": 202,
-      "idDistrict": 103,
-      "idWard": 3,
-      "name": "Xa Binh Xuyen"
-    },
-    {"idProvince": 202, "idDistrict": 104, "idWard": 4, "name": "Xa Lap Thach"},
-    {
-      "idProvince": 203,
-      "idDistrict": 105,
-      "idWard": 5,
-      "name": "Xa Hai Duong City"
-    },
-    {"idProvince": 203, "idDistrict": 106, "idWard": 6, "name": "Xa Bai Bien"},
-    {"idProvince": 204, "idDistrict": 107, "idWard": 7, "name": "Xa Muong Te"},
-    {"idProvince": 204, "idDistrict": 108, "idWard": 8, "name": "Xa Doc Lo"}
+    {"ProvinceID": 0, "DistrictID": 1, "WardCode": 1, "WardName": ""}
   ];
+
+  Future<void> getDataProvince() async {
+    try {
+      var uri = Uri.https(dotenv.get('HOST'), '/api/Address/GetProvince');
+      final response = await http.get(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "ngrok-skip-browser-warning": "69420",
+        },
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        setState(() {
+          dataProvince = jsonResponse['data'];
+          dataProvince
+              .sort((a, b) => a["ProvinceName"].compareTo(b["ProvinceName"]));
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        throw Exception('Failed to make API request.');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+
+  Future<void> getDataDistrict(provinceId) async {
+    try {
+      var uri = Uri.https(dotenv.get('HOST'), '/api/Address/GetDistricts',
+          {'provinceId': '${provinceId}'});
+      final response = await http.get(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "ngrok-skip-browser-warning": "69420",
+        },
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        setState(() {
+          dataDistrict = jsonResponse['data'];
+          dataDistrict
+              .sort((a, b) => a["DistrictName"].compareTo(b["DistrictName"]));
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        throw Exception('Failed to make API request.');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+
+  Future<void> getDataWard(int districtId) async {
+    try {
+      var uri = Uri.https(dotenv.get('HOST'), '/api/Address/GetWards',
+          {'districtId': '${districtId}'});
+      final response = await http.get(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "ngrok-skip-browser-warning": "69420",
+        },
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        setState(() {
+          dataWard = jsonResponse['data'];
+          dataWard.sort((a, b) => a["WardName"].compareTo(b["WardName"]));
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        throw Exception('Failed to make API request.');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
 
   int? selectedProvinceId;
   int? selectedDistrictId;
@@ -93,6 +140,29 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
 
   @override
   void initState() {
+    if (addressGetXController.dataProvince.isNotEmpty) {
+      dataProvince = addressGetXController.dataProvince;
+      selectedProvinceId = addressGetXController.selectedProvinceId;
+    } else {
+      getDataProvince();
+    }
+    if (addressGetXController.dataDistrict.isNotEmpty) {
+      dataDistrict = addressGetXController.dataDistrict;
+      selectedDistrictId = addressGetXController.selectedDistrictId;
+    }
+    if (addressGetXController.dataWard.isNotEmpty) {
+      dataWard = addressGetXController.dataWard;
+      selectedWardId = addressGetXController.selectedWardId;
+    }
+    if (addressGetXController.tuyenListAddress.isNotEmpty) {
+      AddressModel addressModel = addressGetXController.tuyenListAddress[0];
+      fullNameController.text = addressModel.name;
+      phoneNumberController.text = addressModel.phoneNumber;
+      addressController.text = addressModel.addressNumber;
+      selectedDistrictId = addressModel.districtId;
+      selectedProvinceId = addressModel.cityId;
+      selectedWardId = addressModel.wardCodeId;
+    }
     super.initState();
   }
 
@@ -100,30 +170,24 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        //
         appBar: _buildAppBarPageAddress(),
-        //
         body: Container(
-          // decoration: AppDecoration.fillGray,
           decoration: AppDecoration.fillPrimary,
           width: SizeUtils.width,
           height: SizeUtils.height,
           child: Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              //
               Positioned.fill(
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: _buildSectionTrackProgress(),
                 ),
               ),
-              //
               Positioned(
                 top: 100.v,
                 child: _buildFormPageAddress(context),
               ),
-              //
               _buildArrowRightLeft(context),
             ],
           ),
@@ -306,6 +370,7 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
       children: [
         // Province Dropdown
         DropdownButtonFormField<int>(
+          menuMaxHeight: SizeUtils.height / 2,
           decoration: InputDecoration(
             labelText: 'Select Province',
             contentPadding:
@@ -360,9 +425,9 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
           value: selectedProvinceId,
           items: dataProvince.map((province) {
             return DropdownMenuItem(
-              value: province['idProvince'] as int,
+              value: province['ProvinceID'] as int,
               child: Text(
-                province['name'] as String,
+                province['ProvinceName'] as String,
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w400,
@@ -377,6 +442,13 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
               isErrorCity = false;
               selectedProvinceId = value;
               selectedDistrictId = null; // Reset district selection
+              selectedWardId = null;
+              getDataDistrict(selectedProvinceId);
+              for (var province in dataProvince) {
+                if (province["ProvinceID"] == selectedProvinceId) {
+                  cityController.text = province["ProvinceName"];
+                }
+              }
             });
           },
         ),
@@ -432,12 +504,12 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
           ),
           value: selectedDistrictId,
           items: dataDistrict
-              .where((district) => district['idProvince'] == selectedProvinceId)
+              .where((district) => district['ProvinceID'] == selectedProvinceId)
               .map((district) {
             return DropdownMenuItem(
-              value: district['idDistrict'] as int,
+              value: district['DistrictID'] as int,
               child: Text(
-                district['name'] as String,
+                district['DistrictName'] as String,
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w400,
@@ -450,6 +522,12 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
               selectedDistrictId = value;
               selectedWardId = null;
               isErrorDistrict = false;
+              getDataWard(selectedDistrictId!);
+              for (var district in dataDistrict) {
+                if (district["DistrictID"] == selectedDistrictId) {
+                  districtController.text = district["DistrictName"];
+                }
+              }
             });
           },
         ),
@@ -506,14 +584,12 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
           borderRadius: BorderRadius.circular(10),
           value: selectedWardId,
           items: dataWard
-              .where((ward) =>
-                  ward['idProvince'] == selectedProvinceId &&
-                  ward['idDistrict'] == selectedDistrictId)
+              .where((ward) => ward['DistrictID'] == selectedDistrictId)
               .map((ward) {
             return DropdownMenuItem(
-              value: ward['idWard'] as int,
+              value: int.parse(ward['WardCode']),
               child: Text(
-                ward['name'] as String,
+                ward['WardName'] as String,
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w400,
@@ -525,6 +601,11 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
             setState(() {
               selectedWardId = value;
               isErrorWardCode = false;
+              for (var ward in dataWard) {
+                if (ward["WardCode"] == selectedWardId.toString()) {
+                  wardCodeController.text = ward["WardName"];
+                }
+              }
             });
           },
         ),
@@ -579,7 +660,8 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
           ),
           borderRadius: BorderRadius.circular(10),
         ),
-        errorText: isErrorPhoneNumber ? "Please enter correct phone number" : "",
+        errorText:
+            isErrorPhoneNumber ? "Please enter correct phone number" : "",
         errorBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: isErrorPhoneNumber ? Colors.red : Colors.grey,
@@ -695,7 +777,6 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        // floatingLabelBehavior: FloatingLabelBehavior.never,
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             color: Colors.grey,
@@ -759,7 +840,87 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
     );
   }
 
-  /// Navigates to the typeRequestScreen when the action is triggered.
+  bool validateData() {
+    final phoneNumber = phoneNumberController.text;
+    final fullName = fullNameController.text;
+    final address = addressController.text;
+
+    if (fullName.isEmpty) {
+      setState(() {
+        isErrorFullname = true;
+      });
+    }
+
+    if (!(10 <= phoneNumber.toString().length &&
+            phoneNumber.toString().length <= 11) ||
+        phoneNumber.isEmpty) {
+      setState(() {
+        isErrorPhoneNumber = true;
+      });
+    }
+
+    if (selectedWardId == null) {
+      setState(() {
+        isErrorWardCode = true;
+      });
+    }
+
+    if (selectedDistrictId == null) {
+      setState(() {
+        isErrorDistrict = true;
+      });
+    }
+
+    if (selectedProvinceId == null) {
+      setState(() {
+        isErrorCity = true;
+      });
+    }
+
+    if (address.isEmpty) {
+      setState(() {
+        isErrorAddress = true;
+      });
+    }
+
+    if (isErrorFullname ||
+        isErrorPhoneNumber ||
+        isErrorWardCode ||
+        isErrorDistrict ||
+        isErrorCity ||
+        isErrorAddress) {
+      return false;
+    } else {
+      AddressModel newAddress = AddressModel(
+        name: fullNameController.text,
+        phoneNumber: phoneNumberController.text,
+        addressNumber: addressController.text,
+        cityId: selectedProvinceId!,
+        wardCodeId: selectedWardId!,
+        districtId: selectedDistrictId!,
+      );
+      newAddress.addressFull = addressController.text +
+          ", " +
+          wardCodeController.text +
+          ", " +
+          districtController.text +
+          ", " +
+          cityController.text;
+      setState(() {
+        addressGetXController.tuyenListAddress.clear();
+        addressGetXController.addNewAddress(newAddress);
+        addressGetXController.dataDistrict = dataDistrict;
+        addressGetXController.dataProvince = dataProvince;
+        addressGetXController.dataWard = dataWard;
+        addressGetXController.selectedDistrictId = selectedDistrictId;
+        addressGetXController.selectedProvinceId = selectedProvinceId;
+        addressGetXController.selectedWardId = selectedWardId;
+      });
+    }
+
+    return true;
+  }
+
   onTapVector() {
     Get.toNamed(
       AppRoutes.typeRequestScreen,
@@ -774,104 +935,11 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
     //
     // Navigator.pop(context);
 
-    // Get.toNamed(
-    //   AppRoutes.getBackChooseBoxScreen,
-    // );
-
-    checkValidationData();
+    Get.toNamed(
+      AppRoutes.getBackChooseBoxScreen,
+    );
   }
 
-  bool validateData() {
-    final phoneNumber = phoneNumberController.text;
-    final fullName = fullNameController.text;
-    final wardCode = wardCodeController.text;
-    final district = districtController.text;
-    final city = cityController.text;
-    final address = addressController.text;
-
-    if (fullName.isEmpty) {
-      print('loi fullName');
-      print(fullName);
-
-      setState(() {
-        isErrorFullname = true;
-      });
-    }
-
-    if (!(10 <= phoneNumber.toString().length &&
-            phoneNumber.toString().length <= 11) ||
-        phoneNumber.isEmpty) {
-      print('loi phoneNumber');
-      print(phoneNumber);
-
-      setState(() {
-        isErrorPhoneNumber = true;
-      });
-    }
-
-    if (selectedWardId == null) {
-      print('trong ward');
-      print(wardCode);
-
-      setState(() {
-        isErrorWardCode = true;
-      });
-    }
-
-    if (selectedDistrictId == null) {
-      print('trong district');
-      print(district);
-
-      setState(() {
-        isErrorDistrict = true;
-      });
-    }
-
-    if (selectedProvinceId == null) {
-      print('trong city');
-      print(city);
-
-      setState(() {
-        isErrorCity = true;
-      });
-    }
-
-    if (address.isEmpty) {
-      print('trong address');
-      print(address);
-
-      setState(() {
-        isErrorAddress = true;
-      });
-    }
-
-    if (isErrorFullname ||
-        isErrorPhoneNumber ||
-        isErrorWardCode ||
-        isErrorDistrict ||
-        isErrorCity ||
-        isErrorAddress) {
-      return false;
-    } else {
-      print(fullName);
-      print(phoneNumber);
-      print(city);
-      print(district);
-      print(wardCode);
-      print(address);
-    }
-
-    return true;
-  }
-
-  void checkValidationData() {
-    if (validateData()) {
-      // cho sang trang tiep theo
-      print('qua duoc trang moi dooii dit con di cha may');
-    }
-  }
-
-  /// Navigates to the onbCheckingAndPaymentScreen when the action is triggered.
   onTapBtnArrowRight(context) {
     // Get.toNamed(
     //   AppRoutes.onbCheckingAndPaymentScreen,
@@ -887,29 +955,10 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
     // );
 
     //
-    Navigator.pushNamed(
-      context,
-      AppRoutes.getBackCheckingAndPaymentScreen,
-    );
+    if (validateData())
+      Navigator.pushNamed(
+        context,
+        AppRoutes.getBackCheckingAndPaymentScreen,
+      );
   }
-
-  // saveDataForAddressPage() {
-  //   if (onbAddressController.fullNameStringList.length > 0 &&
-  //       onbAddressController.phoneNumberStringList.length > 0 &&
-  //       onbAddressController.addressStringList.length > 0 &&
-  //       onbAddressController.dateTimeList.length > 0 &&
-  //       onbAddressController.districtIdStringList.length > 0 &&
-  //       onbAddressController.towardCodeStringList.length > 0) {
-  //     Address newAddress = Address(
-  //       name: onbAddressController.fullNameStringList.last,
-  //       phoneNumber: onbAddressController.phoneNumberStringList.last,
-  //       date: onbAddressController.dateTimeList.last.toString(),
-  //       address: onbAddressController.addressStringList.last,
-  //       towardCode: onbAddressController.towardCodeStringList.toString(),
-  //       districtId: onbAddressController.districtIdStringList.last,
-  //     );
-
-  //     onbAddressController.addNewAddress(newAddress);
-  //   }
-  // }
 }

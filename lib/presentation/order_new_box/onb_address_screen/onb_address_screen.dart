@@ -1,9 +1,14 @@
+import 'dart:convert';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
+import 'package:lastapp/model/addressModel.dart';
+import 'package:http/http.dart' as http;
 
-import 'models/option_item.dart';
+import 'controller/onb_address_controller.dart';
 
 // ignore_for_file: must_be_immutable
 class OnbAddressScreen extends StatefulWidget {
@@ -14,11 +19,8 @@ class OnbAddressScreen extends StatefulWidget {
 }
 
 class _OnbAddressScreenState extends State<OnbAddressScreen> {
-  TextEditingController controller = TextEditingController();
-
-  // OnbAddressController onbAddressController = Get.put(OnbAddressController());
-
-  late bool isPickedDate = false;
+  OnbAddressController addressGetXController =
+      Get.put(OnbAddressController());
 
   TextEditingController phoneNumberController = TextEditingController();
   bool isErrorPhoneNumber = false;
@@ -38,67 +40,99 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
   TextEditingController addressController = TextEditingController();
   bool isErrorAddress = false;
 
-  MyDropListModel cityListModel = MyDropListModel([]);
-  MyDropListModel districtListModel = MyDropListModel([]);
-  MyDropListModel wardListModel = MyDropListModel([]);
-
-  MyOptionItem cityOptionItemSelected =
-      MyOptionItem(name: "Select City/Province", id: 0);
-  MyOptionItem wardOptionItemSelected =
-      MyOptionItem(name: "Select Ward", id: 0);
-  MyOptionItem districtOptionItemSelected =
-      MyOptionItem(name: "Select District", id: 0);
-
   List<dynamic> dataProvince = [
     {
-      "name": "Ha Noi",
-      "idProvince": 201,
+      "ProvinceName": "0",
+      "ProvinceID": 0,
     },
-    {
-      "name": "Vinh Phuc",
-      "idProvince": 202,
-    },
-    {
-      "name": "Hai Duong",
-      "idProvince": 203,
-    },
-    {
-      "name": "Yen Bai",
-      "idProvince": 204,
-    }
   ];
 
   List<dynamic> dataDistrict = [
-    {"idProvince": 201, "idDistrict": 101, "name": "Thanh Xuan"},
-    {"idProvince": 201, "idDistrict": 102, "name": "Cau Giay"},
-    {"idProvince": 202, "idDistrict": 103, "name": "Binh Xuyen"},
-    {"idProvince": 202, "idDistrict": 104, "name": "Lap Thach"},
-    {"idProvince": 203, "idDistrict": 105, "name": "Hai Duong City"},
-    {"idProvince": 203, "idDistrict": 106, "name": "Bai Bien"},
-    {"idProvince": 204, "idDistrict": 107, "name": "Muong Te"},
-    {"idProvince": 204, "idDistrict": 108, "name": "Doc Lo"}
+    {"ProvinceID": 0, "DistrictID": 1, "DistrictName": ""},
   ];
 
   List<dynamic> dataWard = [
-    {"idProvince": 201, "idDistrict": 101, "idWard": 1, "name": "Quan Nhan"},
-    {"idProvince": 201, "idDistrict": 102, "idWard": 2, "name": "Quan Nho"},
-    {
-      "idProvince": 202,
-      "idDistrict": 103,
-      "idWard": 3,
-      "name": "Xa Binh Xuyen"
-    },
-    {"idProvince": 202, "idDistrict": 104, "idWard": 4, "name": "Xa Lap Thach"},
-    {
-      "idProvince": 203,
-      "idDistrict": 105,
-      "idWard": 5,
-      "name": "Xa Hai Duong City"
-    },
-    {"idProvince": 203, "idDistrict": 106, "idWard": 6, "name": "Xa Bai Bien"},
-    {"idProvince": 204, "idDistrict": 107, "idWard": 7, "name": "Xa Muong Te"},
-    {"idProvince": 204, "idDistrict": 108, "idWard": 8, "name": "Xa Doc Lo"}
+    {"ProvinceID": 0, "DistrictID": 1, "WardCode": 1, "WardName": ""}
   ];
+
+  Future<void> getDataProvince() async {
+    try {
+      var uri = Uri.https(dotenv.get('HOST'), '/api/Address/GetProvince');
+      final response = await http.get(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "ngrok-skip-browser-warning": "69420",
+        },
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        setState(() {
+          dataProvince = jsonResponse['data'];
+          dataProvince
+              .sort((a, b) => a["ProvinceName"].compareTo(b["ProvinceName"]));
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        throw Exception('Failed to make API request.');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+
+  Future<void> getDataDistrict(provinceId) async {
+    try {
+      var uri = Uri.https(dotenv.get('HOST'), '/api/Address/GetDistricts',
+          {'provinceId': '${provinceId}'});
+      final response = await http.get(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "ngrok-skip-browser-warning": "69420",
+        },
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        setState(() {
+          dataDistrict = jsonResponse['data'];
+          dataDistrict
+              .sort((a, b) => a["DistrictName"].compareTo(b["DistrictName"]));
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        throw Exception('Failed to make API request.');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+
+  Future<void> getDataWard(int districtId) async {
+    try {
+      var uri = Uri.https(dotenv.get('HOST'), '/api/Address/GetWards',
+          {'districtId': '${districtId}'});
+      final response = await http.get(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "ngrok-skip-browser-warning": "69420",
+        },
+      );
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        setState(() {
+          dataWard = jsonResponse['data'];
+          dataWard.sort((a, b) => a["WardName"].compareTo(b["WardName"]));
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        throw Exception('Failed to make API request.');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
 
   int? selectedProvinceId;
   int? selectedDistrictId;
@@ -106,6 +140,29 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
 
   @override
   void initState() {
+    if (addressGetXController.dataProvince.isNotEmpty) {
+      dataProvince = addressGetXController.dataProvince;
+      selectedProvinceId = addressGetXController.selectedProvinceId;
+    } else {
+      getDataProvince();
+    }
+    if (addressGetXController.dataDistrict.isNotEmpty) {
+      dataDistrict = addressGetXController.dataDistrict;
+      selectedDistrictId = addressGetXController.selectedDistrictId;
+    }
+    if (addressGetXController.dataWard.isNotEmpty) {
+      dataWard = addressGetXController.dataWard;
+      selectedWardId = addressGetXController.selectedWardId;
+    }
+    if (addressGetXController.tuyenListAddress.isNotEmpty) {
+      AddressModel addressModel = addressGetXController.tuyenListAddress[0];
+      fullNameController.text = addressModel.name;
+      phoneNumberController.text = addressModel.phoneNumber;
+      addressController.text = addressModel.addressNumber;
+      selectedDistrictId = addressModel.districtId;
+      selectedProvinceId = addressModel.cityId;
+      selectedWardId = addressModel.wardCodeId;
+    }
     super.initState();
   }
 
@@ -113,30 +170,24 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        //
         appBar: _buildAppBarPageAddress(),
-        //
         body: Container(
-          // decoration: AppDecoration.fillGray,
           decoration: AppDecoration.fillPrimary,
           width: SizeUtils.width,
           height: SizeUtils.height,
           child: Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              //
               Positioned.fill(
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: _buildSectionTrackProgress(),
                 ),
               ),
-              //
               Positioned(
                 top: 100.v,
                 child: _buildFormPageAddress(context),
               ),
-              //
               _buildArrowRightLeft(context),
             ],
           ),
@@ -158,7 +209,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
         onTap: () => onTapVector(),
       ),
       title: Text(
-        'Order new box',
+        'Send box to warehouse',
         style: TextStyle(
           color: Colors.white,
           fontSize: 22,
@@ -297,14 +348,14 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
           children: [
             //
             _buildFullName(),
-            SizedBox(height: 20.v),
+            SizedBox(height: 8.v),
             //
             _buildPhoneNumber(),
             //
-            SizedBox(height: 20.v),
+            SizedBox(height: 8.v),
             //
             _buildAddressCode(),
-            SizedBox(height: 20.v),
+            SizedBox(height: 8.v),
             //
             _buildAddressView(),
           ],
@@ -319,15 +370,21 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
       children: [
         // Province Dropdown
         DropdownButtonFormField<int>(
+          menuMaxHeight: SizeUtils.height / 2,
           decoration: InputDecoration(
             labelText: 'Select Province',
-            contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+            contentPadding:
+                EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
             hintStyle: TextStyle(
               fontSize: 17,
               color: Colors.grey,
               fontWeight: FontWeight.w400,
             ),
             border: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.black,
+                width: 1,
+              ),
               borderRadius: BorderRadius.circular(10),
             ),
             // floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -344,9 +401,16 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
               ),
               borderRadius: BorderRadius.circular(10),
             ),
+            errorText: isErrorCity ? "Please select Province" : "",
             errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Colors.red,
+              borderSide: BorderSide(
+                color: isErrorCity ? Colors.red : Colors.grey,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: isErrorCity ? Colors.red : Colors.grey,
               ),
               borderRadius: BorderRadius.circular(10),
             ),
@@ -361,9 +425,9 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
           value: selectedProvinceId,
           items: dataProvince.map((province) {
             return DropdownMenuItem(
-              value: province['idProvince'] as int,
+              value: province['ProvinceID'] as int,
               child: Text(
-                province['name'] as String,
+                province['ProvinceName'] as String,
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w400,
@@ -375,18 +439,27 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
           }).toList(),
           onChanged: (value) {
             setState(() {
+              isErrorCity = false;
               selectedProvinceId = value;
               selectedDistrictId = null; // Reset district selection
+              selectedWardId = null;
+              getDataDistrict(selectedProvinceId);
+              for (var province in dataProvince) {
+                if (province["ProvinceID"] == selectedProvinceId) {
+                  cityController.text = province["ProvinceName"];
+                }
+              }
             });
           },
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 8),
 
         // District Dropdown
         DropdownButtonFormField<int>(
           decoration: InputDecoration(
             labelText: 'Select District',
-            contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+            contentPadding:
+                EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
             hintStyle: TextStyle(
               fontSize: 17,
               color: Colors.grey,
@@ -409,9 +482,16 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
               ),
               borderRadius: BorderRadius.circular(10),
             ),
+            errorText: isErrorDistrict ? "Please select District" : "",
             errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Colors.red,
+              borderSide: BorderSide(
+                color: isErrorDistrict ? Colors.red : Colors.grey,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: isErrorDistrict ? Colors.red : Colors.grey,
               ),
               borderRadius: BorderRadius.circular(10),
             ),
@@ -424,12 +504,12 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
           ),
           value: selectedDistrictId,
           items: dataDistrict
-              .where((district) => district['idProvince'] == selectedProvinceId)
+              .where((district) => district['ProvinceID'] == selectedProvinceId)
               .map((district) {
             return DropdownMenuItem(
-              value: district['idDistrict'] as int,
+              value: district['DistrictID'] as int,
               child: Text(
-                district['name'] as String,
+                district['DistrictName'] as String,
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w400,
@@ -441,16 +521,24 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
             setState(() {
               selectedDistrictId = value;
               selectedWardId = null;
+              isErrorDistrict = false;
+              getDataWard(selectedDistrictId!);
+              for (var district in dataDistrict) {
+                if (district["DistrictID"] == selectedDistrictId) {
+                  districtController.text = district["DistrictName"];
+                }
+              }
             });
           },
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 8),
 
         // Ward Dropdown
         DropdownButtonFormField<int>(
           decoration: InputDecoration(
             labelText: 'Select Ward',
-            contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+            contentPadding:
+                EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
             hintStyle: TextStyle(
               fontSize: 17,
               color: Colors.grey,
@@ -473,9 +561,16 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
               ),
               borderRadius: BorderRadius.circular(10),
             ),
+            errorText: isErrorWardCode ? "Please select Ward" : "",
             errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Colors.red,
+              borderSide: BorderSide(
+                color: isErrorWardCode ? Colors.red : Colors.grey,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: isErrorWardCode ? Colors.red : Colors.grey,
               ),
               borderRadius: BorderRadius.circular(10),
             ),
@@ -489,14 +584,12 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
           borderRadius: BorderRadius.circular(10),
           value: selectedWardId,
           items: dataWard
-              .where((ward) =>
-                  ward['idProvince'] == selectedProvinceId &&
-                  ward['idDistrict'] == selectedDistrictId)
+              .where((ward) => ward['DistrictID'] == selectedDistrictId)
               .map((ward) {
             return DropdownMenuItem(
-              value: ward['idWard'] as int,
+              value: int.parse(ward['WardCode']),
               child: Text(
-                ward['name'] as String,
+                ward['WardName'] as String,
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w400,
@@ -507,14 +600,13 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
           onChanged: (value) {
             setState(() {
               selectedWardId = value;
+              isErrorWardCode = false;
+              for (var ward in dataWard) {
+                if (ward["WardCode"] == selectedWardId.toString()) {
+                  wardCodeController.text = ward["WardName"];
+                }
+              }
             });
-          },
-          validator: (value) {
-            // Validate if value is null or empty
-            if (value == null || value == '') {
-              return 'Please select a ward';
-            }
-            return null;
           },
         ),
       ],
@@ -527,6 +619,11 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
       showCursor: true,
       cursorColor: Colors.black,
       controller: phoneNumberController,
+      onChanged: (value) {
+        setState(() {
+          isErrorPhoneNumber = false;
+        });
+      },
       style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.w400,
@@ -534,12 +631,13 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
       decoration: InputDecoration(
         labelText: 'Phone Number',
         labelStyle: TextStyle(
-              fontSize: 17,
-              color: Colors.grey,
-              fontWeight: FontWeight.w400,
-            ),
+          fontSize: 17,
+          color: Colors.grey,
+          fontWeight: FontWeight.w400,
+        ),
         hintText: 'Enter your phone number',
-        contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+        contentPadding:
+            EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
         hintStyle: TextStyle(
           fontSize: 14,
           color: Colors.grey,
@@ -562,9 +660,17 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
           ),
           borderRadius: BorderRadius.circular(10),
         ),
+        errorText:
+            isErrorPhoneNumber ? "Please enter correct phone number" : "",
         errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.red,
+          borderSide: BorderSide(
+            color: isErrorPhoneNumber ? Colors.red : Colors.grey,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: isErrorPhoneNumber ? Colors.red : Colors.grey,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -579,6 +685,11 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
       showCursor: true,
       cursorColor: Colors.black,
       controller: fullNameController,
+      onChanged: (value) {
+        setState(() {
+          isErrorFullname = false;
+        });
+      },
       style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.w400,
@@ -586,11 +697,12 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
       decoration: InputDecoration(
         labelText: 'Full Name',
         labelStyle: TextStyle(
-              fontSize: 17,
-              color: Colors.grey,
-              fontWeight: FontWeight.w400,
-            ),
-        contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+          fontSize: 17,
+          color: Colors.grey,
+          fontWeight: FontWeight.w400,
+        ),
+        contentPadding:
+            EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
         hintText: 'Enter your full name',
         hintStyle: TextStyle(
           fontSize: 14,
@@ -614,9 +726,16 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
           ),
           borderRadius: BorderRadius.circular(10),
         ),
+        errorText: isErrorFullname ? "Please enter your full name" : "",
         errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.red,
+          borderSide: BorderSide(
+            color: isErrorFullname ? Colors.red : Colors.grey,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: isErrorFullname ? Colors.red : Colors.grey,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -631,6 +750,11 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
       showCursor: true,
       cursorColor: Colors.black,
       controller: addressController,
+      onChanged: (value) {
+        setState(() {
+          isErrorAddress = false;
+        });
+      },
       style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.w400,
@@ -638,11 +762,12 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
       decoration: InputDecoration(
         labelText: 'Address',
         labelStyle: TextStyle(
-              fontSize: 17,
-              color: Colors.grey,
-              fontWeight: FontWeight.w400,
-            ),
-        contentPadding: EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
+          fontSize: 17,
+          color: Colors.grey,
+          fontWeight: FontWeight.w400,
+        ),
+        contentPadding:
+            EdgeInsets.only(top: 15, left: 15, right: 10, bottom: 15),
         hintText: 'Enter your address',
         hintStyle: TextStyle(
           fontSize: 16,
@@ -652,7 +777,6 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        // floatingLabelBehavior: FloatingLabelBehavior.never,
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             color: Colors.grey,
@@ -666,9 +790,16 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
           ),
           borderRadius: BorderRadius.circular(10),
         ),
+        errorText: isErrorAddress ? "Please enter address street, No,..." : "",
         errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.red,
+          borderSide: BorderSide(
+            color: isErrorAddress ? Colors.red : Colors.grey,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: isErrorAddress ? Colors.red : Colors.grey,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -680,7 +811,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
   /// Section Widget
   Widget _buildArrowRightLeft(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 45.v),
+      padding: EdgeInsets.only(left: 35.h, right: 35.h, bottom: 35.v),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -709,40 +840,12 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
     );
   }
 
-  /// Navigates to the typeRequestScreen when the action is triggered.
-  onTapVector() {
-    Get.toNamed(
-      AppRoutes.typeRequestScreen,
-    );
-    // Navigator.pop(context);
-  }
-
-  onTapBtnArrowLeft(context) {
-    //NavigationBar.pop();
-
-    // saveDataForAddressPage();
-    //
-    // Navigator.pop(context);
-
-    // Get.toNamed(
-    //   AppRoutes.onbOderboxScreen,
-    // );
-
-    checkValidationData();
-  }
-
   bool validateData() {
     final phoneNumber = phoneNumberController.text;
     final fullName = fullNameController.text;
-    final wardCode = wardCodeController.text;
-    final district = districtController.text;
-    final city = cityController.text;
     final address = addressController.text;
 
     if (fullName.isEmpty) {
-      print('loi fullName');
-      print(fullName);
-
       setState(() {
         isErrorFullname = true;
       });
@@ -751,45 +854,30 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
     if (!(10 <= phoneNumber.toString().length &&
             phoneNumber.toString().length <= 11) ||
         phoneNumber.isEmpty) {
-      print('loi phoneNumber');
-      print(phoneNumber);
-
       setState(() {
         isErrorPhoneNumber = true;
       });
     }
 
-    if (wardCode.isEmpty) {
-      print('trong ward');
-      print(wardCode);
-
+    if (selectedWardId == null) {
       setState(() {
         isErrorWardCode = true;
       });
     }
 
-    if (district.isEmpty) {
-      print('trong district');
-      print(district);
-
+    if (selectedDistrictId == null) {
       setState(() {
         isErrorDistrict = true;
       });
     }
 
-    if (city.isEmpty) {
-      print('trong city');
-      print(city);
-
+    if (selectedProvinceId == null) {
       setState(() {
         isErrorCity = true;
       });
     }
 
     if (address.isEmpty) {
-      print('trong address');
-      print(address);
-
       setState(() {
         isErrorAddress = true;
       });
@@ -803,63 +891,53 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
         isErrorAddress) {
       return false;
     } else {
-      print(fullName);
-      print(phoneNumber);
-      print(city);
-      print(district);
-      print(wardCode);
-      print(address);
+      AddressModel newAddress = AddressModel(
+        name: fullNameController.text,
+        phoneNumber: phoneNumberController.text,
+        addressNumber: addressController.text,
+        cityId: selectedProvinceId!,
+        wardCodeId: selectedWardId!,
+        districtId: selectedDistrictId!,
+      );
+      newAddress.addressFull = addressController.text +
+          ", " +
+          wardCodeController.text +
+          ", " +
+          districtController.text +
+          ", " +
+          cityController.text;
+      setState(() {
+        addressGetXController.tuyenListAddress.clear();
+        addressGetXController.addNewAddress(newAddress);
+        addressGetXController.dataDistrict = dataDistrict;
+        addressGetXController.dataProvince = dataProvince;
+        addressGetXController.dataWard = dataWard;
+        addressGetXController.selectedDistrictId = selectedDistrictId;
+        addressGetXController.selectedProvinceId = selectedProvinceId;
+        addressGetXController.selectedWardId = selectedWardId;
+      });
     }
 
     return true;
   }
 
-  void checkValidationData() {
-    if (validateData()) {
-      // cho sang trang tiep theo
-      print('qua duoc trang moi dooii dit con di cha may');
-    }
+  onTapVector() {
+    Get.toNamed(
+      AppRoutes.typeRequestScreen,
+    );
   }
 
-  /// Navigates to the onbCheckingAndPaymentScreen when the action is triggered.
+  onTapBtnArrowLeft(context) {
+    Get.toNamed(
+      AppRoutes.onbAddressScreen,
+    );
+  }
+
   onTapBtnArrowRight(context) {
-    // Get.toNamed(
-    //   AppRoutes.onbCheckingAndPaymentScreen,
-    // );
-
-    //
-    // saveDataForAddressPage();
-    //
-    // Navigator.pop(context);
-    //
-    // Get.toNamed(
-    //   AppRoutes.onbCheckingAndPaymentScreen,
-    // );
-
-    //
+    if (validateData())
     Navigator.pushNamed(
       context,
       AppRoutes.onbCheckingAndPaymentScreen,
     );
   }
-
-  // saveDataForAddressPage() {
-  //   if (onbAddressController.fullNameStringList.length > 0 &&
-  //       onbAddressController.phoneNumberStringList.length > 0 &&
-  //       onbAddressController.addressStringList.length > 0 &&
-  //       onbAddressController.dateTimeList.length > 0 &&
-  //       onbAddressController.districtIdStringList.length > 0 &&
-  //       onbAddressController.towardCodeStringList.length > 0) {
-  //     Address newAddress = Address(
-  //       name: onbAddressController.fullNameStringList.last,
-  //       phoneNumber: onbAddressController.phoneNumberStringList.last,
-  //       date: onbAddressController.dateTimeList.last.toString(),
-  //       address: onbAddressController.addressStringList.last,
-  //       towardCode: onbAddressController.towardCodeStringList.toString(),
-  //       districtId: onbAddressController.districtIdStringList.last,
-  //     );
-
-  //     onbAddressController.addNewAddress(newAddress);
-  //   }
-  // }
 }
