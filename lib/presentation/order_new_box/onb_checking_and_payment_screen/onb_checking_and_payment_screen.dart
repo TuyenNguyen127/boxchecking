@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:lastapp/model/addressModel.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
@@ -600,13 +603,18 @@ class _OnbCheckingAndPaymentScreenState
   Widget addressOrderDetailContent() {
     return Column(
       children: [
-        Text(
-          "Address",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18.fSize,
-            fontWeight: FontWeight.w600,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              "Address",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18.fSize,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
         SizedBox(height: 15.v),
         Column(
@@ -624,8 +632,8 @@ class _OnbCheckingAndPaymentScreenState
                     ),
                   ),
                   Text(
-                    // addressController.userInformation[0].name,
-                    addressModel.name,
+                    addressController.userInformation[0].name,
+                    // addressModel.name,
                     textAlign: TextAlign.right,
                     overflow: TextOverflow.clip,
                     style: TextStyle(
@@ -650,8 +658,8 @@ class _OnbCheckingAndPaymentScreenState
                     ),
                   ),
                   Text(
-                    // addressController.userInformation[0].phoneNumber,
-                    addressModel.phoneNumber,
+                    addressController.userInformation[0].phoneNumber,
+                    // addressModel.phoneNumber,
                     textAlign: TextAlign.right,
                     overflow: TextOverflow.clip,
                     style: TextStyle(
@@ -679,8 +687,8 @@ class _OnbCheckingAndPaymentScreenState
                   Container(
                     width: SizeUtils.width / 2,
                     child: Text(
-                      // addressController.userInformation[0].addressFull!,
-                      addressModel.addressNumber,
+                      addressController.userInformation[0].addressFull!,
+                      // addressModel.addressNumber,
                       textAlign: TextAlign.right,
                       overflow: TextOverflow.clip,
                       style: TextStyle(
@@ -808,7 +816,7 @@ class _OnbCheckingAndPaymentScreenState
   /// Navigates to the typeRequestScreen when the action is triggered.
   onTapVector() {
     Get.toNamed(
-      AppRoutes.typeRequestScreen,
+      AppRoutes.onbAddressScreen,
     );
   }
 
@@ -839,45 +847,43 @@ class _OnbCheckingAndPaymentScreenState
 
   Future<void> createRequestOrder() async {
     try {
-      //
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PendingToGetBackHomeScreen()),
+      var uri = Uri.https(
+          'f83d-118-70-128-84.ngrok-free.app', '/api/Order/CreateNewOrderBox');
+      final response = await http.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: jsonEncode(<String, dynamic>{
+          "name": "Long Do",
+          "phoneNumber": "0388508956",
+          "address": "Tòa nhà Sông Đà, Phạm Hùng, Mỹ Đình, Nam Từ Liêm, Hà Nội",
+          "date": "2024-03-29T06:45:15.053Z",
+          "toWardCode": "510102",
+          "toDistrictId": 1442,
+          "boxs": [
+            {
+              "typeId": 1,
+              "modelId": 1,
+              "listItem": "10 cái quần, 20 cái áo",
+              "services": [1, 2],
+              "weight": 200,
+              "quantity": 1
+            }
+          ]
+        }),
       );
 
-      // var uri = Uri.https(
-      //     'f83d-118-70-128-84.ngrok-free.app', '/api/Order/CreateNewOrderBox');
-      // final response = await http.post(
-      //   uri,
-      //   headers: <String, String>{
-      //     'Content-Type': 'application/json; charset=UTF-8',
-      //     'ngrok-skip-browser-warning': 'true',
-      //   },
-      //   body: jsonEncode(<String, dynamic>{
-      //     "name": "Long Do",
-      //     "phoneNumber": "0388508956",
-      //     "address": "Tòa nhà Sông Đà, Phạm Hùng, Mỹ Đình, Nam Từ Liêm, Hà Nội",
-      //     "date": "2024-03-29T06:45:15.053Z",
-      //     "toWardCode": "510102",
-      //     "toDistrictId": 1442,
-      //     "boxs": [
-      //       {
-      //         "typeId": 1,
-      //         "modelId": 1,
-      //         "listItem": "10 cái quần, 20 cái áo",
-      //         "services": [1, 2],
-      //         "weight": 200,
-      //         "quantity": 1
-      //       }
-      //     ]
-      //   }),
-      // );
-
-      // if (response.statusCode == 200) {
-      //   print('buuuu');
-      // } else {
-      //   throw Exception('Failed to create album.');
-      // }
+      if (response.statusCode == 200) {
+        //
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PendingToGetBackHomeScreen()),
+        );
+      } else {
+        throw Exception('Failed to create album.');
+      }
     } catch (e) {
       print(e);
     }
