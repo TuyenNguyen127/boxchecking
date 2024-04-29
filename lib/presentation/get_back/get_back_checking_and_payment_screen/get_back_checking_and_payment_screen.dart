@@ -26,6 +26,13 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
     cityId: 1,
   );
 
+  GlobalKey? dataKey = new GlobalKey();
+  @override
+  void dispose() {
+    dataKey = null;
+    super.dispose();
+  }
+
   List<OrderModel> listOrders = [
     OrderModel(
         orderId: 1,
@@ -748,6 +755,7 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
   /// Section Widget
   Widget _buildAgreeTheTermsOfUseSection() {
     return CustomCheckboxButton(
+      key: dataKey,
       text1: "Agree the",
       color1: 0xff000000,
       text2: "term of use",
@@ -813,12 +821,13 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
 
   /// Navigates to the homeContainerScreen when the action is triggered.
   onTapBtnArrowRight() async {
-    // if (checkTerms)
-    //   await createRequestSendBox().then((value) {
-    //     // Get.toNamed(
-    //     //   AppRoutes.homeContainerScreen,
-    //     // );
-    //   });
+    if (checkTerms) {
+    } else
+      Scrollable.ensureVisible(
+        dataKey!.currentContext!,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
   }
 
   // Future<void> createRequestSendBox() async {
