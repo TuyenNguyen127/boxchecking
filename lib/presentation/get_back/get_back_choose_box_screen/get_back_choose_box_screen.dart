@@ -379,118 +379,124 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              GestureDetector(
-                  onTap: () => setState(() {
-                        checkAll = !checkAll;
-                        for (var order in listOrders) {
-                          order.checked = checkAll;
-                        }
-                      }),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 1.5,
+          Flexible(
+            flex: 4,
+            child: Row(
+              children: [
+                GestureDetector(
+                    onTap: () => setState(() {
+                          checkAll = !checkAll;
+                          for (var order in listOrders) {
+                            order.checked = checkAll;
+                          }
+                        }),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1.5,
+                        ),
+                        borderRadius: BorderRadius.circular(4),
                       ),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Icon(
-                      checkAll ? Icons.check : null,
-                      size: 20,
-                      color: Colors.black,
-                    ),
-                  )),
-              SizedBox(
-                width: 10,
-              ),
-              listOrders.length > 0
-                  ? Text(
-                      'Total orders: ${listOrders.length} ',
-                      style: TextStyle(
+                      child: Icon(
+                        checkAll ? Icons.check : null,
+                        size: 20,
                         color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20.fSize,
                       ),
-                    )
-                  : Text(
-                      'Orders',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20.fSize,
+                    )),
+                SizedBox(
+                  width: 10,
+                ),
+                listOrders.length > 0
+                    ? Text(
+                        'Total orders: ${listOrders.length} ',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20.fSize,
+                        ),
+                      )
+                    : Text(
+                        'Orders',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20.fSize,
+                        ),
                       ),
-                    ),
-            ],
+              ],
+            ),
           ),
-          SizedBox(
-            height: 40,
-            width: 140,
-            child: DropdownButtonFormField<int>(
-              decoration: InputDecoration(
-                //labelText: 'Select Province',
-                contentPadding:
-                    EdgeInsets.only(top: 5, left: 15, right: 10, bottom: 5),
-                hintStyle: TextStyle(
-                  fontSize: 12.fSize,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w500,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
+          Flexible(
+            flex: 2,
+            child: SizedBox(
+              height: 40,
+              // width: 140,
+              child: DropdownButtonFormField<int>(
+                decoration: InputDecoration(
+                  //labelText: 'Select Province',
+                  contentPadding:
+                      EdgeInsets.only(top: 5, left: 15, right: 10, bottom: 5),
+                  hintStyle: TextStyle(
+                    fontSize: 12.fSize,
                     color: Colors.grey,
-                    width: 1,
+                    fontWeight: FontWeight.w500,
                   ),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.black,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.red,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                labelStyle: TextStyle(
-                  fontSize: 12.fSize,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              focusColor: Colors.white,
-              value: selectedDate,
-              items: dataProdateSortince.map((date) {
-                return DropdownMenuItem(
-                  value: date['id'] as int,
-                  child: Text(
-                    date['time'] as String,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13.fSize,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Colors.grey,
+                      width: 1,
                     ),
-                    maxLines: 1, // Limit the number of lines to 1
-                    overflow: TextOverflow.ellipsis,
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedDate = value;
-                  for (var order in listOrders) {
-                    order.checked = false;
-                    checkAll = false;
-                  }
-                });
-              },
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Colors.black,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Colors.red,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  labelStyle: TextStyle(
+                    fontSize: 12.fSize,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                focusColor: Colors.white,
+                value: selectedDate,
+                items: dataProdateSortince.map((date) {
+                  return DropdownMenuItem(
+                    value: date['id'] as int,
+                    child: Text(
+                      date['time'] as String,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 13.fSize,
+                      ),
+                      maxLines: 1, // Limit the number of lines to 1
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedDate = value;
+                    for (var order in listOrders) {
+                      order.checked = false;
+                      checkAll = false;
+                    }
+                  });
+                },
+              ),
             ),
           ),
         ],
