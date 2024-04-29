@@ -1,134 +1,126 @@
-// import 'package:lastapp/model/address.dart';
+import 'package:lastapp/model/addressModel.dart';
 
-// import '../../../core/app_export.dart';
-// import '../models/onb_address_model.dart';
-// import 'package:flutter/material.dart';
+import '../../../../core/app_export.dart';
+import 'package:flutter/material.dart';
 
-// /// A controller class for the OnbAddressScreen.
-// ///
-// /// This class manages the state of the OnbAddressScreen, including the
-// /// current onbAddressModelObj
-// class OnbAddressController extends GetxController {
-//   RxList<String> phoneNumberStringList = <String>[].obs;
-//   TextEditingController phoneNumberController = TextEditingController();
+/// A controller class for the OnbAddressScreen.
+///
+/// This class manages the state of the OnbAddressScreen, including the
+/// current onbAddressModelObj
+class OnbAddressController extends GetxController {
+  RxList<String> phoneNumberStringList = <String>[].obs;
+  TextEditingController phoneNumberController = TextEditingController();
 
-//   RxList<String> fullNameStringList = <String>[].obs;
-//   TextEditingController fullNameController = TextEditingController();
+  RxList<String> fullNameStringList = <String>[].obs;
+  TextEditingController fullNameController = TextEditingController();
 
-//   RxList<String> addressStringList = <String>[].obs;
-//   TextEditingController addressController = TextEditingController();
+  RxList<String> addressStringList = <String>[].obs;
+  TextEditingController addressController = TextEditingController();
 
-//   RxList<String> towardCodeStringList = <String>[].obs;
-//   TextEditingController towardCodeController = TextEditingController();
+  RxList<String> towardCodeStringList = <String>[].obs;
+  TextEditingController towardCodeController = TextEditingController();
 
-//   RxList<String> districtIdStringList = <String>[].obs;
-//   TextEditingController districtIdController = TextEditingController();
+  RxList<String> provinceStringList = <String>[].obs;
+  TextEditingController provinceController = TextEditingController();
 
-//   RxList<DateTime> dateTimeList = <DateTime>[].obs;
-//   Rx<DateTime> dateController = DateTime.now().obs;
+  RxList<String> districtIdStringList = <String>[].obs;
+  TextEditingController districtIdController = TextEditingController();
 
-//   RxList<Address> tuyenListAddress = <Address>[].obs;
-//   late Address newAddress;
+  late RxList<AddressModel> tuyenListAddress = <AddressModel>[].obs;
+  late AddressModel newAddress;
 
-//   @override
-//   void onClose() {
-//     super.onClose();
-//     phoneNumberController.dispose();
-//     fullNameController.dispose();
-//     addressController.dispose();
-//     towardCodeController.dispose();
-//     // addressController1.dispose();
-//     districtIdController.dispose();
-//     // typeController.dispose();
-//   }
+  List<dynamic> dataProvince = [];
+  List<dynamic> dataDistrict = [];
+  List<dynamic> dataWard = [];
+  late int? selectedProvinceId = null;
+  late int? selectedDistrictId = null;
+  late int? selectedWardId = null;
 
-//   @override
-//   void onInit() {
-//     super.onInit();
+  @override
+  void onClose() {
+    super.onClose();
+    phoneNumberController.dispose();
+    fullNameController.dispose();
+    addressController.dispose();
+    towardCodeController.dispose();
+    districtIdController.dispose();
+    provinceController.dispose();
+  }
 
-//     fullNameController = TextEditingController(
-//       text: fullNameStringList.length > 0 ? fullNameStringList.last : '',
-//     );
-//     phoneNumberController = TextEditingController(
-//       text: phoneNumberStringList.length > 0 ? phoneNumberStringList.last : '',
-//     );
-//     addressController = TextEditingController(
-//       text: addressStringList.length > 0 ? addressStringList.last : '',
-//     );
-//     towardCodeController = TextEditingController(
-//       text: towardCodeStringList.length > 0 ? towardCodeStringList.last : '',
-//     );
-//     districtIdController = TextEditingController(
-//       text: districtIdStringList.length > 0 ? districtIdStringList.last : '',
-//     );
-//     // typeController = TextEditingController(
-//     //   text: typeStringList.length > 0 ? typeStringList.last : '',
-//     // );
-//     dateController.value =
-//         dateTimeList.length > 0 ? dateTimeList.last : DateTime.now();
-//   }
+  @override
+  void onInit() {
+    super.onInit();
 
-//   void addFullname(value) {
-//     if (fullNameStringList.length > 0) {
-//       fullNameStringList.clear();
-//     }
+    fullNameController = TextEditingController(
+      text: fullNameStringList.length > 0 ? fullNameStringList.last : '',
+    );
+    phoneNumberController = TextEditingController(
+      text: phoneNumberStringList.length > 0 ? phoneNumberStringList.last : '',
+    );
+    addressController = TextEditingController(
+      text: addressStringList.length > 0 ? addressStringList.last : '',
+    );
+    towardCodeController = TextEditingController(
+      text: towardCodeStringList.length > 0 ? towardCodeStringList.last : '',
+    );
+    districtIdController = TextEditingController(
+      text: districtIdStringList.length > 0 ? districtIdStringList.last : '',
+    );
+    provinceController = TextEditingController(
+      text: provinceStringList.length > 0 ? provinceStringList.last : '',
+    );
+    // typeController = TextEditingController(
+    //   text: typeStringList.length > 0 ? typeStringList.last : '',
+    // );
+  }
 
-//     fullNameStringList.add(value);
-//   }
+  void addFullname(value) {
+    if (fullNameStringList.length > 0) {
+      fullNameStringList.clear();
+    }
 
-//   void addPhoneNumber(value) {
-//     if (phoneNumberStringList.length > 0) {
-//       phoneNumberStringList.clear();
-//     }
+    fullNameStringList.add(value);
+  }
 
-//     phoneNumberStringList.add(value);
-//   }
+  void addPhoneNumber(value) {
+    if (phoneNumberStringList.length > 0) {
+      phoneNumberStringList.clear();
+    }
 
-//   void addAddress(value) {
-//     if (addressStringList.length > 0) {
-//       addressStringList.clear();
-//     }
+    phoneNumberStringList.add(value);
+  }
 
-//     addressStringList.add(value);
-//   }
+  void addAddress(value) {
+    if (addressStringList.length > 0) {
+      addressStringList.clear();
+    }
 
-//   void addTowardCode(value) {
-//     if (towardCodeStringList.length > 0) {
-//       towardCodeStringList.clear();
-//     }
+    addressStringList.add(value);
+  }
 
-//     towardCodeStringList.add(value);
-//   }
+  void addTowardCode(value) {
+    if (towardCodeStringList.length > 0) {
+      towardCodeStringList.clear();
+    }
 
-//   void addDistrictId(value) {
-//     if (districtIdStringList.length > 0) {
-//       districtIdStringList.clear();
-//     }
+    towardCodeStringList.add(value);
+  }
 
-//     districtIdStringList.add(value);
-//   }
+  void addDistrictId(value) {
+    if (districtIdStringList.length > 0) {
+      districtIdStringList.clear();
+    }
 
-//   void addDate(value) {
-//     if (dateTimeList.length > 0) {
-//       dateTimeList.clear();
-//     }
+    districtIdStringList.add(value);
+  }
 
-//     dateTimeList.add(value);
-//   }
+  void addNewAddress(newAddress) {
+    print('oke');
+    tuyenListAddress.add(newAddress);
+  }
 
-//   void addNewAddress(newAddress) {
-//     print(newAddress.name);
-//     print(newAddress.phoneNumber);
-//     print(newAddress.date);
-//     print(newAddress.address);
-//     print(newAddress.towardCode);
-//     print(newAddress.districtId);
-
-//     tuyenListAddress.add(newAddress);
-//   }
-
-//   void removeAddress(index) {
-//     // if (tuyenListAddress.isEmpty) return;
-//     // tuyenListAddress.removeAt(index);
-//   }
-// }
+  void removeAddress(index) {
+    // if (tuyenListAddress.isEmpty) return;
+    // tuyenListAddress.removeAt(index);
+  }
+}

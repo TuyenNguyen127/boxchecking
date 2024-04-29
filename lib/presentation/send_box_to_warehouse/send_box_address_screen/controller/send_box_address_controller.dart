@@ -26,8 +26,15 @@ class SendBoxAddressController extends GetxController {
   RxList<String> districtIdStringList = <String>[].obs;
   TextEditingController districtIdController = TextEditingController();
 
-  RxList<AddressModel> tuyenListAddress = <AddressModel>[].obs;
+  late RxList<AddressModel> tuyenListAddress = <AddressModel>[].obs;
   late AddressModel newAddress;
+
+  List<dynamic> dataProvince = [];
+  List<dynamic> dataDistrict = [];
+  List<dynamic> dataWard = [];
+  late int? selectedProvinceId = null;
+  late int? selectedDistrictId = null;
+  late int? selectedWardId = null;
 
   @override
   void onClose() {
