@@ -19,8 +19,7 @@ class OnbAddressScreen extends StatefulWidget {
 }
 
 class _OnbAddressScreenState extends State<OnbAddressScreen> {
-  OnbAddressController addressGetXController =
-      Get.put(OnbAddressController());
+  OnbAddressController addressGetXController = Get.put(OnbAddressController());
 
   TextEditingController phoneNumberController = TextEditingController();
   bool isErrorPhoneNumber = false;
@@ -154,8 +153,8 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
       dataWard = addressGetXController.dataWard;
       selectedWardId = addressGetXController.selectedWardId;
     }
-    if (addressGetXController.tuyenListAddress.isNotEmpty) {
-      AddressModel addressModel = addressGetXController.tuyenListAddress[0];
+    if (addressGetXController.userInformation.isNotEmpty) {
+      AddressModel addressModel = addressGetXController.userInformation[0];
       fullNameController.text = addressModel.name;
       phoneNumberController.text = addressModel.phoneNumber;
       addressController.text = addressModel.addressNumber;
@@ -185,7 +184,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
                 ),
               ),
               Positioned(
-                top: 100.v,
+                top: 70.v,
                 child: _buildFormPageAddress(context),
               ),
               _buildArrowRightLeft(context),
@@ -206,10 +205,10 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
       leading: AppbarLeadingImage(
         imagePath: ImageConstant.imgVectorPrimary,
         margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
-        onTap: () => onTapVector(),
+        onTap: () => onClickBackToNewOrderPage(),
       ),
       title: Text(
-        'Send box to warehouse',
+        'Address',
         style: TextStyle(
           color: Colors.white,
           fontSize: 22,
@@ -310,20 +309,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
               ),
             ],
           ),
-
-          SizedBox(height: 10),
-
           //
-          Center(
-            child: Text(
-              'Address',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: theme.colorScheme.primary,
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -907,7 +893,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
           ", " +
           cityController.text;
       setState(() {
-        addressGetXController.tuyenListAddress.clear();
+        addressGetXController.userInformation.clear();
         addressGetXController.addNewAddress(newAddress);
         addressGetXController.dataDistrict = dataDistrict;
         addressGetXController.dataProvince = dataProvince;
@@ -921,23 +907,23 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
     return true;
   }
 
-  onTapVector() {
+  onClickBackToNewOrderPage() {
     Get.toNamed(
-      AppRoutes.typeRequestScreen,
+      AppRoutes.onbOrderboxScreen,
     );
   }
 
   onTapBtnArrowLeft(context) {
     Get.toNamed(
-      AppRoutes.onbAddressScreen,
+      AppRoutes.onbOrderboxScreen,
     );
   }
 
   onTapBtnArrowRight(context) {
     if (validateData())
-    Navigator.pushNamed(
-      context,
-      AppRoutes.onbCheckingAndPaymentScreen,
-    );
+      Navigator.pushNamed(
+        context,
+        AppRoutes.onbCheckingAndPaymentScreen,
+      );
   }
 }

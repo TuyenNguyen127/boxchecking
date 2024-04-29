@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
+import 'package:lastapp/presentation/home_page/home_page.dart';
 import '../presentation/home_container_screen/home_container_screen.dart';
-import '../presentation/home_container_screen/binding/home_container_binding.dart';
 import '../presentation/order_new_box/onb_checking_and_payment_screen/onb_checking_and_payment_screen.dart';
 import '../presentation/order_new_box/onb_orderbox_screen/onb_orderbox_screen.dart';
 import '../presentation/order_new_box/onb_address_screen/onb_address_screen.dart';
@@ -66,16 +66,23 @@ class AppRoutes {
     GetPage(
       name: initialRoute,
       page: () => HomeContainerScreen(),
-      bindings: [
-        HomeContainerBinding(),
-      ],
+      // bindings: [
+      //   HomeContainerBinding(),
+      // ],
     ),
     GetPage(
       name: homeContainerScreen,
       page: () => HomeContainerScreen(),
-      bindings: [
-        HomeContainerBinding(),
-      ],
+      // bindings: [
+      //   HomeContainerBinding(),
+      // ],
+    ),
+    GetPage(
+      name: homePage,
+      page: () => HomePage(),
+      // bindings: [
+      //   HomeContainerBinding(),
+      // ],
     ),
     GetPage(
       name: onbOrderboxScreen,

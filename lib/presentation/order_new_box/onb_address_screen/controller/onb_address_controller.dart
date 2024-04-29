@@ -26,7 +26,7 @@ class OnbAddressController extends GetxController {
   RxList<String> districtIdStringList = <String>[].obs;
   TextEditingController districtIdController = TextEditingController();
 
-  late RxList<AddressModel> tuyenListAddress = <AddressModel>[].obs;
+  late RxList<AddressModel> userInformation = <AddressModel>[].obs;
   late AddressModel newAddress;
 
   List<dynamic> dataProvince = [];
@@ -115,12 +115,11 @@ class OnbAddressController extends GetxController {
   }
 
   void addNewAddress(newAddress) {
-    print('oke');
-    tuyenListAddress.add(newAddress);
+    userInformation.add(newAddress);
   }
 
   void removeAddress(index) {
-    // if (tuyenListAddress.isEmpty) return;
-    // tuyenListAddress.removeAt(index);
+    // if (userInformation.isEmpty) return;
+    // userInformation.removeAt(index);
   }
 }

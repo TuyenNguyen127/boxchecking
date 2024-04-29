@@ -1,14 +1,15 @@
-import 'dart:convert';
-
 import 'package:lastapp/model/addressModel.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
+import 'package:lastapp/presentation/order_new_box/onb_address_screen/controller/onb_address_controller.dart';
+import 'package:lastapp/presentation/pending_to_get_back_home_screen/pending_to_get_back_home_screen.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
-import 'package:http/http.dart' as http;
 import 'package:lastapp/widgets/custom_checkbox_button.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
+
+import '../onb_orderbox_screen/controller/onb_orderbox_controller.dart';
 
 // ignore: must_be_immutable
 class OnbCheckingAndPaymentScreen extends StatefulWidget {
@@ -21,6 +22,9 @@ class OnbCheckingAndPaymentScreen extends StatefulWidget {
 
 class _OnbCheckingAndPaymentScreenState
     extends State<OnbCheckingAndPaymentScreen> {
+  OnbOrderboxController newOrderController = Get.put(OnbOrderboxController());
+  OnbAddressController addressController = Get.put(OnbAddressController());
+
   bool checkTerms = false;
 
   AddressModel addressModel = AddressModel(
@@ -452,20 +456,32 @@ class _OnbCheckingAndPaymentScreenState
           children: [
             //
             Column(
-              children: fakeOrder.boxes.map((box) {
+              children: newOrderController.listBoxes.map((box) {
                 //
                 bool isLastChild = false;
-                if (box.boxId == fakeOrder.boxes.last.boxId) {
+                if (box.boxId == newOrderController.listBoxes.last.boxId) {
                   setState(() {
                     isLastChild = true;
                   });
                 }
 
+                // children: fakeOrder.boxes.map((box) {
+                //   //
+                //   bool isLastChild = false;
+                //   if (box.boxId == fakeOrder.boxes.last.boxId) {
+                //     setState(() {
+                //       isLastChild = true;
+                //     });
+                //   }
+
                 //
                 int priceOrder = 0;
-                for (var box in fakeOrder.boxes) {
-                  priceOrder += box.price;
+                for (var boxItem in newOrderController.listBoxes) {
+                  priceOrder += boxItem.price;
                 }
+                // for (var box in fakeOrder.boxes) {
+                //   priceOrder += box.price;
+                // }
 
                 return Container(
                   padding:
@@ -491,7 +507,7 @@ class _OnbCheckingAndPaymentScreenState
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${box.dimension} | ${box.weight}kg | ${box.boxServices}',
+                              '${box.dimension} | ${box.boxServices}',
                               overflow: TextOverflow.clip,
                               style: TextStyle(
                                 color: Color(0xff309cff),
@@ -583,7 +599,6 @@ class _OnbCheckingAndPaymentScreenState
 
   Widget addressOrderDetailContent() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           "Address",
@@ -609,7 +624,10 @@ class _OnbCheckingAndPaymentScreenState
                     ),
                   ),
                   Text(
+                    // addressController.userInformation[0].name,
                     addressModel.name,
+                    textAlign: TextAlign.right,
+                    overflow: TextOverflow.clip,
                     style: TextStyle(
                       color: appTheme.black900,
                       fontSize: 16.fSize,
@@ -632,7 +650,10 @@ class _OnbCheckingAndPaymentScreenState
                     ),
                   ),
                   Text(
+                    // addressController.userInformation[0].phoneNumber,
                     addressModel.phoneNumber,
+                    textAlign: TextAlign.right,
+                    overflow: TextOverflow.clip,
                     style: TextStyle(
                       color: appTheme.black900,
                       fontSize: 16.fSize,
@@ -645,20 +666,27 @@ class _OnbCheckingAndPaymentScreenState
             Padding(
               padding: EdgeInsets.only(left: 10.h, right: 10.h),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Address Number:",
+                    "Address:",
                     style: TextStyle(
                       color: appTheme.black900,
                       fontSize: 16.fSize,
                     ),
                   ),
-                  Text(
-                    addressModel.addressNumber,
-                    style: TextStyle(
-                      color: appTheme.black900,
-                      fontSize: 16.fSize,
+                  Container(
+                    width: SizeUtils.width / 2,
+                    child: Text(
+                      // addressController.userInformation[0].addressFull!,
+                      addressModel.addressNumber,
+                      textAlign: TextAlign.right,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(
+                        color: appTheme.black900,
+                        fontSize: 16.fSize,
+                      ),
                     ),
                   ),
                 ],
@@ -811,39 +839,45 @@ class _OnbCheckingAndPaymentScreenState
 
   Future<void> createRequestOrder() async {
     try {
-      var uri = Uri.https(
-          'f83d-118-70-128-84.ngrok-free.app', '/api/Order/CreateNewOrderBox');
-      final response = await http.post(
-        uri,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'ngrok-skip-browser-warning': 'true',
-        },
-        body: jsonEncode(<String, dynamic>{
-          "name": "Long Do",
-          "phoneNumber": "0388508956",
-          "address": "Tòa nhà Sông Đà, Phạm Hùng, Mỹ Đình, Nam Từ Liêm, Hà Nội",
-          "date": "2024-03-29T06:45:15.053Z",
-          "toWardCode": "510102",
-          "toDistrictId": 1442,
-          "boxs": [
-            {
-              "typeId": 1,
-              "modelId": 1,
-              "listItem": "10 cái quần, 20 cái áo",
-              "services": [1, 2],
-              "weight": 200,
-              "quantity": 1
-            }
-          ]
-        }),
+      //
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PendingToGetBackHomeScreen()),
       );
 
-      if (response.statusCode == 200) {
-        print('buuuu');
-      } else {
-        throw Exception('Failed to create album.');
-      }
+      // var uri = Uri.https(
+      //     'f83d-118-70-128-84.ngrok-free.app', '/api/Order/CreateNewOrderBox');
+      // final response = await http.post(
+      //   uri,
+      //   headers: <String, String>{
+      //     'Content-Type': 'application/json; charset=UTF-8',
+      //     'ngrok-skip-browser-warning': 'true',
+      //   },
+      //   body: jsonEncode(<String, dynamic>{
+      //     "name": "Long Do",
+      //     "phoneNumber": "0388508956",
+      //     "address": "Tòa nhà Sông Đà, Phạm Hùng, Mỹ Đình, Nam Từ Liêm, Hà Nội",
+      //     "date": "2024-03-29T06:45:15.053Z",
+      //     "toWardCode": "510102",
+      //     "toDistrictId": 1442,
+      //     "boxs": [
+      //       {
+      //         "typeId": 1,
+      //         "modelId": 1,
+      //         "listItem": "10 cái quần, 20 cái áo",
+      //         "services": [1, 2],
+      //         "weight": 200,
+      //         "quantity": 1
+      //       }
+      //     ]
+      //   }),
+      // );
+
+      // if (response.statusCode == 200) {
+      //   print('buuuu');
+      // } else {
+      //   throw Exception('Failed to create album.');
+      // }
     } catch (e) {
       print(e);
     }

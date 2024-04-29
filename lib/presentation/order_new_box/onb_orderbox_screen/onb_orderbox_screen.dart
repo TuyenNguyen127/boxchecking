@@ -9,6 +9,7 @@ import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 
 import '../../../widgets/custom_icon_button.dart';
+import 'controller/onb_orderbox_controller.dart';
 
 // ignore: must_be_immutable
 class OnbOrderboxScreen extends StatefulWidget {
@@ -19,6 +20,10 @@ class OnbOrderboxScreen extends StatefulWidget {
 }
 
 class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
+  //==============================================================================
+  // CONTROLLER
+  OnbOrderboxController newOrderController = Get.put(OnbOrderboxController());
+
   //==============================================================================
   // DECLARE VARIABLES
 
@@ -145,6 +150,10 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   @override
   void initState() {
     super.initState();
+
+    for (var orderItem in newOrderController.listBoxes) {
+      listBoxOrder.add(orderItem);
+    }
 
     // String pathJsonData = 'assets/data/order_details_data.json';
     // fetchData(pathJsonData).then((data) {
@@ -529,7 +538,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
         onChanged: (value) {
           setState(() {
             selectedTypeBoxId = value;
-            typeBox = value;
             selectedModelBoxId = null;
           });
         },
@@ -622,7 +630,6 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
           onChanged: (value) {
             setState(() {
               selectedModelBoxId = value;
-              modelBox = value;
             });
           },
         ),
@@ -1851,44 +1858,50 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
     );
   }
 
+  bool isAcceptPassingNextPage() {
+    bool acceptForCreatingNewOrder = true;
+
+    // setState(() {
+    if (selectedTypeBoxId == null) {
+      acceptForCreatingNewOrder = false;
+      _showDelayedToast(
+        'You missed the type of box',
+        'top',
+      );
+    }
+
+    if (selectedModelBoxId == null) {
+      acceptForCreatingNewOrder = false;
+      _showDelayedToast(
+        'You missed the model of box',
+        'top',
+      );
+    }
+
+    if (_listSelectedServicesInModalAfterSaving.length == 0) {
+      acceptForCreatingNewOrder = false;
+      _showDelayedToast(
+        'You missed the services',
+        'top',
+      );
+    }
+
+    if (_listOrderBoxItemsInModal.length == 0) {
+      acceptForCreatingNewOrder = false;
+      _showDelayedToast(
+        'You missed the items',
+        'top',
+      );
+    }
+    // });
+
+    return acceptForCreatingNewOrder;
+  }
+
   // Form Info Create Btn
   void onClickFormInfoCreateBtn() {
     setState(() {
-      bool acceptForCreatingNewOrder = true;
-
-      if (selectedTypeBoxId == null) {
-        acceptForCreatingNewOrder = false;
-        _showDelayedToast(
-          'You missed the type of box',
-          'top',
-        );
-      }
-
-      if (selectedModelBoxId == null) {
-        acceptForCreatingNewOrder = false;
-        _showDelayedToast(
-          'You missed the model of box',
-          'top',
-        );
-      }
-
-      if (_listSelectedServicesInModalAfterSaving.length == 0) {
-        acceptForCreatingNewOrder = false;
-        _showDelayedToast(
-          'You missed the services',
-          'top',
-        );
-      }
-
-      if (_listOrderBoxItemsInModal.length == 0) {
-        acceptForCreatingNewOrder = false;
-        _showDelayedToast(
-          'You missed the items',
-          'top',
-        );
-      }
-
-      if (acceptForCreatingNewOrder) {
+      if (isAcceptPassingNextPage()) {
         int boxId = Random().nextInt(100000000);
 
         customDeepCloneBetweenTwoMapLists(
@@ -1904,16 +1917,30 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
             .map((serviceItem) => serviceItem)
             .join(', ');
 
+        // typeBox
+        for (var type in dataTypeBox) {
+          if (type['id'] == selectedTypeBoxId) {
+            typeBox = type['name'];
+          }
+        }
+
+        // modelBox
+        for (var model in dataModelBox) {
+          if (model['id'] == selectedModelBoxId) {
+            modelBox = model['name'];
+          }
+        }
+
         boxOrder = BoxOrderModel(
           boxId: boxId,
           boxTypeId: selectedTypeBoxId,
           boxModelId: selectedModelBoxId,
           listItem: listItems,
           boxServices: services,
-          weight: 50,
+          weight: 0,
           quantity: 1,
-          dimension: services,
-          price: 100,
+          dimension: '${typeBox} | ${modelBox}',
+          price: 0,
         );
         listBoxOrder.add(boxOrder);
 
@@ -1931,7 +1958,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
 
         _showDelayedToast(
           'Successfully created!',
-          'bottom',
+          'top',
         );
       }
     });
@@ -1957,10 +1984,10 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
               _listSelectedServicesInModal);
         });
 
-        _showDelayedToast(
-          'Successfully selected services',
-          'bottom',
-        );
+        // _showDelayedToast(
+        //   'Successfully selected services',
+        //   'bottom',
+        // );
       } else {
         _showDelayedToast(
           "Are you sure? You haven't chose any services yet",
@@ -1975,10 +2002,10 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
             _listSelectedServicesInModal);
       });
 
-      _showDelayedToast(
-        "Successfully modified services!",
-        'bottom',
-      );
+      // _showDelayedToast(
+      //   "Successfully modified services!",
+      //   'bottom',
+      // );
 
       if (_listSelectedServicesInModalAfterSaving.length == 0) {
         _showDelayedToast(
@@ -2097,7 +2124,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
 
         _showDelayedToast(
           "Successfully saved!",
-          'bottom',
+          'top',
         );
       } else {
         _showDelayedToast(
@@ -2114,7 +2141,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
 
       _showDelayedToast(
         "Successfully modified!",
-        'bottom',
+        'top',
       );
       if (_listOrderBoxItemsInModalAfterSaving.length == 0) {
         _showDelayedToast(
@@ -2207,55 +2234,25 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   // navigators
   /// Navigates to the typeRequestScreen when the action is triggered.
   onClickBackToHomepageBtn() {
-    // Get.toNamed(
-    //   AppRoutes.typeRequestScreen,
-    // );
-
-    // Get.toNamed(
-    //   AppRoutes.initialRoute,
-    // );
+    Get.toNamed(
+      AppRoutes.homeContainerScreen,
+    );
   }
 
   /// Navigates to the onbAddressScreen when the action is triggered.
   onTapBtnArrowRight(context) {
-    // Get.toNamed(
-    // AppRoutes.onbAddressScreen,
-    // );
+    if (listBoxOrder.length != 0) {
+      newOrderController.addBoxesToOrder(listBoxOrder);
+      // Navigator.pushNamed(context, AppRoutes.onbAddressScreen);
 
-    Navigator.pushNamed(context, AppRoutes.onbAddressScreen);
-
-    // if (ModalRoute.of(context)!.settings.arguments != null) {
-    //   final arguments = ModalRoute.of(context)!.settings.arguments as Map;
-    //   final name = arguments['name'] ?? '';
-    //   final phoneNumber = arguments['phoneNumber'] ?? '';
-    //   final address = arguments['address'] ?? '';
-    //   final date = arguments['date'] ?? '';
-    //   final toWardCode = arguments['toWardCode'] ?? '';
-    //   final toDistrictId = arguments['toDistrictId'] ?? 1;
-
-    //   // print(ModalRoute.of(context)!.settings.arguments as Map);
-
-    //   Navigator.pushNamed(
-    //     context,
-    //     AppRoutes.onbAddressScreen,
-    //     arguments: {
-    //       'name': name,
-    //       'phoneNumber': phoneNumber,
-    //       'address': address,
-    //       'date': date,
-    //       'toWardCode': toWardCode,
-    //       'toDistrictId': toDistrictId,
-    //       'boxs': data,
-    //     },
-    //   );
-    // } else {
-    //   Navigator.pushNamed(
-    //     context,
-    //     AppRoutes.onbAddressScreen,
-    //     arguments: {
-    //       'boxs': data,
-    //     },
-    //   );
-    // }
+      Get.toNamed(
+        AppRoutes.onbAddressScreen,
+      );
+    } else {
+      _showDelayedToast(
+        'Please you should create a new order.',
+        'bottom',
+      );
+    }
   }
 }
