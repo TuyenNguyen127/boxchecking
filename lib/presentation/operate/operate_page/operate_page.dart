@@ -16,20 +16,29 @@ class OperatePage extends StatefulWidget {
 }
 
 class _OperatePageState extends State<OperatePage> {
-
   final List<String> tabs = [
+    'WaitingProcessing',
     'Processing',
-    'Awaiting shipping',
-    'Delivered',
-    'Cancelled'
+    'NotYetWarehouse',
+    'Shipped',
+    'WaitingGetBack',
+    'GetBackDelivery',
+    'Done',
+    'Cancelled',
+  ];
+
+  final List<Color> colors = [
+    Colors.red.shade100,
+    Colors.orange.shade100,
+    Colors.yellow.shade100,
+    Colors.green.shade100,
+    Colors.blue.shade100,
+    Colors.blue.shade100,
+    Colors.grey.shade300,
+    Colors.grey.shade300,
   ];
 
   int? selectedDate = 1000;
-  final List<String> dateSort = [
-    '7 days ago',
-    '1 months ago',
-    'All time',
-  ];
 
   List<dynamic> dataProdateSortince = [
     {
@@ -48,13 +57,6 @@ class _OperatePageState extends State<OperatePage> {
       "time": "All time",
       "id": 1000,
     }
-  ];
-
-  final List<Color> colors = [
-    Colors.red.shade100,
-    Colors.yellow.shade100,
-    Colors.green.shade100,
-    Colors.blue.shade100,
   ];
 
   List<OrderModel> listOrders = [
@@ -188,9 +190,13 @@ class _OperatePageState extends State<OperatePage> {
   }
 
   Map<String, List<OrderModel>> orderStatusList = {
+    'WaitingProcessing': [],
     'Processing': [],
-    'Awaiting shipping': [],
-    'Delivered': [],
+    'NotYetWarehouse': [],
+    'Shipped': [],
+    'WaitingGetBack': [],
+    'GetBackDelivery': [],
+    'Done': [],
     'Cancelled': [],
   };
 
@@ -262,9 +268,17 @@ class _OperatePageState extends State<OperatePage> {
             ),
             body: TabBarView(
               children: [
+                // _orderShip('Processing'),
+                // _orderShip('Awaiting shipping'),
+                // _orderShip('Delivered'),
+                // _orderShip('Cancelled'),
+                _orderShip('WaitingProcessing'),
                 _orderShip('Processing'),
-                _orderShip('Awaiting shipping'),
-                _orderShip('Delivered'),
+                _orderShip('NotYetWarehouse'),
+                _orderShip('Shipped'),
+                _orderShip('WaitingGetBack'),
+                _orderShip('GetBackDelivery'),
+                _orderShip('Done'),
                 _orderShip('Cancelled'),
               ],
             ),
@@ -383,12 +397,8 @@ class _OperatePageState extends State<OperatePage> {
         _topfillter(listOrderWidget.length),
         listOrderWidget.length == 0
             ? Container(
-                decoration: BoxDecoration(
-                  color: Colors.green
-                ),
-                child: 
-                    Text("No order"))
-                  
+                decoration: BoxDecoration(color: Colors.green),
+                child: Text("No order"))
             : Container(
                 width: SizeUtils.width,
                 height: SizeUtils.height - 250,

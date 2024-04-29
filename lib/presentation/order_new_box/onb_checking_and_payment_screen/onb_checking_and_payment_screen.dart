@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:lastapp/model/addressModel.dart';
@@ -848,14 +849,14 @@ class _OnbCheckingAndPaymentScreenState
   Future<void> createRequestOrder() async {
     try {
       var uri = Uri.https(
-          'f83d-118-70-128-84.ngrok-free.app', '/api/Order/CreateNewOrderBox');
+          dotenv.get('HOST'), '/api/Order/CreateNewOrderBox');
       final response = await http.post(
         uri,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'ngrok-skip-browser-warning': 'true',
         },
-        body: jsonEncode(<String, dynamic>{
+        body: {
           "name": "Long Do",
           "phoneNumber": "0388508956",
           "address": "Tòa nhà Sông Đà, Phạm Hùng, Mỹ Đình, Nam Từ Liêm, Hà Nội",
@@ -872,7 +873,7 @@ class _OnbCheckingAndPaymentScreenState
               "quantity": 1
             }
           ]
-        }),
+        },
       );
 
       if (response.statusCode == 200) {
