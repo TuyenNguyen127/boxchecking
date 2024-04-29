@@ -1,22 +1,20 @@
 import 'package:get/get.dart';
-import 'package:lastapp/presentation/home_page/home_page.dart';
-import '../presentation/home_container_screen/home_container_screen.dart';
-import '../presentation/order_new_box/onb_checking_and_payment_screen/onb_checking_and_payment_screen.dart';
-import '../presentation/order_new_box/onb_orderbox_screen/onb_orderbox_screen.dart';
-import '../presentation/order_new_box/onb_address_screen/onb_address_screen.dart';
-import '../presentation/order_new_box/onb_address_screen/binding/onb_address_binding.dart';
-import '../presentation/send_box_to_warehouse/send_box_choose_box_screen/send_box_choose_box_screen.dart';
-import '../presentation/send_box_to_warehouse/send_box_choose_box_screen/binding/send_box_choose_box_binding.dart';
-import '../presentation/send_box_to_warehouse/send_box_address_screen/send_box_address_screen.dart';
-import '../presentation/send_box_to_warehouse/send_box_address_screen/binding/send_box_address_binding.dart';
-import '../presentation/send_box_to_warehouse/send_box_checking_and_payment_screen/send_box_checking_and_payment_screen.dart';
-import '../presentation/send_box_to_warehouse/send_box_checking_and_payment_screen/binding/send_box_checking_and_payment_binding.dart';
-import '../presentation/get_back/get_back_choose_box_screen/get_back_choose_box_screen.dart';
-import '../presentation/get_back/get_back_choose_box_screen/binding/get_back_choose_box_binding.dart';
-import '../presentation/get_back/get_back_address_screen/get_back_address_screen.dart';
-import '../presentation/get_back/get_back_checking_and_payment_screen/get_back_checking_and_payment_screen.dart';
-import '../presentation/app_navigation_screen/app_navigation_screen.dart';
-import '../presentation/app_navigation_screen/binding/app_navigation_binding.dart';
+import 'package:lastapp/presentation/main_pages/home_page/home_page.dart';
+import '../presentation/home_container/home_container_screen.dart';
+import '../presentation/features/order_new_box/payment_screen/onb_checking_and_payment_screen.dart';
+import '../presentation/features/order_new_box/order_box_screen/onb_orderbox_screen.dart';
+import '../presentation/features/order_new_box/address_screen/onb_address_screen.dart';
+import '../presentation/features/order_new_box/address_screen/binding/onb_address_binding.dart';
+import '../presentation/features/send_box_to_warehouse/choose_box_screen/send_box_choose_box_screen.dart';
+import '../presentation/features/send_box_to_warehouse/choose_box_screen/binding/send_box_choose_box_binding.dart';
+import '../presentation/features/send_box_to_warehouse/address_screen/send_box_address_screen.dart';
+import '../presentation/features/send_box_to_warehouse/address_screen/binding/send_box_address_binding.dart';
+import '../presentation/features/send_box_to_warehouse/payment_screen/send_box_checking_and_payment_screen.dart';
+import '../presentation/features/send_box_to_warehouse/payment_screen/binding/send_box_checking_and_payment_binding.dart';
+import '../presentation/features/get_back/choose_box_screen/get_back_choose_box_screen.dart';
+import '../presentation/features/get_back/choose_box_screen/binding/get_back_choose_box_binding.dart';
+import '../presentation/features/get_back/address_screen/get_back_address_screen.dart';
+import '../presentation/features/get_back/payment_screen/get_back_checking_and_payment_screen.dart';
 
 class AppRoutes {
   static const String appNavigationScreen = '/app_navigation_screen';
@@ -154,13 +152,13 @@ class AppRoutes {
       //   GetBackCheckingAndPaymentBinding(),
       // ],
     ),
-    GetPage(
-      name: appNavigationScreen,
-      page: () => AppNavigationScreen(),
-      bindings: [
-        AppNavigationBinding(),
-      ],
-    ),
+    // GetPage(
+    //   name: appNavigationScreen,
+    //   page: () => AppNavigationScreen(),
+    //   bindings: [
+    //     AppNavigationBinding(),
+    //   ],
+    // ),
     // GetPage(
     //   name: orderDetailsScreen,
     //   page: () => OrderDetailsScreen(),

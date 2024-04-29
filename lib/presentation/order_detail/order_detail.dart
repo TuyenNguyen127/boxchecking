@@ -4,10 +4,10 @@ import 'package:lastapp/core/utils/size_utils.dart';
 import 'package:lastapp/model/orderModel.dart';
 import 'package:lastapp/widgets/custom_image_view.dart';
 
-class OrderDetailPage extends StatelessWidget {
+class OrderDetailsScreen extends StatelessWidget {
   final OrderModel order;
 
-  OrderDetailPage({required this.order});
+  OrderDetailsScreen({required this.order});
 
   @override
   Widget build(BuildContext context) {
