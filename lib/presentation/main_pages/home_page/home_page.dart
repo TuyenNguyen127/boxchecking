@@ -1,9 +1,14 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
 
 import '../../home_container/controller/home_container_controller.dart';
@@ -24,20 +29,78 @@ class _HomePageState extends State<HomePage> {
   int shipping = 0;
   List<OrderModel> listOrders = [];
 
+  Future<void> requestOrder() async {
+    try {
+      var uri = Uri.https(
+          dotenv.get('HOST'), '/api/Order/AllOrders', {'userId': '3'});
+      final response = await http.get(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "ngrok-skip-browser-warning": "69420",
+        },
+      );
+      if (response.statusCode == 200) {
+        List<dynamic> jsonResponse = jsonDecode(response.body);
+        List<OrderModel> orders = [];
+        for (var json in jsonResponse) {
+          List<dynamic> boxes = json['boxOrderss'];
+          List<BoxOrderModel> listBoxes = [];
+          for (var box in boxes) {
+            String services = '';
+            for (var service in box['boxServices']) {
+              services += service.toString() + ", ";
+            }
+            if (services.length > 0)
+              services = services.substring(0, services.length - 2);
+            listBoxes.add(BoxOrderModel(
+                boxId: box['boxId'],
+                boxTypeId: box['boxTypeId'],
+                boxModelId: box['boxModelId'],
+                listItem: box['listItem'],
+                boxServices: services,
+                weight: box['weight'],
+                quantity: box['quantity'],
+                dimension: box['dimension'],
+                price: box['price']));
+          }
+          orders.add(OrderModel(
+              orderId: json['orderId'],
+              status: json['status'],
+              shipStatusName: json['shipStatusName'] ?? '',
+              boxes: listBoxes,
+              name: json['name'],
+              phoneNumber: json['phoneNumber'],
+              address: json['address'],
+              date: json['date'],
+              toWardCode: json['toWardCode'],
+              toDistrictId: json['toDistrictId']));
+        }
+        for (var order in orders) {
+          setState(() {
+            listOrders.add(order);
+            if (order.status == "WaitingProcessing") processing++;
+            if (order.status == "Shipped") saving++;
+            if (order.status == "GetBackDelivery") recived++;
+          });
+
+          totalOrder = listOrders.length;
+          shipping = totalOrder - saving - recived - processing;
+        }
+        // print(dataController.listOrderByUser.length);
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        throw Exception('Failed to make API request.');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+
   @override
   void initState() {
-    // print(dataController.listOrderByUser);
-    if (dataController.listOrderByUser.isNotEmpty) {
-      for (var order in dataController.listOrderByUser) {
-        listOrders.add(order);
-        if (order.status == "WaitingProcessing") processing++;
-        if (order.status == "Shipped") saving++;
-        if (order.status == "GetBackDelivery") recived++;
-      }
-
-      totalOrder = listOrders.length;
-      shipping = totalOrder - saving - recived - processing;
-    }
+    print(dataController.listOrderByUser);
+    if (dataController.listOrderByUser.isNotEmpty) {}
     super.initState();
     initializeDateFormatting();
   }
