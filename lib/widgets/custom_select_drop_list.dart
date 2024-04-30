@@ -1,4 +1,4 @@
-import '../presentation/order_new_box/onb_address_screen/models/option_item.dart';
+import '../presentation/features/order_new_box/address_screen/models/option_item.dart';
 import 'package:flutter/material.dart';
 
 class MySelectDropList extends StatefulWidget {

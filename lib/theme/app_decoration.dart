@@ -127,6 +127,13 @@ class AppDecoration {
           width: 1.h,
         ),
       );
+  static BoxDecoration get outlineGray200Thinner => BoxDecoration(
+        color: theme.colorScheme.primary,
+        border: Border.all(
+          color: appTheme.gray200,
+          width: 0.5.h,
+        ),
+      );
   static BoxDecoration get outlineGray500 => BoxDecoration(
         color: theme.colorScheme.primary,
         border: Border.all(
