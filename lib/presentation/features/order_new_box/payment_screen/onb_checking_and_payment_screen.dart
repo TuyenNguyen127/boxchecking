@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:lastapp/model/addressModel.dart';
@@ -30,12 +31,14 @@ class _OnbCheckingAndPaymentScreenState
   OnbAddressController addressController = Get.put(OnbAddressController());
 
   bool checkTerms = false;
+  GlobalKey? dataKey = new GlobalKey();
+  List<BoxOrderModel> listBoxes = [];
 
   AddressModel addressModel = AddressModel(
       name: "Do Ngoc Long",
       phoneNumber: "0123456789",
       addressNumber: "Toa song Da, Pham Hung",
-      wardCodeId: 1,
+      wardCodeId: "1",
       districtId: 1,
       cityId: 1);
 
@@ -201,6 +204,17 @@ class _OnbCheckingAndPaymentScreenState
 
   @override
   void initState() {
+    addressModel.addressFull = " ";
+    if (newOrderController.listBoxes.isNotEmpty) {
+      listBoxes.clear();
+      for (var box in newOrderController.listBoxes) {
+        listBoxes.add(box);
+      }
+    }
+
+    if (addressController.userInformation.isNotEmpty) {
+      addressModel = addressController.userInformation[0];
+    }
     super.initState();
   }
 
@@ -460,10 +474,10 @@ class _OnbCheckingAndPaymentScreenState
           children: [
             //
             Column(
-              children: newOrderController.listBoxes.map((box) {
+              children: listBoxes.map((box) {
                 //
                 bool isLastChild = false;
-                if (box.boxId == newOrderController.listBoxes.last.boxId) {
+                if (box.boxId == listBoxes.last.boxId) {
                   setState(() {
                     isLastChild = true;
                   });
@@ -480,7 +494,7 @@ class _OnbCheckingAndPaymentScreenState
 
                 //
                 int priceOrder = 0;
-                for (var boxItem in newOrderController.listBoxes) {
+                for (var boxItem in listBoxes) {
                   priceOrder += boxItem.price;
                 }
                 // for (var box in fakeOrder.boxes) {
@@ -633,7 +647,7 @@ class _OnbCheckingAndPaymentScreenState
                     ),
                   ),
                   Text(
-                    addressController.userInformation[0].name,
+                    addressModel.name,
                     // addressModel.name,
                     textAlign: TextAlign.right,
                     overflow: TextOverflow.clip,
@@ -659,7 +673,7 @@ class _OnbCheckingAndPaymentScreenState
                     ),
                   ),
                   Text(
-                    addressController.userInformation[0].phoneNumber,
+                    addressModel.phoneNumber,
                     // addressModel.phoneNumber,
                     textAlign: TextAlign.right,
                     overflow: TextOverflow.clip,
@@ -688,7 +702,7 @@ class _OnbCheckingAndPaymentScreenState
                   Container(
                     width: SizeUtils.width / 2,
                     child: Text(
-                      addressController.userInformation[0].addressFull!,
+                      addressModel.addressFull!,
                       // addressModel.addressNumber,
                       textAlign: TextAlign.right,
                       overflow: TextOverflow.clip,
@@ -765,6 +779,7 @@ class _OnbCheckingAndPaymentScreenState
   /// Section Widget
   Widget _buildAgreeTheTermsOfUseSection() {
     return CustomCheckboxButton(
+      key: dataKey,
       text1: "Agree the",
       color1: 0xff000000,
       text2: "term of use",
@@ -829,60 +844,95 @@ class _OnbCheckingAndPaymentScreenState
   }
 
   /// Navigates to the homeContainerScreen when the action is triggered.
-  onTapBtnArrowRight() {
-    // Get.toNamed(
-    //   AppRoutes.homeContainerScreen,
-    // );
-    createRequestOrder();
+  onTapBtnArrowRight() async {
+    if (checkTerms) {
+      createRequestOrder();
+    } else {
+      Scrollable.ensureVisible(
+        dataKey!.currentContext!,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+      _showDelayedToast('You need accept the term of use', 'bottom');
+    }
   }
 
-  // Map<String, dynamic> toJson() => {
-  //       'name': onbAddressController.tuyenListAddress[0].name.toString(),
-  //       'phoneNumber': onbAddressController.tuyenListAddress[0].phoneNumber.toString(),
-  //       'address': onbAddressController.tuyenListAddress[0].address.toString(),
-  //       'date': onbAddressController.tuyenListAddress[0].date.toString(),
-  //       'towardCode': onbAddressController.tuyenListAddress[0].towardCode.toString(),
-  //       'districtId': onbAddressController.tuyenListAddress[0].districtId.toString(),
-  //       'box': onb_controller.khueListOrders.value;
-  //     };
+  void _showDelayedToast(String text, String position) {
+    if (position.toLowerCase() == 'top') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    } else if (position.toLowerCase() == 'bottom') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    }
+  }
 
   Future<void> createRequestOrder() async {
     try {
-      var uri = Uri.https(dotenv.get('HOST'), '/api/Order/CreateNewOrderBox');
+      var uri = Uri.https(dotenv.get('HOST'), '/api/Order/CreateNewOrder');
+
+      List<Map<String, dynamic>> boxesJson = [];
+      for (var box in listBoxes) {
+        List<String> boxServices = box.boxServices.split(", ");
+
+        Map<String, dynamic> boxJson = {
+          "boxTypeId": box.boxTypeId,
+          "boxModelId": box.boxModelId,
+          "listItem": box.listItem,
+          "boxServices": boxServices,
+          "weight": box.weight,
+          "quantity": box.quantity
+        };
+        boxesJson.add(boxJson);
+      }
+
+      // Convert your data to a JSON string
+      String requestBody = jsonEncode({
+        "name": addressModel.name,
+        "phoneNumber": addressModel.phoneNumber,
+        "address": addressModel.addressFull,
+        "date": DateTime.now().toUtc().toIso8601String(),
+        "toWardCode": addressModel.wardCodeId.toString(),
+        "toDistrictId": addressModel.districtId,
+        "userId": 3,
+        "boxs": boxesJson, // Use the JSON-encodable boxes list
+      });
+
+      print(requestBody);
+
       final response = await http.post(
         uri,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'ngrok-skip-browser-warning': 'true',
+          'ngrok-skip-browser-warning': '69420',
         },
-        body: {
-          "name": "Long Do",
-          "phoneNumber": "0388508956",
-          "address": "Tòa nhà Sông Đà, Phạm Hùng, Mỹ Đình, Nam Từ Liêm, Hà Nội",
-          "date": "2024-03-29T06:45:15.053Z",
-          "toWardCode": "510102",
-          "toDistrictId": 1442,
-          "boxs": [
-            {
-              "typeId": 1,
-              "modelId": 1,
-              "listItem": "10 cái quần, 20 cái áo",
-              "services": [1, 2],
-              "weight": 200,
-              "quantity": 1
-            }
-          ]
-        },
+        body: requestBody, // Pass the JSON string as the request body
       );
 
       if (response.statusCode == 200) {
-        //
+        print('Push thành công');
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PendingToGetBackHomeScreen()),
         );
       } else {
-        throw Exception('Failed to create album.');
+        print(response.statusCode);
+        print(response.body);
+        throw Exception('Failed.');
       }
     } catch (e) {
       print(e);

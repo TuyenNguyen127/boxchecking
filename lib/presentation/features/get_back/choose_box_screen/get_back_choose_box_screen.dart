@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
@@ -20,11 +21,12 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
     with TickerProviderStateMixin {
   GetBackChooseBoxController getBackChooseBoxController =
       Get.put(GetBackChooseBoxController());
-  
+
   List<OrderModel> listOrders = <OrderModel>[];
   bool checkAll = false;
 
   int? selectedDate = 1000;
+  int countChecked = 0;
 
   List<dynamic> dataProdateSortince = [
     {
@@ -59,7 +61,7 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
   Future<void> requestOrder() async {
     try {
       var uri = Uri.https(dotenv.get('HOST'), '/api/Order/GetListOrderByUserId',
-          {'userId': '3', 'statusId': '7'});
+          {'userId': '3', 'statusId': '4'});
       final response = await http.get(
         uri,
         headers: <String, String>{
@@ -325,6 +327,9 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildListOrder(context),
+          SizedBox(
+            height: 60,
+          )
         ],
       ),
     );
@@ -362,7 +367,7 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
   }
 
   Widget _buildFilterList(List<OrderModel> listOrders) {
-    int countChecked = 0;
+    countChecked = 0;
     for (var order in listOrders) {
       if (order.checked!) countChecked++;
       if (countChecked == listOrders.length) {
@@ -735,6 +740,30 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
     );
   }
 
+  void _showDelayedToast(String text, String position) {
+    if (position.toLowerCase() == 'top') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    } else if (position.toLowerCase() == 'bottom') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    }
+  }
+
   /// Navigates to the typeRequestScreen when the action is triggered.
   onTapVector() {
     Get.toNamed(
@@ -744,8 +773,11 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
 
   /// Navigates to the getBackAddressScreen when the action is triggered.
   onTapBtnArrowRight() {
-    Get.toNamed(
-      AppRoutes.getBackAddressScreen,
-    );
+    if (countChecked == 0) {
+      _showDelayedToast('You need choose some boxs to get next state', 'top');
+    } else
+      Get.toNamed(
+        AppRoutes.getBackAddressScreen,
+      );
   }
 }

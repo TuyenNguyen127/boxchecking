@@ -1,11 +1,16 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lastapp/model/addressModel.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
+import 'package:lastapp/presentation/countdown_to_get_back_home/countdown_to_get_back_home_screen.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/custom_checkbox_button.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../address_screen/controller/send_box_address_controller.dart';
 import '../choose_box_screen/controller/send_box_choose_box_controller.dart';
@@ -36,7 +41,7 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
       name: "Do Ngoc Long",
       phoneNumber: "0123456789",
       addressNumber: "Toa song Da, Pham Hung",
-      wardCodeId: 1,
+      wardCodeId: "1",
       districtId: 1,
       cityId: 1);
 
@@ -167,7 +172,6 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
   void initState() {
     addressModel.addressFull = "";
     if (addressGetXController.tuyenListAddress.isNotEmpty) {
-      print(1);
       addressModel = addressGetXController.tuyenListAddress[0];
     }
 
@@ -175,6 +179,7 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
       listOrders.clear();
       for (var order in sendBoxChooseBoxController.listOrders) {
         listOrders.add(order);
+        idList.add(order.orderId);
       }
     }
 
@@ -798,45 +803,75 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
   /// Navigates to the homeContainerScreen when the action is triggered.
   onTapBtnArrowRight() {
     if (checkTerms)
-      Get.toNamed(
-        AppRoutes.homeContainerScreen,
-      );
-    else
+      createRequestSendBox();
+    else {
       Scrollable.ensureVisible(
         dataKey1.currentContext!,
         duration: Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
+      _showDelayedToast('You need accept the term of use', 'bottom');
+    }
   }
 
-  // Future<void> createRequestSendBox() async {
-  //   try {
-  //     var uri = Uri.https(
-  //         dotenv.get('HOST'), '/api/Order/OrderToWareHouse');
-  //     final response = await http.post(
-  //       uri,
-  //       headers: <String, String>{
-  //         'Content-Type': 'application/json; charset=UTF-8',
-  //         'ngrok-skip-browser-warning': '69420',
-  //       },
-  //       body: jsonEncode(<String, dynamic>{
-  //         "name": "tuyen",
-  //         "phoneNumber": "0365004062",
-  //         "address": "Cau Giay",
-  //         "date": "2024-04-07T05:04:47.315Z",
-  //         "toWardCode": "12345",
-  //         "toDistrictId": 1144,
-  //         "orderId": [1]
-  //       }),
-  //     );
+  void _showDelayedToast(String text, String position) {
+    if (position.toLowerCase() == 'top') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    } else if (position.toLowerCase() == 'bottom') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    }
+  }
 
-  //     if (response.statusCode == 200) {
-  //       print('buuuu');
-  //     } else {
-  //       throw Exception('Failed to create album.');
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+  Future<void> createRequestSendBox() async {
+    try {
+      var uri = Uri.https(dotenv.get('HOST'), '/api/Order/OrderToWareHouse');
+
+      String requestBody = jsonEncode({
+        "name": addressModel.name,
+        "phoneNumber": addressModel.phoneNumber,
+        "address": addressModel.addressFull,
+        "date": DateTime.now().toUtc().toIso8601String(),
+        "toWardCode": addressModel.wardCodeId.toString(),
+        "toDistrictId": addressModel.districtId,
+        "orderId": idList
+      });
+
+      final response = await http.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'ngrok-skip-browser-warning': '69420',
+        },
+        body: requestBody, // Pass the JSON string as the request body
+      );
+
+      if (response.statusCode == 200) {
+        print('Push thành công');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PendingToGetBackHomeScreen()),
+        );
+      } else {
+        throw Exception('Failed.');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 }

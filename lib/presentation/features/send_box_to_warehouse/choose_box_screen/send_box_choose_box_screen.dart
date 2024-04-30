@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:js';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
@@ -29,6 +30,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
   bool checkAll = false;
 
   int? selectedDate = 1000;
+  int countChecked = 0;
 
   List<dynamic> dataProdateSortince = [
     {
@@ -63,7 +65,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
   Future<void> requestOrder() async {
     try {
       var uri = Uri.https(dotenv.get('HOST'), '/api/Order/GetListOrderByUserId',
-          {'userId': '3', 'statusId': '7'});
+          {'userId': '3', 'statusId': '1'});
       final response = await http.get(
         uri,
         headers: <String, String>{
@@ -300,6 +302,30 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
     );
   }
 
+  void _showDelayedToast(String text, String position) {
+    if (position.toLowerCase() == 'top') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    } else if (position.toLowerCase() == 'bottom') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    }
+  }
+
   /// Section Widget
   Widget _buildBodySection() {
     return Container(
@@ -353,7 +379,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
   }
 
   Widget _buildFilterList(List<OrderModel> listOrders) {
-    int countChecked = 0;
+    countChecked = 0;
     for (var order in listOrders) {
       if (order.checked!) countChecked++;
       if (countChecked == listOrders.length) {
@@ -735,8 +761,12 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
 
   /// Navigates to the sendBoxAddressScreen when the action is triggered.
   onTapBtnArrowRight() {
-    Get.toNamed(
-      AppRoutes.sendBoxAddressScreen,
-    );
+    if (countChecked == 0) {
+      _showDelayedToast('You need choose some boxs to get next state', 'top');
+    } else {
+      Get.toNamed(
+        AppRoutes.sendBoxAddressScreen,
+      );
+    }
   }
 }

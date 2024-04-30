@@ -34,7 +34,7 @@ class OnbAddressController extends GetxController {
   List<dynamic> dataWard = [];
   late int? selectedProvinceId = null;
   late int? selectedDistrictId = null;
-  late int? selectedWardId = null;
+  late String? selectedWardId = null;
 
   @override
   void onClose() {

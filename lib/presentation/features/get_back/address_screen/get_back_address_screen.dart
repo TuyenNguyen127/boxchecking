@@ -136,7 +136,7 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
 
   int? selectedProvinceId;
   int? selectedDistrictId;
-  int? selectedWardId;
+  String? selectedWardId;
 
   @override
   void initState() {
@@ -534,7 +534,7 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
         SizedBox(height: 8),
 
         // Ward Dropdown
-        DropdownButtonFormField<int>(
+        DropdownButtonFormField<String>(
           decoration: InputDecoration(
             labelText: 'Select Ward',
             contentPadding:
@@ -587,7 +587,7 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
               .where((ward) => ward['DistrictID'] == selectedDistrictId)
               .map((ward) {
             return DropdownMenuItem(
-              value: int.parse(ward['WardCode']),
+              value: ward['WardCode'].toString(),
               child: Text(
                 ward['WardName'] as String,
                 style: TextStyle(
