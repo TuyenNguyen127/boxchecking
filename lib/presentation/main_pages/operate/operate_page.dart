@@ -85,135 +85,11 @@ class _OperatePageState extends State<OperatePage> {
   List<OrderModel> doneList = [];
   List<OrderModel> cancelledList = [];
 
-  // Map<String, List<OrderModel>> orderStatusList = {
-  //   'WaitingProcessing': [],
-  //   'Processing': [],
-  //   'NotYetWarehouse': [],
-  //   'Shipped': [],
-  //   'WaitingGetBack': [],
-  //   'GetBackDelivery': [],
-  //   'Done': [],
-  //   'Cancelled': [],
-  // };
+  // =========================================================================================================
 
-  // List<OrderModel> listOrders = [
-  //   OrderModel(
-  //       orderId: 1,
-  //       status: "WaitingGetBack",
-  //       shipStatusName: "Finished",
-  //       boxes: [
-  //         BoxOrderModel(
-  //             boxId: 1,
-  //             boxTypeId: 1,
-  //             boxModelId: 1,
-  //             listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-  //             boxServices: "Hang On, Washing",
-  //             weight: 0.1,
-  //             quantity: 1,
-  //             dimension: "Plastic Box | Large",
-  //             price: 50000),
-  //         BoxOrderModel(
-  //             boxId: 2,
-  //             boxTypeId: 1,
-  //             boxModelId: 1,
-  //             listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-  //             boxServices: "Hang On, Washing",
-  //             weight: 0.1,
-  //             quantity: 1,
-  //             dimension: "Plastic Box | Large",
-  //             price: 80000)
-  //       ],
-  //       name: "Do Ngoc Long",
-  //       phoneNumber: "0123456789",
-  //       address: "Toa song Da, Pham Hung",
-  //       date: "2024-04-10",
-  //       toWardCode: "1",
-  //       toDistrictId: 1),
-  //   OrderModel(
-  //       orderId: 2,
-  //       status: "WaitingGetBack",
-  //       shipStatusName: "Processing",
-  //       boxes: [
-  //         BoxOrderModel(
-  //             boxId: 1,
-  //             boxTypeId: 1,
-  //             boxModelId: 1,
-  //             listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-  //             boxServices: "Hang On, Washing",
-  //             weight: 0.1,
-  //             quantity: 1,
-  //             dimension: "Plastic Box | Large",
-  //             price: 50000),
-  //         BoxOrderModel(
-  //             boxId: 2,
-  //             boxTypeId: 1,
-  //             boxModelId: 1,
-  //             listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-  //             boxServices: "Hang On, Washing",
-  //             weight: 0.1,
-  //             quantity: 1,
-  //             dimension: "Plastic Box | Large",
-  //             price: 80000),
-  //         BoxOrderModel(
-  //             boxId: 2,
-  //             boxTypeId: 1,
-  //             boxModelId: 1,
-  //             listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-  //             boxServices: "Hang On, Washing",
-  //             weight: 0.1,
-  //             quantity: 1,
-  //             dimension: "Plastic Box | Large",
-  //             price: 80000)
-  //       ],
-  //       name: "Do Ngoc Long",
-  //       phoneNumber: "0123456789",
-  //       address: "Toa song Da, Pham Hung",
-  //       date: "2024-04-10",
-  //       toWardCode: "1",
-  //       toDistrictId: 1),
-  //   OrderModel(
-  //       orderId: 3,
-  //       status: "WaitingGetBack",
-  //       shipStatusName: "Delivered",
-  //       boxes: [
-  //         BoxOrderModel(
-  //             boxId: 1,
-  //             boxTypeId: 1,
-  //             boxModelId: 1,
-  //             listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-  //             boxServices: "Hang On, Washing",
-  //             weight: 0.1,
-  //             quantity: 1,
-  //             dimension: "Plastic Box | Large",
-  //             price: 50000),
-  //         BoxOrderModel(
-  //             boxId: 2,
-  //             boxTypeId: 1,
-  //             boxModelId: 1,
-  //             listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-  //             boxServices: "Hang On, Washing",
-  //             weight: 0.1,
-  //             quantity: 1,
-  //             dimension: "Plastic Box | Large",
-  //             price: 80000),
-  //         BoxOrderModel(
-  //             boxId: 2,
-  //             boxTypeId: 1,
-  //             boxModelId: 1,
-  //             listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-  //             boxServices: "Hang On, Washing",
-  //             weight: 0.1,
-  //             quantity: 1,
-  //             dimension: "Plastic Box | Large",
-  //             price: 80000)
-  //       ],
-  //       name: "Do Ngoc Long",
-  //       phoneNumber: "0123456789",
-  //       address: "Toa song Da, Pham Hung",
-  //       date: "2024-04-10",
-  //       toWardCode: "1",
-  //       toDistrictId: 1)
-  // ];
+  final APPBAR_HEIGHT = 60.v;
+  final TAB_HEIGHT = 60.v;
+  final INFO_AND_DROPDOWN_HEIGHT = 60.v;
 
   // =========================================================================================================
 
@@ -453,135 +329,103 @@ class _OperatePageState extends State<OperatePage> {
   }
 
   Widget _buildFilterListDropdown(int count) {
-    return Column(children: [
-      SizedBox(height: 10),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('${count} orders'),
-            SizedBox(
-              height: 40,
-              width: 140,
-              child: DropdownButtonFormField<int>(
-                decoration: InputDecoration(
-                  //labelText: 'Select Province',
-                  contentPadding:
-                      EdgeInsets.only(top: 5, left: 15, right: 10, bottom: 5),
-                  hintStyle: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  // floatingLabelBehavior: FloatingLabelBehavior.never,
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Colors.grey,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Colors.black,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Colors.red,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  labelStyle: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  hintText: 'Province Name',
-                ),
-                focusColor: Colors.white,
-                value: selectedDate,
-                items: dataProdateSortince.map((date) {
-                  return DropdownMenuItem(
-                    value: date['id'] as int,
-                    child: Text(
-                      date['time'] as String,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 13),
-                      maxLines: 1, // Limit the number of lines to 1
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedDate = value;
-                  });
-                },
-              ),
+    return Container(
+      height: INFO_AND_DROPDOWN_HEIGHT,
+      padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 10.v),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          //
+          Text(
+            'Total orders: ${count}',
+            style: TextStyle(
+              color: appTheme.blue500,
+              fontWeight: FontWeight.w500,
             ),
-          ],
-        ),
+          ),
+          //
+          SizedBox(
+            height: 40,
+            width: 140,
+            child: DropdownButtonFormField<int>(
+              decoration: InputDecoration(
+                //labelText: 'Select Province',
+                contentPadding:
+                    EdgeInsets.only(top: 5, left: 15, right: 10, bottom: 5),
+                hintStyle: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w400,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                // floatingLabelBehavior: FloatingLabelBehavior.never,
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.grey,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.black,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.red,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                labelStyle: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w400,
+                ),
+                hintText: 'Province Name',
+              ),
+              focusColor: Colors.white,
+              value: selectedDate,
+              items: dataProdateSortince.map((date) {
+                return DropdownMenuItem(
+                  value: date['id'] as int,
+                  child: Text(
+                    date['time'] as String,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 13),
+                    maxLines: 1, // Limit the number of lines to 1
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedDate = value;
+                });
+              },
+            ),
+          ),
+        ],
       ),
-      SizedBox(height: 10),
-    ]);
+    );
   }
-
-  // Widget _orderShip(String status) {
-  //   List<OrderModel> listOrderWidget =
-  //       fillDataWithDate(orderStatusList[status]!);
-  //   return Column(
-  //     children: [
-  //       _buildFilterListDropdown(listOrderWidget.length),
-  //       listOrderWidget.length == 0
-  //           ? Container(
-  //               decoration: BoxDecoration(color: Colors.green),
-  //               child: Text("No order"))
-  //           : Container(
-  //               width: SizeUtils.width,
-  //               height: SizeUtils.height - 250,
-  //               child: SingleChildScrollView(
-  //                 child: Column(
-  //                   children: [
-  //                     ListView.separated(
-  //                       physics: NeverScrollableScrollPhysics(),
-  //                       shrinkWrap: true,
-  //                       separatorBuilder: (
-  //                         context,
-  //                         index,
-  //                       ) {
-  //                         return SizedBox(height: 5.v);
-  //                       },
-  //                       itemCount: listOrderWidget.length,
-  //                       itemBuilder: (context, index) {
-  //                         return Column(
-  //                           children: [
-  //                             orderItem(listOrderWidget[index]),
-  //                           ],
-  //                         );
-  //                       },
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //     ],
-  //   );
-  // }
 
   Widget _filteredListView(List<OrderModel> ordersList) {
     List<OrderModel> listFilteredByDate = filteredByDate(ordersList);
 
-    return Column(
+    return
+        // SingleChildScrollView(
+        //   child:
+        Column(
       children: [
+        //
         _buildFilterListDropdown(listFilteredByDate.length),
+        //
         listFilteredByDate.length == 0
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -589,28 +433,27 @@ class _OperatePageState extends State<OperatePage> {
                 children: [
                   Container(
                     width: SizeUtils.width,
-                    height: SizeUtils.height - 250,
+                    height: SizeUtils.height - APPBAR_HEIGHT * 4 - 10.v,
+                    // height: SizeUtils.height - 250,
                     child: Center(
                       //
-                      child: CircularProgressIndicator(
-                        color: Colors.red[400],
-                      ),
-                      //
-                      // child: Text(
-                      //   "Empty here",
-                      //   style: TextStyle(
-                      //     fontSize: 30.fSize,
-                      //     fontWeight: FontWeight.w600,
-                      //   ),
+                      // child: CircularProgressIndicator(
+                      //   color: Colors.red[400],
                       // ),
+                      //
+                      child: Text(
+                        "Empty here",
+                        style: TextStyle(
+                          fontSize: 20.fSize,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               )
             : Container(
-                height: SizeUtils.height - 60.v * 4 + 25.v,
-                // height: SizeUtils.height - 250,
-                width: SizeUtils.width,
+                height: SizeUtils.height - APPBAR_HEIGHT * 4 - 10.v,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
@@ -637,6 +480,7 @@ class _OperatePageState extends State<OperatePage> {
                 ),
               ),
       ],
+      // ),
     );
   }
 

@@ -22,17 +22,26 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   HomeContainerController dataController = Get.put(HomeContainerController());
+
   int totalOrder = 0;
+  int totalPrice = 0;
   int saving = 0;
   int recived = 0;
   int processing = 0;
   int shipping = 0;
+
   List<OrderModel> listOrders = [];
+
+  // =========================================================================================================
 
   Future<void> requestOrder() async {
     try {
       var uri = Uri.https(
-          dotenv.get('HOST'), '/api/Order/AllOrders', {'userId': '3'});
+        dotenv.get('HOST'),
+        '/api/Order/AllOrders',
+        {'userId': '3'},
+      );
+
       final response = await http.get(
         uri,
         headers: <String, String>{
@@ -40,20 +49,27 @@ class _HomePageState extends State<HomePage> {
           "ngrok-skip-browser-warning": "69420",
         },
       );
+
       if (response.statusCode == 200) {
         List<dynamic> jsonResponse = jsonDecode(response.body);
         List<OrderModel> orders = [];
+
         for (var json in jsonResponse) {
           List<dynamic> boxes = json['boxOrderss'];
           List<BoxOrderModel> listBoxes = [];
+
           for (var box in boxes) {
             String services = '';
             for (var service in box['boxServices']) {
               services += service.toString() + ", ";
             }
-            if (services.length > 0)
+
+            if (services.length > 0) {
               services = services.substring(0, services.length - 2);
-            listBoxes.add(BoxOrderModel(
+            }
+
+            listBoxes.add(
+              BoxOrderModel(
                 boxId: box['boxId'],
                 boxTypeId: box['boxTypeId'],
                 boxModelId: box['boxModelId'],
@@ -62,32 +78,28 @@ class _HomePageState extends State<HomePage> {
                 weight: box['weight'],
                 quantity: box['quantity'],
                 dimension: box['dimension'],
-                price: box['price']));
+                price: box['price'],
+              ),
+            );
           }
-          orders.add(OrderModel(
+
+          orders.add(
+            OrderModel(
               orderId: json['orderId'],
               status: json['status'],
-              shipStatusName: json['shipStatusName'] ?? '',
+              shipStatusName: json['shippingStatus'] ?? '',
               boxes: listBoxes,
               name: json['name'],
               phoneNumber: json['phoneNumber'],
               address: json['address'],
               date: json['date'],
               toWardCode: json['toWardCode'],
-              toDistrictId: json['toDistrictId']));
+              toDistrictId: json['toDistrictId'],
+            ),
+          );
         }
-        for (var order in orders) {
-          setState(() {
-            listOrders.add(order);
-            if (order.status == "WaitingProcessing") processing++;
-            if (order.status == "Shipped") saving++;
-            if (order.status == "GetBackDelivery") recived++;
-          });
 
-          totalOrder = listOrders.length;
-          shipping = totalOrder - saving - recived - processing;
-        }
-        // print(dataController.listOrderByUser.length);
+        getDataShipPage(orders);
       } else {
         print('Request failed with status: ${response.statusCode}');
         throw Exception('Failed to make API request.');
@@ -97,13 +109,46 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void getDataShipPage(List<OrderModel> orders) {
+    setState(() {
+      totalPrice = 0;
+
+      for (var order in orders) {
+        listOrders.add(order);
+
+        if (order.status == "WaitingProcessing") {
+          processing++;
+        }
+
+        if (order.status == "Shipped") {
+          saving++;
+        }
+
+        if (order.status == "GetBackDelivery") {
+          recived++;
+        }
+
+        for (var boxItem in order.boxes) {
+          totalPrice += boxItem.price;
+        }
+
+        totalOrder = listOrders.length;
+        shipping = totalOrder - saving - recived - processing;
+      }
+    });
+  }
+
+  // =========================================================================================================
+
   @override
   void initState() {
-    print(dataController.listOrderByUser);
-    if (dataController.listOrderByUser.isNotEmpty) {}
     super.initState();
+
     initializeDateFormatting();
+    requestOrder();
   }
+
+  // =========================================================================================================
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +191,7 @@ class _HomePageState extends State<HomePage> {
     return AppBar(
       elevation: 0,
       leadingWidth: 60.h,
+      toolbarHeight: 60.v,
       leading: GestureDetector(
         onTap: () {},
         child: Container(
@@ -156,25 +202,31 @@ class _HomePageState extends State<HomePage> {
               height: 50.v,
               width: 50.h,
               fit: BoxFit.contain,
-              colorFilter:
-                  ColorFilter.mode(Colors.transparent, BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(
+                Colors.transparent,
+                BlendMode.srcIn,
+              ),
             ),
           ),
         ),
       ),
-      title: Container(
-        width: 100.h,
-        margin: EdgeInsets.only(left: 0.h, bottom: 0.v),
-        child: Text(
-          "Nguyễn Tuyển",
-          style: TextStyle(
-            color: Color(0XFF000000),
-            fontSize: 18.fSize,
-            fontWeight: FontWeight.w600,
+      flexibleSpace: FlexibleSpaceBar(
+        title: Container(
+          margin: EdgeInsets.only(left: 15.h),
+          child: Text(
+            "Nguyễn Tuyển",
+            overflow: TextOverflow.clip,
+            style: TextStyle(
+              color: Color(0XFF000000),
+              fontSize: 18.fSize,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
+        // ),
       ),
       actions: [
+        //
         GestureDetector(
           onTap: () {},
           child: Container(
@@ -190,6 +242,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
+        //
         GestureDetector(
           onTap: () {},
           child: Container(
@@ -206,6 +259,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
+        //
       ],
     );
   }
@@ -213,13 +267,22 @@ class _HomePageState extends State<HomePage> {
   Widget _buildBannerView() {
     // Get current time
     DateTime now = DateTime.now();
-    // String currentTime = '${now.hour}:${now.minute}:${now.second}';
+    String formattedTime = DateFormat.yMMMMd('en_US').format(now);
 
     // Format the current time in English
     String formattedDay = DateFormat('EEEE').format(now);
     formattedDay = formattedDay[0].toUpperCase() + formattedDay.substring(1);
-    String formattedTime = DateFormat.yMMMMd('en_US').format(now);
-    ;
+
+    final currentHourMinSec = DateFormat.jm().format(now);
+
+    int currentHour =
+        int.parse(currentHourMinSec.toString().split(' ')[0].split(':')[0]);
+
+    var currentHourStringAmOrPm = currentHourMinSec
+        .toString()
+        .substring(currentHourMinSec.toString().length - 2,
+            currentHourMinSec.toString().length)
+        .toLowerCase();
 
     return Container(
       width: SizeUtils.width,
@@ -241,15 +304,19 @@ class _HomePageState extends State<HomePage> {
                 'Good',
                 style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 35,
+                  fontSize: 35.fSize,
                 ),
               ),
               //
               Text(
-                'Morning,',
+                ((6 <= currentHour && currentHour <= 12) &&
+                        currentHourStringAmOrPm == 'pm')
+                    ? 'Evening,'
+                    : 'Morning,',
+                // 'Morning,',
                 style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 35,
+                  fontSize: 35.fSize,
                 ),
               ),
             ],
@@ -264,7 +331,7 @@ class _HomePageState extends State<HomePage> {
                 "Today's $formattedDay",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 18,
+                  fontSize: 18.fSize,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -273,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                 '$formattedTime',
                 style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 15,
+                  fontSize: 15.fSize,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -286,29 +353,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildOrderTitleView(String title) {
-    // return Column(
-    //   crossAxisAlignment: CrossAxisAlignment.center,
-    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //   children: [
-    //     Container(
-    //       padding: EdgeInsets.symmetric(horizontal: 20.h),
-    //       height: 50.v,
-    //       color: theme.colorScheme.primary,
-    //       child: Row(
-    //         children: [
-    //           Padding(
-    //             padding: EdgeInsets.symmetric(vertical: 5.v),
-    //             child: Text(
-    //               "lbl_orders".tr,
-    //               style: CustomTextStyles.titleLargeBlack900,
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ],
-    // );
-
     return Container(
       padding: EdgeInsets.only(bottom: 10.v),
       child: Row(
@@ -362,7 +406,7 @@ class _HomePageState extends State<HomePage> {
     sizeIconBackgr,
     text,
     textColor,
-    data,
+    String data,
     dataColor,
   ) {
     return StaggeredGridTile.count(
@@ -411,13 +455,13 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(
                           color: textColor,
                           fontWeight: FontWeight.w600,
-                          fontSize: 18,
+                          fontSize: 20.fSize,
                         ),
                       ),
                     ),
                   ),
                   //
-                  SizedBox(height: 2.h),
+                  SizedBox(height: 5.v),
                   //
                   Container(
                     child: Center(
@@ -426,7 +470,7 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(
                           color: dataColor,
                           fontWeight: FontWeight.w600,
-                          fontSize: 22,
+                          fontSize: 20.fSize,
                         ),
                       ),
                     ),
@@ -465,7 +509,7 @@ class _HomePageState extends State<HomePage> {
                 20.h,
                 'Total orders',
                 appTheme.gray80001,
-                totalOrder,
+                totalOrder.toString(),
                 appTheme.black900,
               ),
               gridItem(
@@ -478,7 +522,7 @@ class _HomePageState extends State<HomePage> {
                 20.h,
                 'Total price',
                 appTheme.gray80001,
-                totalOrder,
+                "${totalPrice} VND",
                 appTheme.black900,
               ),
               gridItem(
@@ -491,7 +535,7 @@ class _HomePageState extends State<HomePage> {
                 16.h,
                 'Saving',
                 appTheme.gray80001,
-                saving,
+                saving.toString(),
                 appTheme.black900,
               ),
               gridItem(
@@ -504,7 +548,7 @@ class _HomePageState extends State<HomePage> {
                 20.h,
                 'Received',
                 appTheme.gray80001,
-                recived,
+                recived.toString(),
                 appTheme.black900,
               ),
               gridItem(
@@ -517,7 +561,7 @@ class _HomePageState extends State<HomePage> {
                 18.h,
                 'Shipping',
                 appTheme.gray80001,
-                shipping,
+                shipping.toString(),
                 appTheme.black900,
               ),
               gridItem(
@@ -530,7 +574,7 @@ class _HomePageState extends State<HomePage> {
                 20.h,
                 'Processing',
                 appTheme.gray80001,
-                processing,
+                processing.toString(),
                 appTheme.black900,
               ),
             ],
@@ -577,7 +621,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w700,
-                              fontSize: 16,
+                              fontSize: 16.fSize,
                             ),
                           ),
                         ),
@@ -609,7 +653,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w700,
-                              fontSize: 16,
+                              fontSize: 16.fSize,
                             ),
                           ),
                         ),
@@ -641,7 +685,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w700,
-                              fontSize: 16,
+                              fontSize: 16.fSize,
                             ),
                           ),
                         ),

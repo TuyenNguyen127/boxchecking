@@ -8,14 +8,14 @@ import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
 
-class RecivedTabContainerPage extends StatefulWidget {
-  RecivedTabContainerPage({Key? key}) : super(key: key);
+class ShipScreen extends StatefulWidget {
+  ShipScreen({Key? key}) : super(key: key);
 
   @override
-  State<RecivedTabContainerPage> createState() => _RecivedTabContainerPage();
+  State<ShipScreen> createState() => _ShipScreen();
 }
 
-class _RecivedTabContainerPage extends State<RecivedTabContainerPage> {
+class _ShipScreen extends State<ShipScreen> {
   // =========================================================================================================
   int? selectedDate = 9999;
 
@@ -71,6 +71,12 @@ class _RecivedTabContainerPage extends State<RecivedTabContainerPage> {
   List<OrderModel> awaitingShippingList = [];
   List<OrderModel> doneList = [];
   List<OrderModel> cancelledList = [];
+
+  // =========================================================================================================
+
+  final APPBAR_HEIGHT = 60.v;
+  final TAB_HEIGHT = 60.v;
+  final INFO_AND_DROPDOWN_HEIGHT = 60.v;
 
   // =========================================================================================================
 
@@ -284,13 +290,16 @@ class _RecivedTabContainerPage extends State<RecivedTabContainerPage> {
       elevation: 0,
       backgroundColor: appTheme.redA200,
       automaticallyImplyLeading: false,
-      title: Center(
-        child: Text(
-          'Ship',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 22.fSize,
-            fontWeight: FontWeight.w600,
+      title: Container(
+        height: APPBAR_HEIGHT,
+        child: Center(
+          child: Text(
+            'Ship',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 22.fSize,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ),
@@ -299,12 +308,18 @@ class _RecivedTabContainerPage extends State<RecivedTabContainerPage> {
 
   Widget _buildFilterListDropdown(int count) {
     return Container(
-      height: 60.v,
+      height: INFO_AND_DROPDOWN_HEIGHT,
       padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 10.v),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Total orders: ${count}'),
+          Text(
+            'Total orders: ${count}',
+            style: TextStyle(
+              color: appTheme.blue500,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
           SizedBox(
             height: 40.v,
             width: 140,
@@ -379,67 +394,88 @@ class _RecivedTabContainerPage extends State<RecivedTabContainerPage> {
   Widget _filteredListView(List<OrderModel> ordersList) {
     List<OrderModel> listFilteredByDate = filteredByDate(ordersList);
 
-    return Column(
-      children: [
-        //
-        _buildFilterListDropdown(listFilteredByDate.length),
-        //
-        listFilteredByDate.length == 0
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: SizeUtils.width,
-                    height: SizeUtils.height - 250,
-                    child: Center(
-                      //
-                      child: CircularProgressIndicator(
-                        color: Colors.red[400],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          //
+          _buildFilterListDropdown(listFilteredByDate.length),
+          //
+          listFilteredByDate.length == 0
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: SizeUtils.width,
+                      height: SizeUtils.height - APPBAR_HEIGHT * 4 - 10.v,
+                      child: Center(
+                        //
+                        child: Text(
+                          "Empty here",
+                          style: TextStyle(
+                            fontSize: 20.fSize,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        //
+                        // child: CircularProgressIndicator(
+                        //   color: Colors.red[400],
+                        // ),
+                        //
                       ),
-                      //
-                      // child: Text(
-                      //   "Empty here",
-                      //   style: TextStyle(
-                      //     fontSize: 30.fSize,
-                      //     fontWeight: FontWeight.w600,
-                      //   ),
-                      // ),
                     ),
-                  ),
-                ],
-              )
-            : Container(
-                height: SizeUtils.height - 60.v * 4 + 25.v,
-                width: SizeUtils.width,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      ListView.separated(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        separatorBuilder: (
-                          context,
-                          index,
-                        ) {
-                          return SizedBox(height: 5.v);
-                        },
-                        itemCount: listFilteredByDate.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              //
-                              shipItem(listFilteredByDate[index]),
-                              //
-                              Row(
-                                children: [
-                                  Flexible(
-                                    flex: 3,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        onClickBtnMoreDetails(
-                                            listFilteredByDate[index]);
-                                      },
+                  ],
+                )
+              : Container(
+                  height: SizeUtils.height - APPBAR_HEIGHT * 4 - 10.v,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ListView.separated(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          separatorBuilder: (
+                            context,
+                            index,
+                          ) {
+                            return SizedBox(height: 5.v);
+                          },
+                          itemCount: listFilteredByDate.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                //
+                                shipItem(listFilteredByDate[index]),
+                                //
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      flex: 3,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          onClickBtnMoreDetails(
+                                              listFilteredByDate[index]);
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 9.v),
+                                          decoration: AppDecoration
+                                              .outlineGray200Thinner,
+                                          child: Center(
+                                            child: Text(
+                                              'Call shipper',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 14.fSize,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      flex: 3,
                                       child: Container(
                                         padding:
                                             EdgeInsets.symmetric(vertical: 9.v),
@@ -447,7 +483,7 @@ class _RecivedTabContainerPage extends State<RecivedTabContainerPage> {
                                             AppDecoration.outlineGray200Thinner,
                                         child: Center(
                                           child: Text(
-                                            'Call shipper',
+                                            'Edit order',
                                             style: TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.w500,
@@ -457,76 +493,57 @@ class _RecivedTabContainerPage extends State<RecivedTabContainerPage> {
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Flexible(
-                                    flex: 3,
-                                    child: Container(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 9.v),
-                                      decoration:
-                                          AppDecoration.outlineGray200Thinner,
-                                      child: Center(
-                                        child: Text(
-                                          'Edit order',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14.fSize,
+                                    Flexible(
+                                      flex: 3,
+                                      child: Container(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 9.v),
+                                        decoration:
+                                            AppDecoration.outlineGray200Thinner,
+                                        child: Center(
+                                          child: Text(
+                                            'Cancel',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 14.fSize,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Flexible(
-                                    flex: 3,
-                                    child: Container(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 9.v),
-                                      decoration:
-                                          AppDecoration.outlineGray200Thinner,
-                                      child: Center(
-                                        child: Text(
-                                          'Cancel',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14.fSize,
+                                    Flexible(
+                                      flex: 1,
+                                      child: Container(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 9.v),
+                                        decoration:
+                                            AppDecoration.outlineGray200Thinner,
+                                        child: Center(
+                                          child: Text(
+                                            '...',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 14.fSize,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Flexible(
-                                    flex: 1,
-                                    child: Container(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 9.v),
-                                      decoration:
-                                          AppDecoration.outlineGray200Thinner,
-                                      child: Center(
-                                        child: Text(
-                                          '...',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14.fSize,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              //
-                            ],
-                          );
-                        },
-                      ),
-                    ],
+                                  ],
+                                ),
+                                //
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-      ],
+        ],
+      ),
     );
   }
 
