@@ -135,7 +135,7 @@ class _SendboxAddressScreenState extends State<SendBoxAddressScreen> {
 
   int? selectedProvinceId;
   int? selectedDistrictId;
-  int? selectedWardId;
+  String? selectedWardId;
 
   @override
   void initState() {
@@ -533,7 +533,7 @@ class _SendboxAddressScreenState extends State<SendBoxAddressScreen> {
         SizedBox(height: 8),
 
         // Ward Dropdown
-        DropdownButtonFormField<int>(
+        DropdownButtonFormField<String>(
           decoration: InputDecoration(
             labelText: 'Select Ward',
             contentPadding:
@@ -586,7 +586,7 @@ class _SendboxAddressScreenState extends State<SendBoxAddressScreen> {
               .where((ward) => ward['DistrictID'] == selectedDistrictId)
               .map((ward) {
             return DropdownMenuItem(
-              value: int.parse(ward['WardCode']),
+              value: ward['WardCode'].toString(),
               child: Text(
                 ward['WardName'] as String,
                 style: TextStyle(
@@ -919,7 +919,7 @@ class _SendboxAddressScreenState extends State<SendBoxAddressScreen> {
 
     return true;
   }
-  
+
   onTapVector() {
     Get.toNamed(
       AppRoutes.typeRequestScreen,

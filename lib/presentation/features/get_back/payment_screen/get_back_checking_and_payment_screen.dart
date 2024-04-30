@@ -1,11 +1,19 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
 import 'package:lastapp/model/addressModel.dart';
+import 'package:lastapp/presentation/countdown_to_get_back_home/countdown_to_get_back_home_screen.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/custom_checkbox_button.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import '../address_screen/controller/get_back_address_controller.dart';
+import '../choose_box_screen/controller/get_back_choose_box_controller.dart';
 
 class GetBackCheckingAndPaymentScreen extends StatefulWidget {
   @override
@@ -15,18 +23,24 @@ class GetBackCheckingAndPaymentScreen extends StatefulWidget {
 }
 
 class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
+  GetBackChooseBoxController chooseBoxController =
+      Get.put(GetBackChooseBoxController());
+  GetBackAddressController addressController =
+      Get.put(GetBackAddressController());
+
   bool checkTerms = false;
 
   AddressModel addressModel = AddressModel(
     name: "Do Ngoc Long",
     phoneNumber: "0123456789",
     addressNumber: "Toa song Da, Pham Hung",
-    wardCodeId: 1,
+    wardCodeId: "1",
     districtId: 1,
     cityId: 1,
   );
 
   GlobalKey? dataKey = new GlobalKey();
+
   @override
   void dispose() {
     dataKey = null;
@@ -166,6 +180,19 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
 
   @override
   void initState() {
+    addressModel.addressFull = "";
+    idList.clear();
+    if (chooseBoxController.listOrders.isNotEmpty) {
+      listOrders.clear();
+      for (var order in chooseBoxController.listOrders) {
+        listOrders.add(order);
+        idList.add(order.orderId);
+      }
+    }
+
+    if (addressController.tuyenListAddress.isNotEmpty) {
+      addressModel = addressController.tuyenListAddress[0];
+    }
     super.initState();
   }
 
@@ -404,6 +431,7 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
   }
 
   Widget packageRequirementsOrderDetailContent() {
+    total = 0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -427,7 +455,7 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
             for (var box in order.boxes) {
               priceOrder += box.price;
             }
-
+            total += priceOrder;
             return Container(
               padding: EdgeInsets.symmetric(horizontal: 15.h, vertical: 20.v),
               margin: EdgeInsets.only(top: 15.v),
@@ -573,7 +601,7 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
         SizedBox(height: 20.v),
         //
         Text(
-          "Total: ${20000} VND",
+          "Total: ${20000 + total} VND",
           style: TextStyle(
             color: appTheme.greenA700,
             fontSize: 18.fSize,
@@ -673,19 +701,25 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
               padding: EdgeInsets.only(left: 10.h, right: 10.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Address Number:",
+                    "Address Detail:",
                     style: TextStyle(
                       color: appTheme.black900,
                       fontSize: 16.fSize,
                     ),
                   ),
-                  Text(
-                    addressModel.addressNumber,
-                    style: TextStyle(
-                      color: appTheme.black900,
-                      fontSize: 16.fSize,
+                  Container(
+                    width: SizeUtils.width / 2,
+                    child: Text(
+                      addressModel.addressFull!,
+                      textAlign: TextAlign.right,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(
+                        color: appTheme.black900,
+                        fontSize: 16.fSize,
+                      ),
                     ),
                   ),
                 ],
@@ -819,46 +853,78 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
     );
   }
 
+  void _showDelayedToast(String text, String position) {
+    if (position.toLowerCase() == 'top') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    } else if (position.toLowerCase() == 'bottom') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    }
+  }
+
   /// Navigates to the homeContainerScreen when the action is triggered.
   onTapBtnArrowRight() async {
     if (checkTerms) {
-    } else
+      createRequestSendBox();
+    } else {
       Scrollable.ensureVisible(
         dataKey!.currentContext!,
         duration: Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
+      _showDelayedToast('You need accept the term of use', 'bottom');
+    }
   }
 
-  // Future<void> createRequestSendBox() async {
-  //   try {
-  //     var uri =
-  //         Uri.https(dotenv.get('HOST'), '/api/Order/GetBack');
-  //     final response = await http.post(
-  //       uri,
-  //       headers: <String, String>{
-  //         'Content-Type': 'application/json; charset=UTF-8',
-  //         'ngrok-skip-browser-warning': '69420',
-  //       },
-  //       body: jsonEncode(<String, dynamic>{
-  //         "name": addressController.tuyenListAddress[0].name,
-  //         "phoneNumber": addressController.tuyenListAddress[0].phoneNumber,
-  //         "address": addressController.tuyenListAddress[0].addressNumber,
-  //         "date": "2024-04-07T05:04:47.315Z",
-  //         "toWardCode":
-  //             '510102', //addressController.tuyenListAddress[0].towardCode,
-  //         "toDistrictId": addressController.tuyenListAddress[0].districtId,
-  //         "orderId": idList
-  //       }),
-  //     );
+  Future<void> createRequestSendBox() async {
+    try {
+      var uri = Uri.https(dotenv.get('HOST'), '/api/Order/GetBack');
 
-  //     if (response.statusCode == 200) {
-  //       print('Push thành công');
-  //     } else {
-  //       throw Exception('Failed to create album.');
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+      String requestBody = jsonEncode({
+        "name": addressModel.name,
+        "phoneNumber": addressModel.phoneNumber,
+        "address": addressModel.addressFull,
+        "date": DateTime.now().toUtc().toIso8601String(),
+        "toWardCode": addressModel.wardCodeId.toString(),
+        "toDistrictId": addressModel.districtId,
+        "orderId": idList
+      });
+
+      final response = await http.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'ngrok-skip-browser-warning': '69420',
+        },
+        body: requestBody, // Pass the JSON string as the request body
+      );
+
+      if (response.statusCode == 200) {
+        print('Push thành công');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PendingToGetBackHomeScreen()),
+        );
+      } else {
+        throw Exception('Failed.');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 }

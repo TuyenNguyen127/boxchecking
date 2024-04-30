@@ -51,7 +51,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
   ];
 
   List<dynamic> dataWard = [
-    {"ProvinceID": 0, "DistrictID": 1, "WardCode": 1, "WardName": ""}
+    {"ProvinceID": 0, "DistrictID": 1, "WardCode": "1", "WardName": ""}
   ];
 
   Future<void> getDataProvince() async {
@@ -135,7 +135,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
 
   int? selectedProvinceId;
   int? selectedDistrictId;
-  int? selectedWardId;
+  String? selectedWardId;
 
   @override
   void initState() {
@@ -520,7 +520,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
         SizedBox(height: 8),
 
         // Ward Dropdown
-        DropdownButtonFormField<int>(
+        DropdownButtonFormField<String>(
           decoration: InputDecoration(
             labelText: 'Select Ward',
             contentPadding:
@@ -573,7 +573,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
               .where((ward) => ward['DistrictID'] == selectedDistrictId)
               .map((ward) {
             return DropdownMenuItem(
-              value: int.parse(ward['WardCode']),
+              value: ward['WardCode'].toString(),
               child: Text(
                 ward['WardName'] as String,
                 style: TextStyle(
