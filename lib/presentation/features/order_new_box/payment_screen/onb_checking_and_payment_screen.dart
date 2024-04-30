@@ -53,7 +53,7 @@ class _OnbCheckingAndPaymentScreenState
         boxModelId: 1,
         listItem: "10 x Quan | 10 x Ao | 10 x Giay",
         boxServices: "Hang On, Washing",
-        weight: 0.1,
+        weight: 1,
         quantity: 1,
         dimension: "Plastic Box | Large",
         price: 50000,
@@ -64,7 +64,7 @@ class _OnbCheckingAndPaymentScreenState
         boxModelId: 1,
         listItem: "10 x Quan | 10 x Ao | 10 x Giay",
         boxServices: "Hang On, Washing",
-        weight: 0.1,
+        weight: 1,
         quantity: 1,
         dimension: "Plastic Box | Large",
         price: 80000,
@@ -90,7 +90,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 50000),
@@ -100,7 +100,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 80000)
@@ -122,7 +122,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 50000),
@@ -132,7 +132,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 80000),
@@ -142,7 +142,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 80000)
@@ -164,7 +164,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 50000),
@@ -174,7 +174,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 80000),
@@ -184,7 +184,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 80000)
@@ -198,6 +198,7 @@ class _OnbCheckingAndPaymentScreenState
   ];
 
   List<int> idList = [];
+  List<List<int>> listBoxesService = [];
 
   double heightItems = 0.v;
   int total = 0;
@@ -207,9 +208,11 @@ class _OnbCheckingAndPaymentScreenState
     addressModel.addressFull = " ";
     if (newOrderController.listBoxes.isNotEmpty) {
       listBoxes.clear();
+      listBoxesService.clear();
       for (var box in newOrderController.listBoxes) {
         listBoxes.add(box);
       }
+      listBoxesService = newOrderController.boxServices;
     }
 
     if (addressController.userInformation.isNotEmpty) {
@@ -886,16 +889,16 @@ class _OnbCheckingAndPaymentScreenState
       var uri = Uri.https(dotenv.get('HOST'), '/api/Order/CreateNewOrder');
 
       List<Map<String, dynamic>> boxesJson = [];
-      for (var box in listBoxes) {
-        List<String> boxServices = box.boxServices.split(", ");
+      for (int i = 0; i < listBoxes.length; i++) {
+        //List<String> boxServices = box.boxServices.split(", ");
 
         Map<String, dynamic> boxJson = {
-          "boxTypeId": box.boxTypeId,
-          "boxModelId": box.boxModelId,
-          "listItem": box.listItem,
-          "boxServices": boxServices,
-          "weight": box.weight,
-          "quantity": box.quantity
+          "boxTypeId": listBoxes[i].boxTypeId,
+          "boxModelId": listBoxes[i].boxModelId,
+          "listItem": listBoxes[i].listItem,
+          "boxServices": listBoxesService[i],
+          "weight": 100, //listBoxes[i].weight,
+          "quantity": listBoxes[i].quantity
         };
         boxesJson.add(boxJson);
       }
@@ -930,8 +933,6 @@ class _OnbCheckingAndPaymentScreenState
           MaterialPageRoute(builder: (context) => PendingToGetBackHomeScreen()),
         );
       } else {
-        print(response.statusCode);
-        print(response.body);
         throw Exception('Failed.');
       }
     } catch (e) {

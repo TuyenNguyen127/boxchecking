@@ -43,11 +43,11 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   List<dynamic> dataTypeBox = [
     {
       "id": 1,
-      "name": "Plastic box",
+      "name": "Plastic",
     },
     {
       "id": 2,
-      "name": "Carton box",
+      "name": "Carton",
     },
   ];
   List<dynamic> dataModelBox = [
@@ -55,49 +55,54 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
       "id": 1,
       "idTypeBox": 1,
       "name": "Large",
-      "description": "height: 50, width: 50, length: 100",
-      "size": "50x50x100",
+      "description": "height: 130 cm, width: 130 cm, length: 130 cm",
+      "size": "130x130x130",
     },
     {
       "id": 2,
       "idTypeBox": 1,
       "name": "Medium",
-      "description": "height: 50, width: 50, length: 50",
-      "size": "50x50x50",
+      "description": "height: 100 cm, width: 100 cm, length: 100 cm",
+      "size": "100x100x100",
     },
     {
       "id": 3,
       "idTypeBox": 1,
       "name": "Small",
-      "description": "height: 30, width: 30, length: 50",
-      "size": "30x30x50",
-    },
-    {
-      "id": 4,
-      "idTypeBox": 2,
-      "name": "Large",
-      "description": "height: 50, width: 50, length: 100",
-      "size": "50x50x100",
-    },
-    {
-      "id": 5,
-      "idTypeBox": 2,
-      "name": "Medium",
-      "description": "height: 50, width: 50, length: 50",
+      "description": "height: 50 cm, width: 50 cm, length: 50 cm",
       "size": "50x50x50",
     },
     {
-      "id": 6,
+      "id": 1,
+      "idTypeBox": 2,
+      "name": "Large",
+      "description": "height: 130 cm, width: 130 cm, length: 130 cm",
+      "size": "130x130x130",
+    },
+    {
+      "id": 2,
+      "idTypeBox": 2,
+      "name": "Medium",
+      "description": "height: 100 cm, width: 100 cm, length: 100 cm",
+      "size": "100x100x100",
+    },
+    {
+      "id": 3,
       "idTypeBox": 2,
       "name": "Small",
-      "description": "height: 30, width: 30, length: 50",
-      "size": "30x30x50",
+      "description": "height: 50 cm, width: 50 cm, length: 50 cm",
+      "size": "50x50x50",
     },
   ];
-  List<String> listServices = [
-    'Hang On',
-    'Keep In Shape',
-    'Washing',
+  List<Map<dynamic, dynamic>> listServices = [
+    {
+      "name": 'Washing',
+      "id": 1,
+    },
+    {
+      "name": 'Hang On',
+      "id": 2,
+    },
   ];
 
   List<BoxOrderModel> listBoxOrder = <BoxOrderModel>[];
@@ -660,7 +665,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
               for (var item in listServices)
                 ListTile(
                   title: Text(
-                    item,
+                    item['name'],
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 18.fSize,
@@ -668,19 +673,19 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                     ),
                   ),
                   trailing: Icon(
-                    _listSelectedServicesInModal.contains(item)
+                    _listSelectedServicesInModal.contains(item['name'])
                         ? Icons.check_circle
                         : Icons.radio_button_unchecked,
-                    color: _listSelectedServicesInModal.contains(item)
+                    color: _listSelectedServicesInModal.contains(item['name'])
                         ? Colors.green
                         : null,
                   ),
                   onTap: () {
                     _setState(() {
-                      if (_listSelectedServicesInModal.contains(item)) {
-                        _listSelectedServicesInModal.remove(item);
+                      if (_listSelectedServicesInModal.contains(item['name'])) {
+                        _listSelectedServicesInModal.remove(item['name']);
                       } else {
-                        _listSelectedServicesInModal.add(item);
+                        _listSelectedServicesInModal.add(item['name']);
                       }
                     });
                   },
@@ -2243,8 +2248,24 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   onTapBtnArrowRight(context) {
     if (listBoxOrder.length != 0) {
       newOrderController.addBoxesToOrder(listBoxOrder);
-      // Navigator.pushNamed(context, AppRoutes.onbAddressScreen);
+      newOrderController.boxServices.clear();
 
+      for (var box in listBoxOrder) {
+        List<String> serviceInBox = box.boxServices.split(', ');
+        List<int> listIdService = [];
+
+        for (var serviceInBoxItem in serviceInBox) {
+          for (var sv in listServices) {
+            if (sv['name'] == serviceInBoxItem) {
+              listIdService.add(sv['id']);
+            }
+          }
+        }
+
+        newOrderController.boxServices.add(listIdService);
+      }
+
+      print(newOrderController.boxServices);
       Get.toNamed(
         AppRoutes.onbAddressScreen,
       );
