@@ -26,7 +26,7 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
 
   static List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    RecivedTabContainerPage(),
+    ShipScreen(),
     OperatePage(),
     SettingPage(),
   ];
@@ -123,32 +123,71 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
       child: Scaffold(
         backgroundColor: theme.colorScheme.onError,
         //
-        body: _widgetOptions.elementAt(_selectedIndex),
-        bottomNavigationBar: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
+        body: Stack(
+          children: [
+            //
+            _widgetOptions.elementAt(_selectedIndex),
+            //
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: BottomNavigationBar(
+                items: <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.local_shipping),
+                    label: 'Ship',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.breakfast_dining_outlined),
+                    label: 'Operate',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.settings),
+                    label: 'Settings',
+                  ),
+                ],
+                currentIndex: _selectedIndex,
+                selectedItemColor: Colors.red,
+                showUnselectedLabels: true,
+                unselectedItemColor: Colors.grey,
+                onTap: _onItemTapped,
+              ),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.local_shipping),
-              label: 'Ship',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.breakfast_dining_outlined),
-              label: 'Operate',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
-            ),
+            //
           ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.red,
-          showUnselectedLabels: true,
-          unselectedItemColor: Colors.grey,
-          onTap: _onItemTapped,
         ),
+        //
+        // bottomNavigationBar: BottomNavigationBar(
+        //   items: <BottomNavigationBarItem>[
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.home),
+        //       label: 'Home',
+        //     ),
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.local_shipping),
+        //       label: 'Ship',
+        //     ),
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.breakfast_dining_outlined),
+        //       label: 'Operate',
+        //     ),
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.settings),
+        //       label: 'Settings',
+        //     ),
+        //   ],
+        //   currentIndex: _selectedIndex,
+        //   selectedItemColor: Colors.red,
+        //   showUnselectedLabels: true,
+        //   unselectedItemColor: Colors.grey,
+        //   onTap: _onItemTapped,
+        // ),
+        //
       ),
     );
   }
