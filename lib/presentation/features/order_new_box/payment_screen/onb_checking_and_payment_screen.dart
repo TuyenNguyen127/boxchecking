@@ -899,6 +899,8 @@ class _OnbCheckingAndPaymentScreenState
 
   /// Navigates to the typeRequestScreen when the action is triggered.
   onClickBackToMenu() {
+    addressController.userInformation.clear();
+    newOrderController.listBoxes.clear();
     Get.toNamed(
       AppRoutes.homeContainerScreen,
     );

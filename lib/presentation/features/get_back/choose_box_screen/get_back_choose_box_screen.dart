@@ -8,6 +8,7 @@ import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
+import '../address_screen/controller/get_back_address_controller.dart';
 import 'controller/get_back_choose_box_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -19,8 +20,10 @@ class GetBackChooseBoxScreen extends StatefulWidget {
 
 class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
     with TickerProviderStateMixin {
-  GetBackChooseBoxController getBackChooseBoxController =
+  GetBackChooseBoxController chooseBoxController =
       Get.put(GetBackChooseBoxController());
+  GetBackAddressController addressController =
+      Get.put(GetBackAddressController());
 
   List<OrderModel> listOrders = <OrderModel>[];
   bool checkAll = false;
@@ -122,7 +125,7 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
             listOrders.add(element);
           });
 
-          getBackChooseBoxController.listOrders.add(element);
+          chooseBoxController.listOrders.add(element);
         }
       } else {
         print('Request failed with status: ${response.statusCode}');
@@ -135,10 +138,10 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
 
   @override
   void initState() {
-    if (getBackChooseBoxController.listOrders.length == 0) {
+    if (chooseBoxController.listOrders.length == 0) {
       requestOrder();
     } else {
-      listOrders = getBackChooseBoxController.listOrders;
+      listOrders = chooseBoxController.listOrders;
     }
 
     super.initState();
@@ -577,7 +580,7 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
     return GestureDetector(
       onTap: () => setState(() {
         listOrders[index].checked = !listOrders[index].checked!;
-        getBackChooseBoxController.listOrders[index].checked =
+        chooseBoxController.listOrders[index].checked =
             listOrders[index].checked;
         if (listOrders[index].checked == false) checkAll = false;
       }),
@@ -830,6 +833,8 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
 
   /// Navigates to the typeRequestScreen when the action is triggered.
   onClickBackToMenu() {
+    addressController.tuyenListAddress.clear();
+    chooseBoxController.listOrders.clear();
     Get.toNamed(
       AppRoutes.homeContainerScreen,
     );

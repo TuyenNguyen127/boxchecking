@@ -819,6 +819,8 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
 
   /// Navigates to the typeRequestScreen when the action is triggered.
   onClickBackToMenu() {
+    addressController.tuyenListAddress.clear();
+    chooseBoxController.listOrders.clear();
     Get.toNamed(
       AppRoutes.homeContainerScreen,
     );
@@ -826,6 +828,8 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
 
   /// Navigates to the getBackAddressScreen when the action is triggered.
   onTapBtnArrowLeft() {
+    addressController.tuyenListAddress.clear();
+    chooseBoxController.listOrders.clear();
     Get.toNamed(
       AppRoutes.getBackAddressScreen,
     );
@@ -894,6 +898,8 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
 
       if (response.statusCode == 200) {
         print('Push thành công');
+        addressController.tuyenListAddress.clear();
+        chooseBoxController.listOrders.clear();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PendingToGetBackHomeScreen()),

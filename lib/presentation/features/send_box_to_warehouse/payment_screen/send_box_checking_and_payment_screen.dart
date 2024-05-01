@@ -23,9 +23,9 @@ class SendBoxCheckingAndPaymentScreen extends StatefulWidget {
 }
 
 class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
-  SendBoxChooseBoxController sendBoxChooseBoxController =
+  SendBoxChooseBoxController chooseBoxController =
       Get.put(SendBoxChooseBoxController());
-  SendBoxAddressController addressGetXController =
+  SendBoxAddressController addressController =
       Get.put(SendBoxAddressController());
 
   bool checkTerms = false;
@@ -87,13 +87,13 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
   @override
   void initState() {
     addressModel.addressFull = "";
-    if (addressGetXController.tuyenListAddress.isNotEmpty) {
-      addressModel = addressGetXController.tuyenListAddress[0];
+    if (addressController.tuyenListAddress.isNotEmpty) {
+      addressModel = addressController.tuyenListAddress[0];
     }
 
-    if (sendBoxChooseBoxController.listOrders.isNotEmpty) {
+    if (chooseBoxController.listOrders.isNotEmpty) {
       listOrders.clear();
-      for (var order in sendBoxChooseBoxController.listOrders) {
+      for (var order in chooseBoxController.listOrders) {
         if (order.checked!) {
           listOrders.add(order);
           idList.add(order.orderId);
@@ -772,6 +772,8 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
 
   /// Navigates to the typeRequestScreen when the action is triggered.
   onClickBackToMenu() {
+    addressController.tuyenListAddress.clear();
+    chooseBoxController.listOrders.clear();
     Get.toNamed(
       AppRoutes.homeContainerScreen,
     );
@@ -847,8 +849,8 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
 
       if (response.statusCode == 200) {
         print('Push thành công');
-        addressGetXController.removeAddress();
-        sendBoxChooseBoxController.clearData();
+        addressController.removeAddress();
+        chooseBoxController.clearData();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PendingToGetBackHomeScreen()),

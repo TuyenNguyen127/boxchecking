@@ -8,6 +8,7 @@ import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/model/addressModel.dart';
 import 'package:http/http.dart' as http;
 
+import '../choose_box_screen/controller/send_box_choose_box_controller.dart';
 import 'controller/send_box_address_controller.dart';
 
 class SendBoxAddressScreen extends StatefulWidget {
@@ -18,8 +19,10 @@ class SendBoxAddressScreen extends StatefulWidget {
 }
 
 class _SendboxAddressScreenState extends State<SendBoxAddressScreen> {
-  SendBoxAddressController addressGetXController =
+  SendBoxAddressController addressController =
       Get.put(SendBoxAddressController());
+  SendBoxChooseBoxController chooseBoxController =
+      Get.put(SendBoxChooseBoxController());
 
   TextEditingController phoneNumberController = TextEditingController();
   bool isErrorPhoneNumber = false;
@@ -36,7 +39,7 @@ class _SendboxAddressScreenState extends State<SendBoxAddressScreen> {
   TextEditingController cityController = TextEditingController();
   bool isErrorCity = false;
 
-  TextEditingController addressController = TextEditingController();
+  TextEditingController addressNumberController = TextEditingController();
   bool isErrorAddress = false;
 
   List<dynamic> dataProvince = [
@@ -139,25 +142,25 @@ class _SendboxAddressScreenState extends State<SendBoxAddressScreen> {
 
   @override
   void initState() {
-    if (addressGetXController.dataProvince.isNotEmpty) {
-      dataProvince = addressGetXController.dataProvince;
-      selectedProvinceId = addressGetXController.selectedProvinceId;
+    if (addressController.dataProvince.isNotEmpty) {
+      dataProvince = addressController.dataProvince;
+      selectedProvinceId = addressController.selectedProvinceId;
     } else {
       getDataProvince();
     }
-    if (addressGetXController.dataDistrict.isNotEmpty) {
-      dataDistrict = addressGetXController.dataDistrict;
-      selectedDistrictId = addressGetXController.selectedDistrictId;
+    if (addressController.dataDistrict.isNotEmpty) {
+      dataDistrict = addressController.dataDistrict;
+      selectedDistrictId = addressController.selectedDistrictId;
     }
-    if (addressGetXController.dataWard.isNotEmpty) {
-      dataWard = addressGetXController.dataWard;
-      selectedWardId = addressGetXController.selectedWardId;
+    if (addressController.dataWard.isNotEmpty) {
+      dataWard = addressController.dataWard;
+      selectedWardId = addressController.selectedWardId;
     }
-    if (addressGetXController.tuyenListAddress.isNotEmpty) {
-      AddressModel addressModel = addressGetXController.tuyenListAddress[0];
+    if (addressController.tuyenListAddress.isNotEmpty) {
+      AddressModel addressModel = addressController.tuyenListAddress[0];
       fullNameController.text = addressModel.name;
       phoneNumberController.text = addressModel.phoneNumber;
-      addressController.text = addressModel.addressNumber;
+      addressNumberController.text = addressModel.addressNumber;
       selectedDistrictId = addressModel.districtId;
       selectedProvinceId = addressModel.cityId;
       selectedWardId = addressModel.wardCodeId;
@@ -814,7 +817,7 @@ class _SendboxAddressScreenState extends State<SendBoxAddressScreen> {
     return TextFormField(
       showCursor: true,
       cursorColor: Colors.black,
-      controller: addressController,
+      controller: addressNumberController,
       onChanged: (value) {
         setState(() {
           isErrorAddress = false;
@@ -908,7 +911,7 @@ class _SendboxAddressScreenState extends State<SendBoxAddressScreen> {
   bool validateData() {
     final phoneNumber = phoneNumberController.text;
     final fullName = fullNameController.text;
-    final address = addressController.text;
+    final address = addressNumberController.text;
 
     if (fullName.isEmpty) {
       setState(() {
@@ -959,12 +962,12 @@ class _SendboxAddressScreenState extends State<SendBoxAddressScreen> {
       AddressModel newAddress = AddressModel(
         name: fullNameController.text,
         phoneNumber: phoneNumberController.text,
-        addressNumber: addressController.text,
+        addressNumber: addressNumberController.text,
         cityId: selectedProvinceId!,
         wardCodeId: selectedWardId!,
         districtId: selectedDistrictId!,
       );
-      newAddress.addressFull = addressController.text +
+      newAddress.addressFull = addressNumberController.text +
           ", " +
           wardCodeController.text +
           ", " +
@@ -972,14 +975,14 @@ class _SendboxAddressScreenState extends State<SendBoxAddressScreen> {
           ", " +
           cityController.text;
       setState(() {
-        addressGetXController.tuyenListAddress.clear();
-        addressGetXController.addNewAddress(newAddress);
-        addressGetXController.dataDistrict = dataDistrict;
-        addressGetXController.dataProvince = dataProvince;
-        addressGetXController.dataWard = dataWard;
-        addressGetXController.selectedDistrictId = selectedDistrictId;
-        addressGetXController.selectedProvinceId = selectedProvinceId;
-        addressGetXController.selectedWardId = selectedWardId;
+        addressController.tuyenListAddress.clear();
+        addressController.addNewAddress(newAddress);
+        addressController.dataDistrict = dataDistrict;
+        addressController.dataProvince = dataProvince;
+        addressController.dataWard = dataWard;
+        addressController.selectedDistrictId = selectedDistrictId;
+        addressController.selectedProvinceId = selectedProvinceId;
+        addressController.selectedWardId = selectedWardId;
       });
     }
 
@@ -987,6 +990,8 @@ class _SendboxAddressScreenState extends State<SendBoxAddressScreen> {
   }
 
   onClickBackToMenu() {
+    addressController.tuyenListAddress.clear();
+    chooseBoxController.listOrders.clear();
     Get.toNamed(
       AppRoutes.homeContainerScreen,
     );

@@ -10,6 +10,7 @@ import 'package:lastapp/model/orderModel.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 
+import '../address_screen/controller/send_box_address_controller.dart';
 import 'controller/send_box_choose_box_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -23,8 +24,10 @@ class SendBoxChooseBoxScreen extends StatefulWidget {
 
 class MainSendBox extends State<SendBoxChooseBoxScreen>
     with TickerProviderStateMixin {
-  SendBoxChooseBoxController sendBoxChooseBoxController =
+  SendBoxChooseBoxController chooseBoxController =
       Get.put(SendBoxChooseBoxController());
+  SendBoxAddressController addressController =
+      Get.put(SendBoxAddressController());
 
   List<OrderModel> listOrders = <OrderModel>[];
   bool checkAll = false;
@@ -115,7 +118,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
             listOrders.add(element);
           });
 
-          sendBoxChooseBoxController.listOrders.add(element);
+          chooseBoxController.listOrders.add(element);
         }
       } else {
         print('Request failed with status: ${response.statusCode}');
@@ -128,10 +131,10 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
 
   @override
   void initState() {
-    if (sendBoxChooseBoxController.listOrders.length == 0)
+    if (chooseBoxController.listOrders.length == 0)
       requestOrder();
     else
-      listOrders = sendBoxChooseBoxController.listOrders;
+      listOrders = chooseBoxController.listOrders;
     super.initState();
   }
 
@@ -589,7 +592,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
     return GestureDetector(
       onTap: () => setState(() {
         listOrders[index].checked = !listOrders[index].checked!;
-        sendBoxChooseBoxController.listOrders[index].checked =
+        chooseBoxController.listOrders[index].checked =
             listOrders[index].checked;
         if (listOrders[index].checked == false) checkAll = false;
       }),
@@ -818,6 +821,8 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
 
   /// Navigates to the typeRequestScreen when the action is triggered.
   onClickBackToMenu() {
+    addressController.tuyenListAddress.clear();
+    chooseBoxController.listOrders.clear();
     Get.toNamed(
       AppRoutes.homeContainerScreen,
     );

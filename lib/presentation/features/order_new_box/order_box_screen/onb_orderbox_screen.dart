@@ -10,6 +10,7 @@ import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 
 import '../../../../widgets/custom_icon_button.dart';
+import '../address_screen/controller/onb_address_controller.dart';
 import 'controller/onb_orderbox_controller.dart';
 
 // ignore: must_be_immutable
@@ -24,6 +25,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   //==============================================================================
   // CONTROLLER
   OnbOrderboxController newOrderController = Get.put(OnbOrderboxController());
+  OnbAddressController addressController = Get.put(OnbAddressController());
 
   //==============================================================================
   // DECLARE VARIABLES
@@ -314,7 +316,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            onClickBackToHomepageBtn();
+                            onClickBackToMenu();
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -2303,7 +2305,9 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
 
   // navigators
   /// Navigates to the typeRequestScreen when the action is triggered.
-  onClickBackToHomepageBtn() {
+  onClickBackToMenu() {
+    addressController.userInformation.clear();
+    newOrderController.listBoxes.clear();
     Get.toNamed(
       AppRoutes.homeContainerScreen,
     );
