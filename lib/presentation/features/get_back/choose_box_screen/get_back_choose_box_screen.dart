@@ -736,7 +736,7 @@ class _GetBackChooseBoxState extends State<GetBackChooseBoxScreen>
             SizedBox(height: 10.v),
             _buildContentItemWithPicture(
               imageService: ImageConstant.imgGrid,
-              text: boxOrder.listItem,
+              text: boxOrder.dimension,
               textStyleService: TextStyle(
                 color: appTheme.gray80002,
                 fontSize: 15.fSize,

@@ -6,10 +6,10 @@ import 'package:lastapp/model/orderModel.dart';
 import 'package:lastapp/widgets/custom_image_view.dart';
 
 // ignore: must_be_immutable
-class OrderDetailsScreen extends StatelessWidget {
+class OrderDetailShipScreen extends StatelessWidget {
   final OrderModel order;
 
-  OrderDetailsScreen({required this.order});
+  OrderDetailShipScreen({required this.order});
 
   String descriptions = "";
 
@@ -20,30 +20,20 @@ class OrderDetailsScreen extends StatelessWidget {
       priceTotal += box.price;
     }
 
-    switch (order.status) {
-      case 'WaitingProcessing':
+    switch (order.shipStatusName) {
+      case 'awaiting confirmation':
         descriptions = "In processing and will be updated soon";
         break;
-      case 'Processing':
-        descriptions = "In processing and will be updated soon";
+      case 'waiting for delivery':
+        descriptions = "The order is in the process of being delivery";
         break;
-      case 'NotYetWarehouse':
-        descriptions =
-            "The order is in the process of being delivered to the warehouse";
+      case 'awaiting shipping':
+        descriptions = "The order is in shipping";
         break;
-      case 'Shipped':
-        descriptions = "The order has arrived at the warehouse";
-        break;
-      case 'WaitingGetBack':
-        descriptions = "The order are being returned";
-        break;
-      case 'GetBackDelivery':
-        descriptions = "The order has been returned";
-        break;
-      case 'Done':
+      case 'done':
         descriptions = "The order has finished";
         break;
-      case 'Cancelled':
+      case 'cancelled':
         descriptions = "The order has cancelled";
         break;
     }
@@ -83,13 +73,7 @@ class OrderDetailsScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          '${order.status.replaceAllMapped(
-                                RegExp(r'([a-z])([A-Z])'),
-                                (Match m) => '${m[1]} ${m[2]}',
-                              ).replaceAllMapped(
-                                RegExp(r'([A-Z])([A-Z][a-z])'),
-                                (Match m) => '${m[1]} ${m[2]}',
-                              )}',
+                          '${order.shipStatusName.split(' ').map((e) => e[0].toUpperCase() + e.substring(1)).join(' ')}',
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 18,

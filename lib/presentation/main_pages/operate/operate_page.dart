@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
+import 'package:lastapp/presentation/order_detail/order_detail.dart';
 
 class OperatePage extends StatefulWidget {
   OperatePage({Key? key})
@@ -42,12 +43,12 @@ class _OperatePageState extends State<OperatePage> {
   ];
 
   final List<String> tabs = [
-    'Waiting processing',
+    'WaitingProcessing',
     'Processing',
-    'Not yet warehouse',
+    'NotYetWarehouse',
     'Shipped',
-    'Waiting getBack',
-    'Get back delivery',
+    'WaitingGetBack',
+    'GetBackDelivery',
     'Done',
     'Cancelled',
   ];
@@ -274,9 +275,18 @@ class _OperatePageState extends State<OperatePage> {
                 ),
                 isScrollable: true,
                 tabs: tabs.map((String tab) {
+                  String convertedString = tab
+                      .replaceAllMapped(
+                        RegExp(r'([a-z])([A-Z])'),
+                        (Match m) => '${m[1]} ${m[2]}',
+                      )
+                      .replaceAllMapped(
+                        RegExp(r'([A-Z])([A-Z][a-z])'),
+                        (Match m) => '${m[1]} ${m[2]}',
+                      );
                   return Container(
                     child: Tab(
-                      text: tab,
+                      text: convertedString,
                     ),
                   );
                 }).toList(),
@@ -489,6 +499,13 @@ class _OperatePageState extends State<OperatePage> {
     for (var box in orderItem.boxes) {
       priceTotal += box.price;
     }
+    Color thisColorState = Colors.white;
+    for (int j = 0; j < tabs.length; j++) {
+      if (orderItem.status.toLowerCase() == tabs[j].toLowerCase()) {
+        thisColorState = colors[j];
+        break;
+      }
+    }
 
     return Container(
       width: SizeUtils.width,
@@ -541,22 +558,20 @@ class _OperatePageState extends State<OperatePage> {
                         decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.elliptical(20, 20)),
-                            color: orderItem.shipStatusName == tabs[0]
-                                ? colors[0]
-                                : orderItem.shipStatusName == tabs[1]
-                                    ? colors[1]
-                                    : orderItem.shipStatusName == tabs[2]
-                                        ? colors[2]
-                                        : colors[3]),
+                            color: thisColorState),
                         child: Container(
                           width: SizeUtils.width - 30.h * 2,
                           child: Center(
                             child: Text(
-                              orderItem.shipStatusName
-                                  .split(' ')
-                                  .map((e) =>
-                                      e[0].toUpperCase() + e.substring(1))
-                                  .join(' '),
+                              orderItem.status
+                                  .replaceAllMapped(
+                                    RegExp(r'([a-z])([A-Z])'),
+                                    (Match m) => '${m[1]} ${m[2]}',
+                                  )
+                                  .replaceAllMapped(
+                                    RegExp(r'([A-Z])([A-Z][a-z])'),
+                                    (Match m) => '${m[1]} ${m[2]}',
+                                  ),
                               overflow: TextOverflow.clip,
                               style: TextStyle(
                                 fontSize: 13.v,
@@ -585,7 +600,12 @@ class _OperatePageState extends State<OperatePage> {
                   ),
                   child: GestureDetector(
                     onTap: () {
-                      print('more details');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                OrderDetailsScreen(order: orderItem)),
+                      );
                     },
                     child: Text(
                       "More details",

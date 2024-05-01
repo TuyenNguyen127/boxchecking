@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
+import 'package:lastapp/presentation/order_detail/order_detail_ship.dart';
 
 class ShipScreen extends StatefulWidget {
   ShipScreen({Key? key}) : super(key: key);
@@ -548,6 +549,14 @@ class _ShipScreen extends State<ShipScreen> {
   }
 
   Widget shipItem(OrderModel orderItem) {
+    Color thisColorState = Colors.white;
+    for (int j = 0; j < tabs.length; j++) {
+      if (orderItem.shipStatusName.toLowerCase() == tabs[j].toLowerCase()) {
+        thisColorState = colors[j];
+        break;
+      }
+    }
+
     return Container(
       width: SizeUtils.width,
       decoration: AppDecoration.fillPrimary,
@@ -599,13 +608,7 @@ class _ShipScreen extends State<ShipScreen> {
                         decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.elliptical(20, 20)),
-                            color: orderItem.shipStatusName == tabs[0]
-                                ? colors[0]
-                                : orderItem.shipStatusName == tabs[1]
-                                    ? colors[1]
-                                    : orderItem.shipStatusName == tabs[2]
-                                        ? colors[2]
-                                        : colors[3]),
+                            color: thisColorState),
                         child: Container(
                           width: SizeUtils.width - 30.h * 2,
                           child: Center(
@@ -643,7 +646,12 @@ class _ShipScreen extends State<ShipScreen> {
                   ),
                   child: GestureDetector(
                     onTap: () {
-                      print('more details');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                OrderDetailShipScreen(order: orderItem)),
+                      );
                     },
                     child: Text(
                       "More details",
