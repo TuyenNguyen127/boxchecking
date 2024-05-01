@@ -772,7 +772,7 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
 
   /// Navigates to the typeRequestScreen when the action is triggered.
   onClickBackToMenu() {
-    addressController.tuyenListAddress.clear();
+    addressController.removeAddress();
     chooseBoxController.listOrders.clear();
     Get.toNamed(
       AppRoutes.homeContainerScreen,

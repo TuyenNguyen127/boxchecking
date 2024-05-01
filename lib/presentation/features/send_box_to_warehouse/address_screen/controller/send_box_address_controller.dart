@@ -120,6 +120,12 @@ class SendBoxAddressController extends GetxController {
   }
 
   void removeAddress() {
+    dataProvince = [];
+    dataDistrict = [];
+    dataWard = [];
+    selectedProvinceId = null;
+    selectedDistrictId = null;
+    selectedWardId = null;
     tuyenListAddress.clear();
   }
 }

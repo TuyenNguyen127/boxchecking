@@ -991,7 +991,7 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
   }
 
   onClickBackToMenu() {
-    addressController.tuyenListAddress.clear();
+    addressController.removeAddress();
     chooseBoxController.listOrders.clear();
     Get.toNamed(
       AppRoutes.homeContainerScreen,

@@ -438,6 +438,9 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                   },
                 ),
               ),
+              SizedBox(
+                height: 70,
+              )
             ],
           ),
         ),
@@ -645,7 +648,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
           //
           Container(
             // height: listOrders[index].boxes.length * 125.v + 60.v,
-            height: listOrders[index].boxes.length * 160.v,
+            height: listOrders[index].boxes.length * 170.v,
             child: Column(
               children: [
                 //
@@ -821,7 +824,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
 
   /// Navigates to the typeRequestScreen when the action is triggered.
   onClickBackToMenu() {
-    addressController.tuyenListAddress.clear();
+    addressController.removeAddress();
     chooseBoxController.listOrders.clear();
     Get.toNamed(
       AppRoutes.homeContainerScreen,

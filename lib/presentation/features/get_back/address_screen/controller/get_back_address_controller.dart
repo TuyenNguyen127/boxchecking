@@ -119,8 +119,14 @@ class GetBackAddressController extends GetxController {
     tuyenListAddress.add(newAddress);
   }
 
-  void removeAddress(index) {
-    // if (tuyenListAddress.isEmpty) return;
-    // tuyenListAddress.removeAt(index);
+  void removeAddress() {
+    dataProvince = [];
+    dataDistrict = [];
+    dataWard = [];
+    selectedProvinceId = null;
+    selectedDistrictId = null;
+    selectedWardId = null;
+    if (tuyenListAddress.isEmpty) return;
+    tuyenListAddress.clear();
   }
 }

@@ -116,6 +116,12 @@ class OnbAddressController extends GetxController {
   }
 
   void removeAddress() {
+    dataProvince = [];
+    dataDistrict = [];
+    dataWard = [];
+    selectedProvinceId = null;
+    selectedDistrictId = null;
+    selectedWardId = null;
     if (userInformation.isEmpty) return;
     userInformation.clear();
   }

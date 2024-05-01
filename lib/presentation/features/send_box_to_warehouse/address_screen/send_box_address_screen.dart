@@ -990,7 +990,7 @@ class _SendboxAddressScreenState extends State<SendBoxAddressScreen> {
   }
 
   onClickBackToMenu() {
-    addressController.tuyenListAddress.clear();
+    addressController.removeAddress();
     chooseBoxController.listOrders.clear();
     Get.toNamed(
       AppRoutes.homeContainerScreen,
