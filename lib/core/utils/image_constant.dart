@@ -2,6 +2,8 @@ class ImageConstant {
   // Image folder path
   static String imagePath = 'assets/images';
 
+  static String authenBackgr = '$imagePath/authen_backgr_img.svg';
+
   // Recived images
   static String imgLockBlueGray300 = '$imagePath/img_lock_blue_gray_300.svg';
 
@@ -115,4 +117,8 @@ class ImageConstant {
   static String imgImage11 = '$imagePath/img_image_11.png';
 
   static String imageNotFound = 'assets/images/image_not_found.png';
+
+  static String personSittingBackgr = 'assets/images/person_sitting.png';
+
+  static String authenBackgrPNG = 'assets/images/person_sitting.png';
 }
