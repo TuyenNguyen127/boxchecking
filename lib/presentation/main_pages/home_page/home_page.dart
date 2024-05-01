@@ -109,6 +109,17 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  String convertValue(int value) {
+    if (value > 1000000) {
+      double roundedValue = (value / 10000).roundToDouble();
+      return '${(roundedValue / 100).toStringAsFixed(2)}m';
+    } else if (value >= 1000) {
+      double roundedValue = (value / 1000).roundToDouble();
+      return '${(roundedValue / 100).toStringAsFixed(2)}k';
+    } else
+      return value.toString();
+  }
+
   void getDataShipPage(List<OrderModel> orders) {
     setState(() {
       totalPrice = 0;
@@ -312,7 +323,10 @@ class _HomePageState extends State<HomePage> {
                 ((6 <= currentHour && currentHour <= 12) &&
                         currentHourStringAmOrPm == 'pm')
                     ? 'Evening,'
-                    : 'Morning,',
+                    : (1 <= currentHour && currentHour < 6) &&
+                            currentHourStringAmOrPm == 'pm'
+                        ? 'Afternoon'
+                        : 'Morning,',
                 // 'Morning,',
                 style: TextStyle(
                   color: Colors.black54,
@@ -522,7 +536,7 @@ class _HomePageState extends State<HomePage> {
                 20.h,
                 'Total price',
                 appTheme.gray80001,
-                "${totalPrice} VND",
+                "${convertValue(totalPrice)} VND",
                 appTheme.black900,
               ),
               gridItem(

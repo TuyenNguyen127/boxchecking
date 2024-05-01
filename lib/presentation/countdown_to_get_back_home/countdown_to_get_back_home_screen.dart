@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/presentation/home_container/home_container_screen.dart';
 
@@ -64,6 +65,15 @@ class _PendingToGetBackHomeScreenState
                   '${_counter}',
                   style: TextStyle(fontSize: 40),
                 ),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomeContainerScreen()),
+                      );
+                    },
+                    child: Container(child: Text('Back to home')))
               ],
             ),
           ],
