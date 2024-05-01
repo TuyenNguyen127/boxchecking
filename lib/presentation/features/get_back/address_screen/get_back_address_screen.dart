@@ -206,7 +206,73 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
       leading: AppbarLeadingImage(
         imagePath: ImageConstant.imgVectorPrimary,
         margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
-        onTap: () => onTapVector(),
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  'Warning',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+                content: Text(
+                  'Are you want to quit ?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+                actions: <Widget>[
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            // Đóng dialog khi nhấn "No"
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'No',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            onClickBackToMenu();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Yes',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
       ),
       title: Text(
         'Get back',
@@ -921,40 +987,19 @@ class _GetBackAddressScreenState extends State<GetBackAddressScreen> {
     return true;
   }
 
-  onTapVector() {
+  onClickBackToMenu() {
     Get.toNamed(
-      AppRoutes.typeRequestScreen,
+      AppRoutes.homeContainerScreen,
     );
-    // Navigator.pop(context);
   }
 
   onTapBtnArrowLeft(context) {
-    //NavigationBar.pop();
-
-    // saveDataForAddressPage();
-    //
-    // Navigator.pop(context);
-
     Get.toNamed(
       AppRoutes.getBackChooseBoxScreen,
     );
   }
 
   onTapBtnArrowRight(context) {
-    // Get.toNamed(
-    //   AppRoutes.onbCheckingAndPaymentScreen,
-    // );
-
-    //
-    // saveDataForAddressPage();
-    //
-    // Navigator.pop(context);
-    //
-    // Get.toNamed(
-    //   AppRoutes.onbCheckingAndPaymentScreen,
-    // );
-
-    //
     if (validateData())
       Navigator.pushNamed(
         context,

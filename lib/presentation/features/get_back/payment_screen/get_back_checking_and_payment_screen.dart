@@ -82,96 +82,6 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
         date: "2024-04-10",
         toWardCode: "1",
         toDistrictId: 1),
-    OrderModel(
-        orderId: 2,
-        status: "WaitingGetBack",
-        shipStatusName: "Processing",
-        boxes: [
-          BoxOrderModel(
-            boxId: 1,
-            boxTypeId: 1,
-            boxModelId: 1,
-            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-            boxServices: "Hang On, Washing",
-            weight: 1,
-            quantity: 1,
-            dimension: "Plastic Box | Large",
-            price: 50000,
-          ),
-          BoxOrderModel(
-            boxId: 2,
-            boxTypeId: 1,
-            boxModelId: 1,
-            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-            boxServices: "Hang On, Washing",
-            weight: 1,
-            quantity: 1,
-            dimension: "Plastic Box | Large",
-            price: 80000,
-          ),
-          BoxOrderModel(
-            boxId: 2,
-            boxTypeId: 1,
-            boxModelId: 1,
-            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-            boxServices: "Hang On, Washing",
-            weight: 1,
-            quantity: 1,
-            dimension: "Plastic Box | Large",
-            price: 80000,
-          ),
-        ],
-        name: "Do Ngoc Long",
-        phoneNumber: "0123456789",
-        address: "Toa song Da, Pham Hung",
-        date: "2024-04-10",
-        toWardCode: "1",
-        toDistrictId: 1),
-    OrderModel(
-        orderId: 3,
-        status: "WaitingGetBack",
-        shipStatusName: "Delivered",
-        boxes: [
-          BoxOrderModel(
-            boxId: 1,
-            boxTypeId: 1,
-            boxModelId: 1,
-            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-            boxServices: "Hang On, Washing",
-            weight: 1,
-            quantity: 1,
-            dimension: "Plastic Box | Large",
-            price: 50000,
-          ),
-          BoxOrderModel(
-            boxId: 2,
-            boxTypeId: 1,
-            boxModelId: 1,
-            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-            boxServices: "Hang On, Washing",
-            weight: 1,
-            quantity: 1,
-            dimension: "Plastic Box | Large",
-            price: 80000,
-          ),
-          BoxOrderModel(
-            boxId: 2,
-            boxTypeId: 1,
-            boxModelId: 1,
-            listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-            boxServices: "Hang On, Washing",
-            weight: 1,
-            quantity: 1,
-            dimension: "Plastic Box | Large",
-            price: 80000,
-          ),
-        ],
-        name: "Do Ngoc Long",
-        phoneNumber: "0123456789",
-        address: "Toa song Da, Pham Hung",
-        date: "2024-04-10",
-        toWardCode: "1",
-        toDistrictId: 1)
   ];
   List<int> idList = [];
 
@@ -185,8 +95,10 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
     if (chooseBoxController.listOrders.isNotEmpty) {
       listOrders.clear();
       for (var order in chooseBoxController.listOrders) {
-        listOrders.add(order);
-        idList.add(order.orderId);
+        if (order.checked!) {
+          listOrders.add(order);
+          idList.add(order.orderId);
+        }
       }
     }
 
@@ -243,7 +155,73 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
       leading: AppbarLeadingImage(
         imagePath: ImageConstant.imgVectorPrimary,
         margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
-        onTap: () => onTapVector(),
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  'Warning',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+                content: Text(
+                  'Are you want to quit ?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+                actions: <Widget>[
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            // Đóng dialog khi nhấn "No"
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'No',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            onClickBackToMenu();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Yes',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
       ),
       title: Text(
         'Checking and Payment',
@@ -565,7 +543,7 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${box.dimension} | ${box.weight}kg | ${box.boxServices}',
+                      '${box.dimension} | ${box.weight}g | ${box.boxServices}',
                       overflow: TextOverflow.clip,
                       style: TextStyle(
                         color: Color(0xff309cff),
@@ -840,9 +818,9 @@ class MainCheckingAndPayment extends State<GetBackCheckingAndPaymentScreen> {
   }
 
   /// Navigates to the typeRequestScreen when the action is triggered.
-  onTapVector() {
+  onClickBackToMenu() {
     Get.toNamed(
-      AppRoutes.typeRequestScreen,
+      AppRoutes.homeContainerScreen,
     );
   }
 

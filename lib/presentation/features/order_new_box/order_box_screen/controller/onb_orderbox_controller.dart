@@ -17,4 +17,8 @@ class OnbOrderboxController extends GetxController {
       listBoxes.add(boxItem);
     }
   }
+
+  void clearBoxesData() {
+    listBoxes.clear();
+  }
 }

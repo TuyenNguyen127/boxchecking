@@ -119,8 +119,7 @@ class SendBoxAddressController extends GetxController {
     tuyenListAddress.add(newAddress);
   }
 
-  void removeAddress(index) {
-    // if (tuyenListAddress.isEmpty) return;
-    // tuyenListAddress.removeAt(index);
+  void removeAddress() {
+    tuyenListAddress.clear();
   }
 }

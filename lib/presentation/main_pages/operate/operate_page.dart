@@ -671,7 +671,7 @@ class _OperatePageState extends State<OperatePage> {
                                     ),
                                   ),
                                   Text(
-                                    '${orderItem.boxes[index].dimension} | ${orderItem.boxes[index].weight}kg | ${orderItem.boxes[index].boxServices}',
+                                    '${orderItem.boxes[index].dimension} | ${orderItem.boxes[index].weight}g | ${orderItem.boxes[index].boxServices}',
                                     overflow: TextOverflow.clip,
                                     style: TextStyle(
                                       color: Colors.black,
