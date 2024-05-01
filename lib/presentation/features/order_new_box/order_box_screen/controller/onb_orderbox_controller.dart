@@ -9,10 +9,16 @@ import '../../../../../core/app_export.dart';
 class OnbOrderboxController extends GetxController {
   RxList<BoxOrderModel> listBoxes = <BoxOrderModel>[].obs;
 
+  List<List<int>> boxServices = [];
+
   void addBoxesToOrder(List<BoxOrderModel> _listBoxes) {
     listBoxes.clear();
     for (var boxItem in _listBoxes) {
       listBoxes.add(boxItem);
     }
+  }
+
+  void clearBoxesData() {
+    listBoxes.clear();
   }
 }

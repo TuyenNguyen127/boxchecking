@@ -23,9 +23,9 @@ class SendBoxCheckingAndPaymentScreen extends StatefulWidget {
 }
 
 class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
-  SendBoxChooseBoxController sendBoxChooseBoxController =
+  SendBoxChooseBoxController chooseBoxController =
       Get.put(SendBoxChooseBoxController());
-  SendBoxAddressController addressGetXController =
+  SendBoxAddressController addressController =
       Get.put(SendBoxAddressController());
 
   bool checkTerms = false;
@@ -57,7 +57,7 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 50000),
@@ -67,7 +67,7 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 80000)
@@ -78,90 +78,6 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
         date: "2024-04-10",
         toWardCode: "1",
         toDistrictId: 1),
-    OrderModel(
-        orderId: 2,
-        status: "WaitingGetBack",
-        shipStatusName: "Processing",
-        boxes: [
-          BoxOrderModel(
-              boxId: 1,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 50000),
-          BoxOrderModel(
-              boxId: 2,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 80000),
-          BoxOrderModel(
-              boxId: 2,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 80000)
-        ],
-        name: "Do Ngoc Long",
-        phoneNumber: "0123456789",
-        address: "Toa song Da, Pham Hung",
-        date: "2024-04-10",
-        toWardCode: "1",
-        toDistrictId: 1),
-    OrderModel(
-        orderId: 3,
-        status: "WaitingGetBack",
-        shipStatusName: "Delivered",
-        boxes: [
-          BoxOrderModel(
-              boxId: 1,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 50000),
-          BoxOrderModel(
-              boxId: 2,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 80000),
-          BoxOrderModel(
-              boxId: 2,
-              boxTypeId: 1,
-              boxModelId: 1,
-              listItem: "10 x Quan | 10 x Ao | 10 x Giay",
-              boxServices: "Hang On, Washing",
-              weight: 0.1,
-              quantity: 1,
-              dimension: "Plastic Box | Large",
-              price: 80000)
-        ],
-        name: "Do Ngoc Long",
-        phoneNumber: "0123456789",
-        address: "Toa song Da, Pham Hung",
-        date: "2024-04-10",
-        toWardCode: "1",
-        toDistrictId: 1)
   ];
   List<int> idList = [];
 
@@ -171,15 +87,17 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
   @override
   void initState() {
     addressModel.addressFull = "";
-    if (addressGetXController.tuyenListAddress.isNotEmpty) {
-      addressModel = addressGetXController.tuyenListAddress[0];
+    if (addressController.tuyenListAddress.isNotEmpty) {
+      addressModel = addressController.tuyenListAddress[0];
     }
 
-    if (sendBoxChooseBoxController.listOrders.isNotEmpty) {
+    if (chooseBoxController.listOrders.isNotEmpty) {
       listOrders.clear();
-      for (var order in sendBoxChooseBoxController.listOrders) {
-        listOrders.add(order);
-        idList.add(order.orderId);
+      for (var order in chooseBoxController.listOrders) {
+        if (order.checked!) {
+          listOrders.add(order);
+          idList.add(order.orderId);
+        }
       }
     }
 
@@ -190,7 +108,7 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: _buildAppBar(),
+        appBar: _buildAppBar(context),
         body: Container(
           decoration: AppDecoration.fillGray,
           width: SizeUtils.width,
@@ -221,7 +139,7 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
   }
 
   // app bar
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       centerTitle: true,
       elevation: 0,
@@ -230,7 +148,73 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
       leading: AppbarLeadingImage(
         imagePath: ImageConstant.imgVectorPrimary,
         margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
-        onTap: () => onTapVector(),
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  'Warning',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+                content: Text(
+                  'Are you want to quit ?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+                actions: <Widget>[
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            // Đóng dialog khi nhấn "No"
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'No',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            onClickBackToMenu();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Yes',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
       ),
       title: Text(
         'Checking and Payment',
@@ -506,7 +490,7 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${box.dimension} | ${box.weight}kg | ${box.boxServices}',
+                                '${box.dimension} | ${box.weight}g | ${box.boxServices}',
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
                                   color: Color(0xff309cff),
@@ -787,9 +771,11 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
   }
 
   /// Navigates to the typeRequestScreen when the action is triggered.
-  onTapVector() {
+  onClickBackToMenu() {
+    addressController.removeAddress();
+    chooseBoxController.listOrders.clear();
     Get.toNamed(
-      AppRoutes.typeRequestScreen,
+      AppRoutes.homeContainerScreen,
     );
   }
 
@@ -863,6 +849,8 @@ class MainCheckingAndPayment extends State<SendBoxCheckingAndPaymentScreen> {
 
       if (response.statusCode == 200) {
         print('Push thành công');
+        addressController.removeAddress();
+        chooseBoxController.clearData();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PendingToGetBackHomeScreen()),

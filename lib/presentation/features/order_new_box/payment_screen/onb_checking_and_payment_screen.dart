@@ -53,7 +53,7 @@ class _OnbCheckingAndPaymentScreenState
         boxModelId: 1,
         listItem: "10 x Quan | 10 x Ao | 10 x Giay",
         boxServices: "Hang On, Washing",
-        weight: 0.1,
+        weight: 1,
         quantity: 1,
         dimension: "Plastic Box | Large",
         price: 50000,
@@ -64,7 +64,7 @@ class _OnbCheckingAndPaymentScreenState
         boxModelId: 1,
         listItem: "10 x Quan | 10 x Ao | 10 x Giay",
         boxServices: "Hang On, Washing",
-        weight: 0.1,
+        weight: 1,
         quantity: 1,
         dimension: "Plastic Box | Large",
         price: 80000,
@@ -90,7 +90,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 50000),
@@ -100,7 +100,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 80000)
@@ -122,7 +122,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 50000),
@@ -132,7 +132,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 80000),
@@ -142,7 +142,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 80000)
@@ -164,7 +164,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 50000),
@@ -174,7 +174,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 80000),
@@ -184,7 +184,7 @@ class _OnbCheckingAndPaymentScreenState
               boxModelId: 1,
               listItem: "10 x Quan | 10 x Ao | 10 x Giay",
               boxServices: "Hang On, Washing",
-              weight: 0.1,
+              weight: 1,
               quantity: 1,
               dimension: "Plastic Box | Large",
               price: 80000)
@@ -198,6 +198,7 @@ class _OnbCheckingAndPaymentScreenState
   ];
 
   List<int> idList = [];
+  List<List<int>> listBoxesService = [];
 
   double heightItems = 0.v;
   int total = 0;
@@ -207,9 +208,11 @@ class _OnbCheckingAndPaymentScreenState
     addressModel.addressFull = " ";
     if (newOrderController.listBoxes.isNotEmpty) {
       listBoxes.clear();
+      listBoxesService.clear();
       for (var box in newOrderController.listBoxes) {
         listBoxes.add(box);
       }
+      listBoxesService = newOrderController.boxServices;
     }
 
     if (addressController.userInformation.isNotEmpty) {
@@ -263,10 +266,75 @@ class _OnbCheckingAndPaymentScreenState
       backgroundColor: appTheme.redA200,
       leadingWidth: 60.h,
       leading: AppbarLeadingImage(
-        imagePath: ImageConstant.imgVectorPrimary,
-        margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
-        onTap: () => onTapVector(),
-      ),
+          imagePath: ImageConstant.imgVectorPrimary,
+          margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(
+                    'Warning',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  content: Text(
+                    'Are you want to quit ?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  actions: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              // Đóng dialog khi nhấn "No"
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'No',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              onClickBackToMenu();
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Yes',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          }),
       title: Text(
         'Checking and Payment',
         style: TextStyle(
@@ -830,9 +898,11 @@ class _OnbCheckingAndPaymentScreenState
   }
 
   /// Navigates to the typeRequestScreen when the action is triggered.
-  onTapVector() {
+  onClickBackToMenu() {
+    addressController.userInformation.clear();
+    newOrderController.listBoxes.clear();
     Get.toNamed(
-      AppRoutes.onbAddressScreen,
+      AppRoutes.homeContainerScreen,
     );
   }
 
@@ -886,16 +956,16 @@ class _OnbCheckingAndPaymentScreenState
       var uri = Uri.https(dotenv.get('HOST'), '/api/Order/CreateNewOrder');
 
       List<Map<String, dynamic>> boxesJson = [];
-      for (var box in listBoxes) {
-        List<String> boxServices = box.boxServices.split(", ");
+      for (int i = 0; i < listBoxes.length; i++) {
+        //List<String> boxServices = box.boxServices.split(", ");
 
         Map<String, dynamic> boxJson = {
-          "boxTypeId": box.boxTypeId,
-          "boxModelId": box.boxModelId,
-          "listItem": box.listItem,
-          "boxServices": boxServices,
-          "weight": box.weight,
-          "quantity": box.quantity
+          "boxTypeId": listBoxes[i].boxTypeId,
+          "boxModelId": listBoxes[i].boxModelId,
+          "listItem": listBoxes[i].listItem,
+          "boxServices": listBoxesService[i],
+          "weight": 100, //listBoxes[i].weight,
+          "quantity": listBoxes[i].quantity
         };
         boxesJson.add(boxJson);
       }
@@ -925,13 +995,13 @@ class _OnbCheckingAndPaymentScreenState
 
       if (response.statusCode == 200) {
         print('Push thành công');
+        addressController.removeAddress();
+        newOrderController.clearBoxesData();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PendingToGetBackHomeScreen()),
         );
       } else {
-        print(response.statusCode);
-        print(response.body);
         throw Exception('Failed.');
       }
     } catch (e) {

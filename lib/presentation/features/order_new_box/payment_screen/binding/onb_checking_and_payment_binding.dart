@@ -1,4 +1,3 @@
-import 'package:lastapp/presentation/features/order_new_box/payment_screen/controller/onb_checking_and_payment_controller.dart';
 import 'package:get/get.dart';
 
 /// A binding class for the OnbCheckingAndPaymentScreen.
@@ -8,6 +7,6 @@ import 'package:get/get.dart';
 class OnbCheckingAndPaymentBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => OnbCheckingAndPaymentController());
+    //Get.lazyPut(() => OnbCheckingAndPaymentController());
   }
 }

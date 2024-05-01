@@ -8,6 +8,7 @@ import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/model/addressModel.dart';
 import 'package:http/http.dart' as http;
 
+import '../order_box_screen/controller/onb_orderbox_controller.dart';
 import 'controller/onb_address_controller.dart';
 
 // ignore_for_file: must_be_immutable
@@ -19,7 +20,8 @@ class OnbAddressScreen extends StatefulWidget {
 }
 
 class _OnbAddressScreenState extends State<OnbAddressScreen> {
-  OnbAddressController addressGetXController = Get.put(OnbAddressController());
+  OnbAddressController addressController = Get.put(OnbAddressController());
+  OnbOrderboxController newOrderController = Get.put(OnbOrderboxController());
 
   TextEditingController phoneNumberController = TextEditingController();
   bool isErrorPhoneNumber = false;
@@ -36,7 +38,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
   TextEditingController cityController = TextEditingController();
   bool isErrorCity = false;
 
-  TextEditingController addressController = TextEditingController();
+  TextEditingController addressNumberController = TextEditingController();
   bool isErrorAddress = false;
 
   List<dynamic> dataProvince = [
@@ -139,25 +141,25 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
 
   @override
   void initState() {
-    if (addressGetXController.dataProvince.isNotEmpty) {
-      dataProvince = addressGetXController.dataProvince;
-      selectedProvinceId = addressGetXController.selectedProvinceId;
+    if (addressController.dataProvince.isNotEmpty) {
+      dataProvince = addressController.dataProvince;
+      selectedProvinceId = addressController.selectedProvinceId;
     } else {
       getDataProvince();
     }
-    if (addressGetXController.dataDistrict.isNotEmpty) {
-      dataDistrict = addressGetXController.dataDistrict;
-      selectedDistrictId = addressGetXController.selectedDistrictId;
+    if (addressController.dataDistrict.isNotEmpty) {
+      dataDistrict = addressController.dataDistrict;
+      selectedDistrictId = addressController.selectedDistrictId;
     }
-    if (addressGetXController.dataWard.isNotEmpty) {
-      dataWard = addressGetXController.dataWard;
-      selectedWardId = addressGetXController.selectedWardId;
+    if (addressController.dataWard.isNotEmpty) {
+      dataWard = addressController.dataWard;
+      selectedWardId = addressController.selectedWardId;
     }
-    if (addressGetXController.userInformation.isNotEmpty) {
-      AddressModel addressModel = addressGetXController.userInformation[0];
+    if (addressController.userInformation.isNotEmpty) {
+      AddressModel addressModel = addressController.userInformation[0];
       fullNameController.text = addressModel.name;
       phoneNumberController.text = addressModel.phoneNumber;
-      addressController.text = addressModel.addressNumber;
+      addressNumberController.text = addressModel.addressNumber;
       selectedDistrictId = addressModel.districtId;
       selectedProvinceId = addressModel.cityId;
       selectedWardId = addressModel.wardCodeId;
@@ -205,7 +207,73 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
       leading: AppbarLeadingImage(
         imagePath: ImageConstant.imgVectorPrimary,
         margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
-        onTap: () => onClickBackToNewOrderPage(),
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  'Warning',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+                content: Text(
+                  'Are you want to quit ?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+                actions: <Widget>[
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            // Đóng dialog khi nhấn "No"
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'No',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            onClickBackToMenu();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Yes',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
       ),
       title: Text(
         'Address',
@@ -735,7 +803,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
     return TextFormField(
       showCursor: true,
       cursorColor: Colors.black,
-      controller: addressController,
+      controller: addressNumberController,
       onChanged: (value) {
         setState(() {
           isErrorAddress = false;
@@ -829,7 +897,7 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
   bool validateData() {
     final phoneNumber = phoneNumberController.text;
     final fullName = fullNameController.text;
-    final address = addressController.text;
+    final address = addressNumberController.text;
 
     if (fullName.isEmpty) {
       setState(() {
@@ -880,12 +948,12 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
       AddressModel newAddress = AddressModel(
         name: fullNameController.text,
         phoneNumber: phoneNumberController.text,
-        addressNumber: addressController.text,
+        addressNumber: addressNumberController.text,
         cityId: selectedProvinceId!,
         wardCodeId: selectedWardId!,
         districtId: selectedDistrictId!,
       );
-      newAddress.addressFull = addressController.text +
+      newAddress.addressFull = addressNumberController.text +
           ", " +
           wardCodeController.text +
           ", " +
@@ -893,23 +961,25 @@ class _OnbAddressScreenState extends State<OnbAddressScreen> {
           ", " +
           cityController.text;
       setState(() {
-        addressGetXController.userInformation.clear();
-        addressGetXController.addNewAddress(newAddress);
-        addressGetXController.dataDistrict = dataDistrict;
-        addressGetXController.dataProvince = dataProvince;
-        addressGetXController.dataWard = dataWard;
-        addressGetXController.selectedDistrictId = selectedDistrictId;
-        addressGetXController.selectedProvinceId = selectedProvinceId;
-        addressGetXController.selectedWardId = selectedWardId;
+        addressController.userInformation.clear();
+        addressController.addNewAddress(newAddress);
+        addressController.dataDistrict = dataDistrict;
+        addressController.dataProvince = dataProvince;
+        addressController.dataWard = dataWard;
+        addressController.selectedDistrictId = selectedDistrictId;
+        addressController.selectedProvinceId = selectedProvinceId;
+        addressController.selectedWardId = selectedWardId;
       });
     }
 
     return true;
   }
 
-  onClickBackToNewOrderPage() {
+  onClickBackToMenu() {
+    addressController.userInformation.clear();
+    newOrderController.listBoxes.clear();
     Get.toNamed(
-      AppRoutes.onbOrderboxScreen,
+      AppRoutes.homeContainerScreen,
     );
   }
 

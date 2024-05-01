@@ -831,7 +831,7 @@ class _ShipScreen extends State<ShipScreen> {
                               Flexible(
                                 flex: 9,
                                 child: Text(
-                                  '${orderItem.boxes[index].dimension} | ${orderItem.boxes[index].weight}kg | ${orderItem.boxes[index].boxServices}',
+                                  '${orderItem.boxes[index].dimension} | ${orderItem.boxes[index].weight}g | ${orderItem.boxes[index].boxServices}',
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
                                     color: appTheme.gray800,

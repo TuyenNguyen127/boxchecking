@@ -60,7 +60,7 @@ class BoxOrderModel {
   int boxModelId;
   String listItem;
   String boxServices;
-  double weight;
+  int weight;
   int quantity;
   String dimension;
   int price;

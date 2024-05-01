@@ -10,6 +10,7 @@ import 'package:lastapp/model/orderModel.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 
+import '../address_screen/controller/send_box_address_controller.dart';
 import 'controller/send_box_choose_box_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -23,8 +24,10 @@ class SendBoxChooseBoxScreen extends StatefulWidget {
 
 class MainSendBox extends State<SendBoxChooseBoxScreen>
     with TickerProviderStateMixin {
-  SendBoxChooseBoxController sendBoxChooseBoxController =
+  SendBoxChooseBoxController chooseBoxController =
       Get.put(SendBoxChooseBoxController());
+  SendBoxAddressController addressController =
+      Get.put(SendBoxAddressController());
 
   List<OrderModel> listOrders = <OrderModel>[];
   bool checkAll = false;
@@ -115,7 +118,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
             listOrders.add(element);
           });
 
-          sendBoxChooseBoxController.listOrders.add(element);
+          chooseBoxController.listOrders.add(element);
         }
       } else {
         print('Request failed with status: ${response.statusCode}');
@@ -128,10 +131,10 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
 
   @override
   void initState() {
-    if (sendBoxChooseBoxController.listOrders.length == 0)
+    if (chooseBoxController.listOrders.length == 0)
       requestOrder();
     else
-      listOrders = sendBoxChooseBoxController.listOrders;
+      listOrders = chooseBoxController.listOrders;
     super.initState();
   }
 
@@ -140,7 +143,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
     return SafeArea(
       child: Scaffold(
         //
-        appBar: _buildAppBar(),
+        appBar: _buildAppBar(context),
         //
         body: Container(
           height: SizeUtils.height,
@@ -186,7 +189,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
   }
 
   // app bar
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       centerTitle: true,
       elevation: 0,
@@ -196,7 +199,71 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
         imagePath: ImageConstant.imgVectorPrimary,
         margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
         onTap: () {
-          onTapVector();
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  'Warning',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+                content: Text(
+                  'Are you want to quit ?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+                actions: <Widget>[
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            // Đóng dialog khi nhấn "No"
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'No',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            onClickBackToMenu();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Yes',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
         },
       ),
       title: Text(
@@ -371,6 +438,9 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
                   },
                 ),
               ),
+              SizedBox(
+                height: 70,
+              )
             ],
           ),
         ),
@@ -525,7 +595,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
     return GestureDetector(
       onTap: () => setState(() {
         listOrders[index].checked = !listOrders[index].checked!;
-        sendBoxChooseBoxController.listOrders[index].checked =
+        chooseBoxController.listOrders[index].checked =
             listOrders[index].checked;
         if (listOrders[index].checked == false) checkAll = false;
       }),
@@ -578,7 +648,7 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
           //
           Container(
             // height: listOrders[index].boxes.length * 125.v + 60.v,
-            height: listOrders[index].boxes.length * 160.v,
+            height: listOrders[index].boxes.length * 170.v,
             child: Column(
               children: [
                 //
@@ -753,9 +823,11 @@ class MainSendBox extends State<SendBoxChooseBoxScreen>
   }
 
   /// Navigates to the typeRequestScreen when the action is triggered.
-  onTapVector() {
+  onClickBackToMenu() {
+    addressController.removeAddress();
+    chooseBoxController.listOrders.clear();
     Get.toNamed(
-      AppRoutes.typeRequestScreen,
+      AppRoutes.homeContainerScreen,
     );
   }
 

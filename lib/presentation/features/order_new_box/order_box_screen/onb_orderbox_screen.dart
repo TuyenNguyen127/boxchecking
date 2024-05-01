@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:lastapp/model/boxOrderModel.dart';
@@ -9,6 +10,7 @@ import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/widgets/app_bar/appbar_leading_image.dart';
 
 import '../../../../widgets/custom_icon_button.dart';
+import '../address_screen/controller/onb_address_controller.dart';
 import 'controller/onb_orderbox_controller.dart';
 
 // ignore: must_be_immutable
@@ -23,6 +25,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   //==============================================================================
   // CONTROLLER
   OnbOrderboxController newOrderController = Get.put(OnbOrderboxController());
+  OnbAddressController addressController = Get.put(OnbAddressController());
 
   //==============================================================================
   // DECLARE VARIABLES
@@ -43,11 +46,11 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   List<dynamic> dataTypeBox = [
     {
       "id": 1,
-      "name": "Plastic box",
+      "name": "Plastic",
     },
     {
       "id": 2,
-      "name": "Carton box",
+      "name": "Carton",
     },
   ];
   List<dynamic> dataModelBox = [
@@ -55,49 +58,54 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
       "id": 1,
       "idTypeBox": 1,
       "name": "Large",
-      "description": "height: 50, width: 50, length: 100",
-      "size": "50x50x100",
+      "description": "height: 130 cm, width: 130 cm, length: 130 cm",
+      "size": "130x130x130",
     },
     {
       "id": 2,
       "idTypeBox": 1,
       "name": "Medium",
-      "description": "height: 50, width: 50, length: 50",
-      "size": "50x50x50",
+      "description": "height: 100 cm, width: 100 cm, length: 100 cm",
+      "size": "100x100x100",
     },
     {
       "id": 3,
       "idTypeBox": 1,
       "name": "Small",
-      "description": "height: 30, width: 30, length: 50",
-      "size": "30x30x50",
-    },
-    {
-      "id": 4,
-      "idTypeBox": 2,
-      "name": "Large",
-      "description": "height: 50, width: 50, length: 100",
-      "size": "50x50x100",
-    },
-    {
-      "id": 5,
-      "idTypeBox": 2,
-      "name": "Medium",
-      "description": "height: 50, width: 50, length: 50",
+      "description": "height: 50 cm, width: 50 cm, length: 50 cm",
       "size": "50x50x50",
     },
     {
-      "id": 6,
+      "id": 1,
+      "idTypeBox": 2,
+      "name": "Large",
+      "description": "height: 130 cm, width: 130 cm, length: 130 cm",
+      "size": "130x130x130",
+    },
+    {
+      "id": 2,
+      "idTypeBox": 2,
+      "name": "Medium",
+      "description": "height: 100 cm, width: 100 cm, length: 100 cm",
+      "size": "100x100x100",
+    },
+    {
+      "id": 3,
       "idTypeBox": 2,
       "name": "Small",
-      "description": "height: 30, width: 30, length: 50",
-      "size": "30x30x50",
+      "description": "height: 50 cm, width: 50 cm, length: 50 cm",
+      "size": "50x50x50",
     },
   ];
-  List<String> listServices = [
-    'Hang On',
-    'Keep In Shape',
-    'Washing',
+  List<Map<dynamic, dynamic>> listServices = [
+    {
+      "name": 'Washing',
+      "id": 1,
+    },
+    {
+      "name": 'Hang On',
+      "id": 2,
+    },
   ];
 
   List<BoxOrderModel> listBoxOrder = <BoxOrderModel>[];
@@ -266,7 +274,71 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
         imagePath: ImageConstant.imgVectorPrimary,
         margin: EdgeInsets.only(left: 22.h, top: 0.v, right: 22.h),
         onTap: () {
-          onClickBackToHomepageBtn();
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  'Warning',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+                content: Text(
+                  'Are you want to quit ?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
+                actions: <Widget>[
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            // Đóng dialog khi nhấn "No"
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'No',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            onClickBackToMenu();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Yes',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
         },
       ),
       title: Text(
@@ -660,7 +732,7 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
               for (var item in listServices)
                 ListTile(
                   title: Text(
-                    item,
+                    item['name'],
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 18.fSize,
@@ -668,19 +740,19 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
                     ),
                   ),
                   trailing: Icon(
-                    _listSelectedServicesInModal.contains(item)
+                    _listSelectedServicesInModal.contains(item['name'])
                         ? Icons.check_circle
                         : Icons.radio_button_unchecked,
-                    color: _listSelectedServicesInModal.contains(item)
+                    color: _listSelectedServicesInModal.contains(item['name'])
                         ? Colors.green
                         : null,
                   ),
                   onTap: () {
                     _setState(() {
-                      if (_listSelectedServicesInModal.contains(item)) {
-                        _listSelectedServicesInModal.remove(item);
+                      if (_listSelectedServicesInModal.contains(item['name'])) {
+                        _listSelectedServicesInModal.remove(item['name']);
                       } else {
-                        _listSelectedServicesInModal.add(item);
+                        _listSelectedServicesInModal.add(item['name']);
                       }
                     });
                   },
@@ -2233,7 +2305,9 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
 
   // navigators
   /// Navigates to the typeRequestScreen when the action is triggered.
-  onClickBackToHomepageBtn() {
+  onClickBackToMenu() {
+    addressController.userInformation.clear();
+    newOrderController.listBoxes.clear();
     Get.toNamed(
       AppRoutes.homeContainerScreen,
     );
@@ -2243,8 +2317,24 @@ class _OnbOrderboxScreenState extends State<OnbOrderboxScreen> {
   onTapBtnArrowRight(context) {
     if (listBoxOrder.length != 0) {
       newOrderController.addBoxesToOrder(listBoxOrder);
-      // Navigator.pushNamed(context, AppRoutes.onbAddressScreen);
+      newOrderController.boxServices.clear();
 
+      for (var box in listBoxOrder) {
+        List<String> serviceInBox = box.boxServices.split(', ');
+        List<int> listIdService = [];
+
+        for (var serviceInBoxItem in serviceInBox) {
+          for (var sv in listServices) {
+            if (sv['name'] == serviceInBoxItem) {
+              listIdService.add(sv['id']);
+            }
+          }
+        }
+
+        newOrderController.boxServices.add(listIdService);
+      }
+
+      print(newOrderController.boxServices);
       Get.toNamed(
         AppRoutes.onbAddressScreen,
       );

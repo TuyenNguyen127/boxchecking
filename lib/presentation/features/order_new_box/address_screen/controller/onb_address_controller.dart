@@ -69,9 +69,6 @@ class OnbAddressController extends GetxController {
     provinceController = TextEditingController(
       text: provinceStringList.length > 0 ? provinceStringList.last : '',
     );
-    // typeController = TextEditingController(
-    //   text: typeStringList.length > 0 ? typeStringList.last : '',
-    // );
   }
 
   void addFullname(value) {
@@ -118,8 +115,14 @@ class OnbAddressController extends GetxController {
     userInformation.add(newAddress);
   }
 
-  void removeAddress(index) {
-    // if (userInformation.isEmpty) return;
-    // userInformation.removeAt(index);
+  void removeAddress() {
+    dataProvince = [];
+    dataDistrict = [];
+    dataWard = [];
+    selectedProvinceId = null;
+    selectedDistrictId = null;
+    selectedWardId = null;
+    if (userInformation.isEmpty) return;
+    userInformation.clear();
   }
 }
