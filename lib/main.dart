@@ -1,16 +1,28 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+import 'package:lastapp/helpers/hive_helper.dart';
 import 'core/app_export.dart';
 
-Future main() async {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // hive section
+  await Hive.initFlutter();
+  HiveHelper.registerAdapters();
+
+  // open box
+  // box user accounts
+  await HiveHelper.openUserAccounts();
+
   await dotenv.load(fileName: ".env", mergeWith: {
     'TEST_VAR': '5',
   });
-  WidgetsFlutterBinding.ensureInitialized();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then((value) {
@@ -36,7 +48,8 @@ class MyApp extends StatelessWidget {
         fallbackLocale: Locale('en', 'US'),
         title: 'lastapp',
         initialBinding: InitialBindings(),
-        initialRoute: AppRoutes.initialRoute,
+        initialRoute: AppRoutes.loginRoute,
+        // initialRoute: AppRoutes.registerRoute,
         getPages: AppRoutes.pages,
       );
     });

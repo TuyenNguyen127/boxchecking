@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive/hive.dart';
 import 'package:lastapp/core/app_export.dart';
+import 'package:lastapp/model/userModel.dart';
 import 'package:lastapp/presentation/authen_page/forgot_pass/forgot_pass.dart';
 import 'package:lastapp/presentation/authen_page/register/register.dart';
+
+import '../../../service/authen/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -12,8 +17,25 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   //=====================================================================================================
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+
+  // late Box<UserModel> userBox;
+
+  //=====================================================================================================
+  final _formKey = GlobalKey<FormState>();
+  final accountController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  String _accountErrMsg = '';
+  String _passwordErrMsg = '';
+
+  //=====================================================================================================
+
+  @override
+  void initState() {
+    super.initState();
+
+    // userBox = Hive.box<UserModel>('users');
+  }
 
   //=====================================================================================================
 
@@ -102,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 //
                 SizedBox(height: 30.v),
-                inputEmail(),
+                inputAccount(),
                 // password
                 SizedBox(height: 30.v),
                 inputPassword(),
@@ -124,16 +146,16 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget inputEmail() {
+  Widget inputAccount() {
     return TextField(
-      controller: emailController,
+      controller: accountController,
       cursorColor: Colors.red,
       style: TextStyle(color: Colors.black),
       decoration: InputDecoration(
-        labelText: 'Email',
+        labelText: 'Account',
         labelStyle: TextStyle(color: Colors.grey),
         focusColor: Colors.black,
-        hintText: 'Enter your email',
+        hintText: 'Enter email or username',
         hintStyle: TextStyle(color: Colors.grey),
         contentPadding: EdgeInsets.symmetric(
           vertical: 22.v,
@@ -167,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
         labelText: 'Password',
         labelStyle: TextStyle(color: Colors.grey),
         focusColor: Colors.black,
-        hintText: 'Enter your password',
+        hintText: 'Enter the password',
         hintStyle: TextStyle(color: Colors.grey),
         contentPadding: EdgeInsets.symmetric(
           vertical: 22.v,
@@ -287,9 +309,65 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void onClickBtnLogin() {
-    print('login');
-    print('${emailController.text}');
-    print('${passwordController.text}');
+  bool checkValidateLogin() {
+    return true;
+  }
+
+  void onClickBtnLogin() async {
+    if (checkValidateLogin()) {
+      // Login
+      final userBox = Hive.box<UserModel>('users');
+      AuthService authService = AuthService(userBox);
+
+      String username = accountController.text.trim();
+      String password = passwordController.text.trim();
+
+      bool isLoggedIn = await authService.login(username, password);
+
+      if (isLoggedIn) {
+        // Login successful
+        _showDelayedToast('Login successful', 'top');
+
+        accountController.clear();
+        passwordController.clear();
+      } else {
+        // Invalid username or password
+        _showDelayedToast('Invalid username or password', 'top');
+      }
+
+      // Reset error message
+      setState(() {
+        _accountErrMsg = '';
+        _passwordErrMsg = '';
+      });
+    } else {
+      // // Form is not valid, set error message
+      // setState(() {
+      //   _errorMessage = 'Please fill all fields';
+      // });
+      _showDelayedToast('You should type enough fields', 'top');
+    }
+  }
+
+  void _showDelayedToast(String text, String position) {
+    if (position.toLowerCase() == 'top') {
+      Fluttertoast.showToast(
+        msg: text,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    } else if (position.toLowerCase() == 'bottom') {
+      Fluttertoast.showToast(
+        msg: text,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    }
   }
 }

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hive/hive.dart';
 import 'package:lastapp/core/app_export.dart';
+import 'package:lastapp/model/userModel.dart';
 import 'package:lastapp/presentation/authen_page/login/login.dart';
+import 'package:lastapp/service/authen/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -11,9 +15,24 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   //=====================================================================================================
+
+  late Box<UserModel> userBox;
+
+  //=====================================================================================================
+  TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+
+  //=====================================================================================================
+
+  @override
+  void initState() {
+    super.initState();
+
+    userBox = Hive.box<UserModel>('users');
+  }
 
   //=====================================================================================================
 
@@ -41,9 +60,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 //
                 Positioned(top: 50.v, child: _buildImageBackgr()),
                 //
-                Positioned(
-                  top: 300.v,
+                Center(
+                  // child: Positioned(
+                  // top: 100.v,
                   child: _buildForm(),
+                  // ),
                 ),
                 //
               ],
@@ -102,6 +123,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 //
                 SizedBox(height: 30.v),
+                inputUsername(),
+                //
+                SizedBox(height: 30.v),
                 inputEmail(),
                 // password
                 SizedBox(height: 30.v),
@@ -109,6 +133,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 // confirm password
                 SizedBox(height: 30.v),
                 inputConfirmPassword(),
+                //
+                SizedBox(height: 30.v),
+                inputPhoneNumber(),
                 // inputButton
                 SizedBox(height: 20.v),
                 inputButton(),
@@ -120,6 +147,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget inputUsername() {
+    return TextField(
+      controller: usernameController,
+      cursorColor: Colors.red,
+      style: TextStyle(color: Colors.black),
+      decoration: InputDecoration(
+        labelText: 'Username',
+        labelStyle: TextStyle(color: Colors.grey),
+        focusColor: Colors.black,
+        hintText: 'Enter your username',
+        hintStyle: TextStyle(color: Colors.grey),
+        contentPadding: EdgeInsets.symmetric(
+          vertical: 22.v,
+          horizontal: 15.h,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: BorderSide(
+            color: Colors.red,
+            width: 2.0,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: BorderSide(
+            color: Colors.red,
+            width: 2.0,
+          ),
+        ),
       ),
     );
   }
@@ -201,7 +261,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
         labelText: 'Confirm password',
         labelStyle: TextStyle(color: Colors.grey),
         focusColor: Colors.black,
-        hintText: 'Enter your password',
+        hintText: 'Confirm your password',
+        hintStyle: TextStyle(color: Colors.grey),
+        contentPadding: EdgeInsets.symmetric(
+          vertical: 22.v,
+          horizontal: 15.h,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: BorderSide(
+            color: Colors.red,
+            width: 2.0,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(6),
+          borderSide: BorderSide(
+            color: Colors.red,
+            width: 2.0,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget inputPhoneNumber() {
+    return TextField(
+      controller: phoneNumberController,
+      cursorColor: Colors.red,
+      style: TextStyle(color: Colors.black),
+      decoration: InputDecoration(
+        labelText: 'Phone number',
+        labelStyle: TextStyle(color: Colors.grey),
+        focusColor: Colors.black,
+        hintText: 'Enter your phone number',
         hintStyle: TextStyle(color: Colors.grey),
         contentPadding: EdgeInsets.symmetric(
           vertical: 22.v,
@@ -312,7 +405,65 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void onClickBtnRegister() {
+  void onClickBtnRegister() async {
     print('Register');
+
+    String username = usernameController.text.trim();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    String confirmPassword = confirmPasswordController.text.trim();
+    String phoneNumber = phoneNumberController.text.trim();
+
+    // Register a new user
+    AuthService authService = AuthService(userBox);
+
+    UserModel newUser = UserModel(
+      username,
+      email,
+      password,
+      confirmPassword,
+      phoneNumber,
+    );
+
+    bool isRegistered = await authService.register(newUser);
+
+    if (isRegistered) {
+      usernameController.clear();
+      emailController.clear();
+      passwordController.clear();
+      confirmPasswordController.clear();
+      phoneNumberController.clear();
+
+      // Registration successful
+      _showDelayedToast('Registration successful', 'top');
+      onClickBtnSwitchToPageLogin();
+    } else {
+      // Username or email already exists
+      _showDelayedToast('Username or email already exists', 'top');
+    }
+  }
+
+  void _showDelayedToast(String text, String position) {
+    if (position.toLowerCase() == 'top') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    } else if (position.toLowerCase() == 'bottom') {
+      Fluttertoast.showToast(
+        msg: text,
+        // toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    }
   }
 }

@@ -1,4 +1,7 @@
 import 'package:get/get.dart';
+import 'package:lastapp/presentation/authen_page/forgot_pass/forgot_pass.dart';
+import 'package:lastapp/presentation/authen_page/login/login.dart';
+import 'package:lastapp/presentation/authen_page/register/register.dart';
 import 'package:lastapp/presentation/main_pages/home_page/home_page.dart';
 import '../presentation/home_container/home_container_screen.dart';
 import '../presentation/features/order_new_box/payment_screen/onb_checking_and_payment_screen.dart';
@@ -20,6 +23,10 @@ class AppRoutes {
   static const String appNavigationScreen = '/app_navigation_screen';
 
   static const String initialRoute = '/initialRoute';
+
+  static const String loginRoute = '/loginRoute';
+  static const String registerRoute = '/registerRoute';
+  static const String forgotPasswordRoute = '/forgotPasswordRoute';
 
   static const String homeContainerScreen = '/home_container_screen';
 
@@ -62,6 +69,18 @@ class AppRoutes {
 
   static List<GetPage> pages = [
     GetPage(
+      name: loginRoute,
+      page: () => LoginScreen(),
+    ),
+    GetPage(
+      name: registerRoute,
+      page: () => RegisterScreen(),
+    ),
+    GetPage(
+      name: forgotPasswordRoute,
+      page: () => ForgotPasswordScreen(),
+    ),
+    GetPage(
       name: initialRoute,
       page: () => HomeContainerScreen(),
       // bindings: [
@@ -71,23 +90,10 @@ class AppRoutes {
     GetPage(
       name: homeContainerScreen,
       page: () => HomeContainerScreen(),
-      // bindings: [
-      //   HomeContainerBinding(),
-      // ],
-    ),
-    GetPage(
-      name: homePage,
-      page: () => HomePage(),
-      // bindings: [
-      //   HomeContainerBinding(),
-      // ],
     ),
     GetPage(
       name: onbOrderboxScreen,
       page: () => OnbOrderboxScreen(),
-      // bindings: [
-      //   OnbOrderboxBinding(),
-      // ],
     ),
     GetPage(
       name: onbAddressScreen,
@@ -99,17 +105,7 @@ class AppRoutes {
     GetPage(
       name: onbCheckingAndPaymentScreen,
       page: () => OnbCheckingAndPaymentScreen(),
-      // bindings: [
-      //   OnbCheckingAndPaymentBinding(),
-      // ],
     ),
-    // GetPage(
-    //   name: typeRequestScreen,
-    //   page: () => TypeRequestScreen(),
-    //   bindings: [
-    //     TypeRequestBinding(),
-    //   ],
-    // ),
     GetPage(
       name: sendBoxChooseBoxScreen,
       page: () => SendBoxChooseBoxScreen(),
@@ -141,16 +137,10 @@ class AppRoutes {
     GetPage(
       name: getBackAddressScreen,
       page: () => GetBackAddressScreen(),
-      // bindings: [
-      //   GetBackAddressBinding(),
-      // ],
     ),
     GetPage(
       name: getBackCheckingAndPaymentScreen,
       page: () => GetBackCheckingAndPaymentScreen(),
-      // bindings: [
-      //   GetBackCheckingAndPaymentBinding(),
-      // ],
     ),
     // GetPage(
     //   name: appNavigationScreen,

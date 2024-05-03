@@ -5,6 +5,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:lastapp/model/boxOrderModel.dart';
 import 'package:lastapp/model/orderModel.dart';
+import 'package:lastapp/presentation/authen_page/login/login.dart';
+import 'package:lastapp/presentation/authen_page/register/register.dart';
 import 'package:lastapp/presentation/main_pages/home_page/home_page.dart';
 import 'package:lastapp/presentation/main_pages/ship/ship_page.dart';
 import 'package:lastapp/presentation/main_pages/operate/operate_page.dart';
@@ -25,6 +27,7 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
   int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
+    // LoginScreen(),
     HomePage(),
     ShipScreen(),
     OperatePage(),
