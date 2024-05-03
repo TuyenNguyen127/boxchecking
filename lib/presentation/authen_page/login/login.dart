@@ -5,6 +5,7 @@ import 'package:lastapp/core/app_export.dart';
 import 'package:lastapp/model/userModel.dart';
 import 'package:lastapp/presentation/authen_page/forgot_pass/forgot_pass.dart';
 import 'package:lastapp/presentation/authen_page/register/register.dart';
+import 'package:lastapp/presentation/home_container/home_container_screen.dart';
 
 import '../../../service/authen/auth_service.dart';
 
@@ -326,10 +327,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (isLoggedIn) {
         // Login successful
-        _showDelayedToast('Login successful', 'top');
-
         accountController.clear();
         passwordController.clear();
+
+        _showDelayedToast('Login successful', 'top');
+
+        switchToHomeContainerScreen();
       } else {
         // Invalid username or password
         _showDelayedToast('Invalid username or password', 'top');
@@ -347,6 +350,13 @@ class _LoginScreenState extends State<LoginScreen> {
       // });
       _showDelayedToast('You should type enough fields', 'top');
     }
+  }
+
+  void switchToHomeContainerScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeContainerScreen()),
+    );
   }
 
   void _showDelayedToast(String text, String position) {

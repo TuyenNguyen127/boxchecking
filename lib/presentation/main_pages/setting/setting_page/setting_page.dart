@@ -13,6 +13,10 @@ class SettingPage extends StatelessWidget {
 
   SettingController controller = Get.put(SettingController(SettingModel().obs));
 
+  final FIRST_HEIGHT = 200.v;
+  final SECOND_HEIGHT = 200.v;
+  final THIRD_HEIGHT = SizeUtils.height - 200.v - 200.v;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -20,23 +24,53 @@ class SettingPage extends StatelessWidget {
         appBar: _buildAppBarSettingPage(),
         body: Container(
           width: SizeUtils.width,
+          height: SizeUtils.height,
           decoration: AppDecoration.fillGray,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 8.v),
-              child: Column(
-                children: [
-                  _buildView(),
-                  SizedBox(height: 10.v),
-                  _buildManagement(),
-                  SizedBox(height: 10.v),
-                  _buildSetting(),
-                ],
+          //
+          // child: SingleChildScrollView(
+          //   child: Padding(
+          //     padding: EdgeInsets.only(bottom: 8.v),
+          //     child: Column(
+          //       children: [
+          //         _buildView(),
+          //         SizedBox(height: 10.v),
+          //         _buildManagement(),
+          //         SizedBox(height: 10.v),
+          //         _buildSetting(),
+          //       ],
+          //     ),
+          //   ),
+          // ),
+          //
+          child: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: _buildRedBackgrBelowAppbar(),
+                ),
               ),
-            ),
+              Positioned(
+                top: 0.v,
+                child: _buildContentPage(),
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildContentPage() {
+    return Column(
+      children: [
+        _buildView(),
+        SizedBox(height: 10.v),
+        _buildManagement(),
+        SizedBox(height: 10.v),
+        _buildSetting(),
+      ],
     );
   }
 
@@ -59,83 +93,71 @@ class SettingPage extends StatelessWidget {
     );
   }
 
+  Widget _buildRedBackgrBelowAppbar() {
+    return Container(
+      color: appTheme.redA200,
+      height: 100.v,
+      width: SizeUtils.width,
+    );
+  }
+
   /// Section Widget
   Widget _buildView() {
     return SizedBox(
-      height: 230.v,
+      width: SizeUtils.width,
+      height: FIRST_HEIGHT,
+      // height: 230.v,
       child: Stack(
-        alignment: Alignment.bottomCenter,
         children: [
           Align(
-            alignment: Alignment.topCenter,
+            alignment: Alignment.bottomCenter,
             child: Container(
-              height: 68.v,
-              decoration: BoxDecoration(
-                color: appTheme.redA200,
+              margin: EdgeInsets.only(top: 30.v),
+              padding: EdgeInsets.symmetric(
+                horizontal: 105.h,
+                vertical: 61.v,
+              ),
+              decoration: AppDecoration.fillPrimary.copyWith(
+                borderRadius: BorderRadiusStyle.customBorderTL15,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 46.v),
+                    child: Text(
+                      "lbl_nguy_n_tuy_n2".tr,
+                      style: CustomTextStyles.titleLargeBlack900_1,
+                    ),
+                  ),
+                  CustomImageView(
+                    imagePath: ImageConstant.imgEditBlack900,
+                    height: 14.adaptSize,
+                    width: 14.adaptSize,
+                    margin: EdgeInsets.only(
+                      left: 13.h,
+                      top: 4.v,
+                      bottom: 52.v,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
           Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              height: 224.v,
-              width: SizeUtils.width - 10.v,
-              child: Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      margin: EdgeInsets.only(top: 30.v),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 105.h,
-                        vertical: 61.v,
-                      ),
-                      decoration: AppDecoration.fillPrimary.copyWith(
-                        borderRadius: BorderRadiusStyle.customBorderTL15,
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(bottom: 46.v),
-                            child: Text(
-                              "lbl_nguy_n_tuy_n2".tr,
-                              style: CustomTextStyles.titleLargeBlack900_1,
-                            ),
-                          ),
-                          CustomImageView(
-                            imagePath: ImageConstant.imgEditBlack900,
-                            height: 14.adaptSize,
-                            width: 14.adaptSize,
-                            margin: EdgeInsets.only(
-                              left: 13.h,
-                              top: 4.v,
-                              bottom: 52.v,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      height: 80.adaptSize,
-                      width: 80.adaptSize,
-                      padding: EdgeInsets.all(17.h),
-                      decoration: AppDecoration.outlineBluegray100.copyWith(
-                        borderRadius: BorderRadiusStyle.circleBorder40,
-                      ),
-                      child: CustomImageView(
-                        imagePath: ImageConstant.imgLockPrimary,
-                        height: 42.adaptSize,
-                        width: 42.adaptSize,
-                        alignment: Alignment.center,
-                      ),
-                    ),
-                  ),
-                ],
+            alignment: Alignment.topCenter,
+            child: Container(
+              height: 80.adaptSize,
+              width: 80.adaptSize,
+              padding: EdgeInsets.all(17.h),
+              decoration: AppDecoration.outlineBluegray100.copyWith(
+                borderRadius: BorderRadiusStyle.circleBorder40,
+              ),
+              child: CustomImageView(
+                imagePath: ImageConstant.imgLockPrimary,
+                height: 42.adaptSize,
+                width: 42.adaptSize,
+                alignment: Alignment.center,
               ),
             ),
           ),
@@ -147,8 +169,10 @@ class SettingPage extends StatelessWidget {
   /// Section Widget
   Widget _buildManagement() {
     return Container(
-      width: 391.h,
-      height: 160.h,
+      width: SizeUtils.width,
+      height: SECOND_HEIGHT,
+      // width: 391.h,
+      // height: 160.h,
       padding: EdgeInsets.all(11.h),
       decoration: AppDecoration.fillPrimary,
       child: Column(
@@ -195,8 +219,10 @@ class SettingPage extends StatelessWidget {
   /// Section Widget
   Widget _buildSetting() {
     return Container(
-      width: 391.h,
-      height: 250.h,
+      width: SizeUtils.width,
+      height: THIRD_HEIGHT,
+      // width: 391.h,
+      // height: 250.h,
       padding: EdgeInsets.symmetric(
         horizontal: 19.h,
         vertical: 15.v,

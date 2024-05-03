@@ -28,7 +28,8 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
 
   static List<Widget> _widgetOptions = <Widget>[
     // LoginScreen(),
-    HomePage(),
+    SettingPage(),
+    // HomePage(),
     ShipScreen(),
     OperatePage(),
     SettingPage(),
