@@ -16,6 +16,8 @@ class AuthService {
     // Save the user to the box
     await _userBox.add(user);
 
+    print('users box length ${_userBox.length}');
+
     return true;
   }
 

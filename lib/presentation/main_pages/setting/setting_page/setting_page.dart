@@ -109,58 +109,75 @@ class SettingPage extends StatelessWidget {
       // height: 230.v,
       child: Stack(
         children: [
+          //
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              margin: EdgeInsets.only(top: 30.v),
-              padding: EdgeInsets.symmetric(
-                horizontal: 105.h,
-                vertical: 61.v,
-              ),
+              width: SizeUtils.width,
+              height: FIRST_HEIGHT,
+              margin: EdgeInsets.only(top: 40.v),
               decoration: AppDecoration.fillPrimary.copyWith(
                 borderRadius: BorderRadiusStyle.customBorderTL15,
+                // border: Border.all(color: Colors.black),
               ),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 46.v),
+                  //
+                  Container(
                     child: Text(
-                      "lbl_nguy_n_tuy_n2".tr,
-                      style: CustomTextStyles.titleLargeBlack900_1,
+                      // "lbl_nguy_n_tuy_n2".tr,
+                      // style: CustomTextStyles.titleLargeBlack900_1,
+                      "Nguyễn Tuyển",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20.fSize,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                  CustomImageView(
-                    imagePath: ImageConstant.imgEditBlack900,
-                    height: 14.adaptSize,
-                    width: 14.adaptSize,
-                    margin: EdgeInsets.only(
-                      left: 13.h,
-                      top: 4.v,
-                      bottom: 52.v,
-                    ),
+                  //
+                  SizedBox(width: 10.h),
+                  //
+                  GestureDetector(
+                    onTap: () {
+                      onClickEditInfo();
+                    },
+                    child: Icon(Icons.edit),
                   ),
+                  //
                 ],
               ),
             ),
           ),
+          //
           Align(
             alignment: Alignment.topCenter,
             child: Container(
               height: 80.adaptSize,
               width: 80.adaptSize,
-              padding: EdgeInsets.all(17.h),
               decoration: AppDecoration.outlineBluegray100.copyWith(
                 borderRadius: BorderRadiusStyle.circleBorder40,
               ),
-              child: CustomImageView(
-                imagePath: ImageConstant.imgLockPrimary,
-                height: 42.adaptSize,
-                width: 42.adaptSize,
-                alignment: Alignment.center,
+              //
+              // child: CustomImageView(
+              //   imagePath: ImageConstant.imgLockPrimary,
+              //   height: 60.adaptSize,
+              //   width: 60.adaptSize,
+              //   alignment: Alignment.center,
+              // ),
+              //
+              child: Center(
+                child: Icon(
+                  Icons.person,
+                  color: Colors.white,
+                  size: 50.fSize,
+                ),
               ),
             ),
           ),
+          //
         ],
       ),
     );
@@ -173,44 +190,63 @@ class SettingPage extends StatelessWidget {
       height: SECOND_HEIGHT,
       // width: 391.h,
       // height: 160.h,
-      padding: EdgeInsets.all(11.h),
+      padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 10.v),
       decoration: AppDecoration.fillPrimary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "lbl_qu_n_l_chung".tr,
-            style: theme.textTheme.labelLarge,
-          ),
-          SizedBox(height: 20.v),
-          Padding(
-            padding: EdgeInsets.only(left: 9.h),
-            child: Row(
-              children: [
-                CustomIconButton(
-                  height: 30.adaptSize,
-                  width: 30.adaptSize,
-                  padding: EdgeInsets.all(5.h),
-                  decoration: IconButtonStyleHelper.fillBlueGray,
-                  child: CustomImageView(
-                    imagePath: ImageConstant.imgSave,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: 12.h,
-                    top: 7.v,
-                    bottom: 7.v,
-                  ),
-                  child: Text(
-                    "lbl_a_ch".tr,
-                    style: theme.textTheme.labelLarge,
-                  ),
-                ),
-              ],
+            // "lbl_qu_n_l_chung".tr,
+            // style: theme.textTheme.labelLarge,
+            "Quản lý chung",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16.fSize,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: 20.v),
+          SizedBox(height: 10.v),
+          //
+          GestureDetector(
+            onTap: () {
+              onClickAddress();
+            },
+            child: Container(
+              margin: EdgeInsets.only(left: 10.h),
+              child: Row(
+                children: [
+                  CustomIconButton(
+                    height: 30.adaptSize,
+                    width: 30.adaptSize,
+                    decoration: IconButtonStyleHelper.fillBlueGray,
+                    // child: CustomImageView(
+                    //   imagePath: ImageConstant.imgSave,
+                    // ),
+                    child: Icon(
+                      Icons.send,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: 10.h,
+                    ),
+                    child: Text(
+                      // "lbl_a_ch".tr,
+                      // style: theme.textTheme.labelLarge,
+                      "Địa chỉ",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.fSize,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // SizedBox(height: 20.v),
         ],
       ),
     );
@@ -223,76 +259,188 @@ class SettingPage extends StatelessWidget {
       height: THIRD_HEIGHT,
       // width: 391.h,
       // height: 250.h,
-      padding: EdgeInsets.symmetric(
-        horizontal: 19.h,
-        vertical: 15.v,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 10.v),
       decoration: AppDecoration.fillPrimary,
+      // child: Column(
+      //   crossAxisAlignment: CrossAxisAlignment.start,
+      //   children: [
+      //     Text(
+      //       // "lbl_c_i_t".tr,
+      //       // style: theme.textTheme.labelLarge,
+      //       "Cài đặt",
+      //       style: TextStyle(
+      //         color: Colors.black,
+      //         fontSize: 16.fSize,
+      //         fontWeight: FontWeight.w600,
+      //       ),
+      //     ),
+      //     SizedBox(height: 29.v),
+      //     Row(
+      //       crossAxisAlignment: CrossAxisAlignment.start,
+      //       children: [
+      //         Container(
+      //           height: 30.adaptSize,
+      //           width: 30.adaptSize,
+      //           // decoration: AppDecoration.fillRedA700.copyWith(
+      //           //   borderRadius: BorderRadius.circular(100),
+      //           // ),
+      //           decoration: BoxDecoration(
+      //             borderRadius: BorderRadius.circular(100),
+      //           ),
+      //           child: CustomImageView(
+      //             // color: appTheme.redA700,
+      //             imagePath: ImageConstant.imgVector,
+      //             height: 30.adaptSize,
+      //             width: 30.adaptSize,
+      //             alignment: Alignment.center,
+      //           ),
+      //         ),
+      //         Padding(
+      //           padding: EdgeInsets.only(
+      //             left: 19.h,
+      //             top: 3.v,
+      //             bottom: 11.v,
+      //           ),
+      //           child: Text(
+      //             // "lbl_th_ng_b_o".tr,
+      //             "Thông báo",
+      //             style: theme.textTheme.labelLarge,
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //     SizedBox(height: 10.v),
+      //     Row(
+      //       children: [
+      //         CustomIconButton(
+      //           height: 30.adaptSize,
+      //           width: 30.adaptSize,
+      //           padding: EdgeInsets.all(5.h),
+      //           decoration: IconButtonStyleHelper.fillBlueGray,
+      //           child: CustomImageView(
+      //             imagePath: ImageConstant.imgCheckmarkBlack900,
+      //           ),
+      //         ),
+      //         Padding(
+      //           padding: EdgeInsets.only(
+      //             left: 18.h,
+      //             top: 7.v,
+      //             bottom: 7.v,
+      //           ),
+      //           child: Text(
+      //             // "lbl_b_o_m_t".tr,
+      //             "Bảo mật",
+      //             style: theme.textTheme.labelLarge,
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //     SizedBox(height: 10.v),
+      //   ],
+      // ),
+      //
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "lbl_c_i_t".tr,
-            style: theme.textTheme.labelLarge,
-          ),
-          SizedBox(height: 29.v),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 30.adaptSize,
-                width: 30.adaptSize,
-                decoration: AppDecoration.fillRedA700.copyWith(
-                  borderRadius: BorderRadiusStyle.circleBorder15,
-                ),
-                child: CustomImageView(
-                  imagePath: ImageConstant.imgVector,
-                  height: 30.adaptSize,
-                  width: 30.adaptSize,
-                  alignment: Alignment.center,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: 19.h,
-                  top: 3.v,
-                  bottom: 11.v,
-                ),
-                child: Text(
-                  "lbl_th_ng_b_o".tr,
-                  style: theme.textTheme.labelLarge,
-                ),
-              ),
-            ],
+            "Cài đặt",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16.fSize,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           SizedBox(height: 10.v),
-          Row(
-            children: [
-              CustomIconButton(
-                height: 30.adaptSize,
-                width: 30.adaptSize,
-                padding: EdgeInsets.all(5.h),
-                decoration: IconButtonStyleHelper.fillBlueGray,
-                child: CustomImageView(
-                  imagePath: ImageConstant.imgCheckmarkBlack900,
-                ),
+          //
+          GestureDetector(
+            onTap: () {
+              onClickNotification();
+            },
+            child: Container(
+              margin: EdgeInsets.only(left: 10.h),
+              child: Row(
+                children: [
+                  CustomIconButton(
+                    height: 30.adaptSize,
+                    width: 30.adaptSize,
+                    decoration: IconButtonStyleHelper.fillBlueGray,
+                    child: Icon(
+                      Icons.notifications,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: 10.h,
+                    ),
+                    child: Text(
+                      "Thông báo",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.fSize,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: 18.h,
-                  top: 7.v,
-                  bottom: 7.v,
-                ),
-                child: Text(
-                  "lbl_b_o_m_t".tr,
-                  style: theme.textTheme.labelLarge,
-                ),
-              ),
-            ],
+            ),
           ),
           SizedBox(height: 10.v),
+          //
+          GestureDetector(
+            onTap: () {
+              onClickSecurity();
+            },
+            child: Container(
+              margin: EdgeInsets.only(left: 10.h),
+              child: Row(
+                children: [
+                  CustomIconButton(
+                    height: 30.adaptSize,
+                    width: 30.adaptSize,
+                    decoration: IconButtonStyleHelper.fillBlueGray,
+                    child: Icon(
+                      Icons.security,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: 10.h,
+                    ),
+                    child: Text(
+                      "Bảo mật",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.fSize,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          //
         ],
       ),
     );
+  }
+
+  void onClickEditInfo() {
+    print('edit info');
+  }
+
+  void onClickAddress() {
+    print('Address');
+  }
+
+  void onClickSecurity() {
+    print('Security');
+  }
+
+  void onClickNotification() {
+    print('Notification');
   }
 }

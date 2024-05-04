@@ -10,5 +10,9 @@ class HiveHelper {
 
   static Future<void> openUserAccounts() async {
     await Hive.openBox<UserModel>('users');
+
+    final _userBox = Hive.box<UserModel>('users');
+
+    print('users box length: ${_userBox.length}');
   }
 }

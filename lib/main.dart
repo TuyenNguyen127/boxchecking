@@ -48,8 +48,8 @@ class MyApp extends StatelessWidget {
         fallbackLocale: Locale('en', 'US'),
         title: 'lastapp',
         initialBinding: InitialBindings(),
-        initialRoute: AppRoutes.loginRoute,
-        // initialRoute: AppRoutes.registerRoute,
+        // initialRoute: AppRoutes.loginRoute,
+        initialRoute: AppRoutes.initialRoute,
         getPages: AppRoutes.pages,
       );
     });

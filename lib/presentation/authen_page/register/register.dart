@@ -16,7 +16,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   //=====================================================================================================
 
-  late Box<UserModel> userBox;
+  // late Box<UserModel> userBox;
 
   //=====================================================================================================
   TextEditingController usernameController = TextEditingController();
@@ -31,7 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void initState() {
     super.initState();
 
-    userBox = Hive.box<UserModel>('users');
+    // userBox = Hive.box<UserModel>('users');
   }
 
   //=====================================================================================================
@@ -413,6 +413,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String phoneNumber = phoneNumberController.text.trim();
+
+    final userBox = Hive.box<UserModel>('users');
 
     // Register a new user
     AuthService authService = AuthService(userBox);
