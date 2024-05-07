@@ -26,10 +26,69 @@ class _LoginScreenState extends State<LoginScreen> {
   final accountController = TextEditingController();
   final passwordController = TextEditingController();
 
+  final _controller = TextEditingController();
+
   String _accountErrMsg = '';
   String _passwordErrMsg = '';
 
+  String _emailErrorText = '';
+
+  bool notifyBelowInputAcc = false;
+  bool notifyBelowInputPass = false;
+
   //=====================================================================================================
+  // void _submit() {
+  //   // if there is no error text
+  //   if (_errorText == null) {
+  //     // notify the parent widget via the onSubmit callback
+  //     widget.onSubmit(_controller.value.text);
+  //   }
+  // }
+
+  // void _validateEmail(String value) {
+  //   if (value.isEmpty) {
+  //     setState(() {
+  //       notifyBelowInputAcc = true;
+  //       _emailErrorText = 'Email is required';
+  //     });
+  //   } else if (!isEmailValid(value)) {
+  //     setState(() {
+  //       notifyBelowInputAcc = true;
+  //       _emailErrorText = 'Enter a valid email address';
+  //     });
+  //   } else {
+  //     setState(() {
+  //       notifyBelowInputAcc = false;
+  //       _emailErrorText = '';
+  //     });
+  //   }
+  // }
+
+  // bool isEmailValid(String email) {
+  //   // Basic email validation using regex
+  //   // You can implement more complex validation if needed
+  //   return RegExp(r'^[\w-\.]+@[a-zA-Z]+\.[a-zA-Z]{2,}$').hasMatch(email);
+  // }
+
+  // void _submitForm() {
+  //   if (_formKey.currentState!.validate()) {
+  //     // Form is valid, proceed with your logic here
+  //     // For this example, we will simply print the email
+  //     print('Email: ${accountController.text}');
+  //   }
+  // }
+
+  //=====================================================================================================
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    accountController.dispose();
+    passwordController.dispose();
+
+    // _controller.dispose();
+  }
 
   @override
   void initState() {
@@ -95,60 +154,135 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  // Widget _buildNewForm() {
+  //   return ValueListenableBuilder(
+  //     // Note: pass _controller to the animation argument
+  //     valueListenable: _controller,
+  //     builder: (context, TextEditingValue value, __) {
+  //       // this entire widget tree will rebuild every time
+  //       // the controller value changes
+  //       return Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         crossAxisAlignment: CrossAxisAlignment.stretch,
+  //         children: [
+  //           //
+  //           inputAccount(),
+  //           //
+  //           inputPassword(),
+  //           //
+  //           inputButton(),
+  //           //
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
   Widget _buildForm() {
     return Container(
       width: SizeUtils.width,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            width: SizeUtils.width,
-            // height: SizeUtils.height * 2 / 3,
-            margin: EdgeInsets.symmetric(horizontal: 40.h),
-            padding: EdgeInsets.symmetric(horizontal: 40.h, vertical: 15.h),
-            child: Column(
-              children: [
-                //
-                SizedBox(height: 5.v),
-                Text(
-                  'Login'.toUpperCase(),
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
+      child: Form(
+        // key: _formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              width: SizeUtils.width,
+              // height: SizeUtils.height * 2 / 3,
+              margin: EdgeInsets.symmetric(horizontal: 40.h),
+              padding: EdgeInsets.symmetric(horizontal: 40.h, vertical: 15.h),
+              child: Column(
+                children: [
+                  //
+                  SizedBox(height: 5.v),
+                  Text(
+                    'Login'.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
                   ),
-                ),
-                //
-                SizedBox(height: 30.v),
-                inputAccount(),
-                // password
-                SizedBox(height: 30.v),
-                inputPassword(),
-                // link switch to page Forgot password
-                SizedBox(height: 20.v),
-                linkSwitchToPageForgotPassword(),
-                // inputButton
-                SizedBox(height: 20.v),
-                inputButton(),
-                // link switch to page Register
-                SizedBox(height: 20.v),
-                linkSwitchToPageRegister(),
-                //
-              ],
+                  // account
+                  SizedBox(height: 30.v),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //
+                      inputAccount(),
+                      //
+                      notifyBelowInputAcc
+                          ? Column(
+                              children: [
+                                SizedBox(height: 5.v),
+                                Text(
+                                  _accountErrMsg,
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 15.fSize,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(height: 10.v),
+                              ],
+                            )
+                          : Text(''),
+                    ],
+                  ),
+                  // password
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //
+                      inputPassword(),
+                      //
+                      notifyBelowInputPass
+                          ? Column(
+                              children: [
+                                SizedBox(height: 5.v),
+                                Text(
+                                  _passwordErrMsg,
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 15.fSize,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(height: 15.v),
+                              ],
+                            )
+                          : Text(''),
+                      //
+                    ],
+                  ),
+                  // link switch to page Forgot password
+                  linkSwitchToPageForgotPassword(),
+                  // inputButton
+                  SizedBox(height: 20.v),
+                  inputButton(),
+                  // link switch to page Register
+                  SizedBox(height: 20.v),
+                  linkSwitchToPageRegister(),
+                  //
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget inputAccount() {
-    return TextField(
+    return TextFormField(
+      // onChanged: _validateEmail,
+      // validator: (value) => _emailErrorText,
+      keyboardType: TextInputType.emailAddress,
       controller: accountController,
       cursorColor: Colors.red,
       style: TextStyle(color: Colors.black),
@@ -156,7 +290,7 @@ class _LoginScreenState extends State<LoginScreen> {
         labelText: 'Account',
         labelStyle: TextStyle(color: Colors.grey),
         focusColor: Colors.black,
-        hintText: 'Enter email or username',
+        hintText: 'Enter your email',
         hintStyle: TextStyle(color: Colors.grey),
         contentPadding: EdgeInsets.symmetric(
           vertical: 22.v,
@@ -181,7 +315,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget inputPassword() {
-    return TextField(
+    return TextFormField(
       controller: passwordController,
       obscureText: true,
       cursorColor: Colors.red,
@@ -216,6 +350,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget inputButton() {
     return ElevatedButton(
+      onPressed: () {
+        // Add your authentication logic here
+        // onClickBtnLogin();
+      },
       style: ButtonStyle(
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
@@ -231,10 +369,6 @@ class _LoginScreenState extends State<LoginScreen> {
           Size(double.infinity, 50.0),
         ),
       ),
-      onPressed: () {
-        // Add your authentication logic here
-        onClickBtnLogin();
-      },
       child: Container(
         child: Text(
           'Login',
@@ -296,6 +430,53 @@ class _LoginScreenState extends State<LoginScreen> {
 
   //=====================================================================================================
 
+  String? validateEmail(String? email) {
+    if (email == null || email.isEmpty) {
+      return 'Please fill your email';
+    }
+
+    return null;
+  }
+
+  String? validatePassword(String? password) {
+    if (password == null || password.isEmpty) {
+      return 'Please fill your password';
+    }
+
+    return null;
+  }
+
+  bool checkValidateLogin(String email, String password) {
+    if (!notifyBelowInputPass && !notifyBelowInputAcc) {
+      return true;
+    }
+
+    return false;
+  }
+
+  void onClickBtnLogin() async {
+    String account = accountController.text.trim();
+    String password = passwordController.text.trim();
+
+    // if (_formKey.currentState!.validate()) {
+    if (checkValidateLogin(account, password)) {
+      // Login
+      // final userBox = Hive.box<UserModel>('users');
+      // AuthService authService = AuthService();
+      // await authService.loginFirebase(account, password);
+
+      _showDelayedToast('Login successful', 'top');
+
+      // Reset error message
+      setState(() {
+        _accountErrMsg = '';
+        _passwordErrMsg = '';
+      });
+    } else {
+      _showDelayedToast('Please check your all information', 'top');
+    }
+  }
+
   void onClickBtnSwitchToPageForgotPassword() {
     Navigator.push(
       context,
@@ -310,54 +491,12 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  bool checkValidateLogin() {
-    return true;
-  }
-
-  void onClickBtnLogin() async {
-    if (checkValidateLogin()) {
-      // Login
-      final userBox = Hive.box<UserModel>('users');
-      AuthService authService = AuthService(userBox);
-
-      String username = accountController.text.trim();
-      String password = passwordController.text.trim();
-
-      bool isLoggedIn = await authService.login(username, password);
-
-      if (isLoggedIn) {
-        // Login successful
-        accountController.clear();
-        passwordController.clear();
-
-        _showDelayedToast('Login successful', 'top');
-
-        switchToHomeContainerScreen();
-      } else {
-        // Invalid username or password
-        _showDelayedToast('Invalid username or password', 'top');
-      }
-
-      // Reset error message
-      setState(() {
-        _accountErrMsg = '';
-        _passwordErrMsg = '';
-      });
-    } else {
-      // // Form is not valid, set error message
-      // setState(() {
-      //   _errorMessage = 'Please fill all fields';
-      // });
-      _showDelayedToast('You should type enough fields', 'top');
-    }
-  }
-
-  void switchToHomeContainerScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomeContainerScreen()),
-    );
-  }
+  // void switchToHomeContainerScreen() {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => HomeContainerScreen()),
+  //   );
+  // }
 
   void _showDelayedToast(String text, String position) {
     if (position.toLowerCase() == 'top') {

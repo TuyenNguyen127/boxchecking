@@ -406,43 +406,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void onClickBtnRegister() async {
-    print('Register');
+    // print('Register');
 
-    String username = usernameController.text.trim();
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
-    String confirmPassword = confirmPasswordController.text.trim();
-    String phoneNumber = phoneNumberController.text.trim();
+    // String username = usernameController.text.trim();
+    // String email = emailController.text.trim();
+    // String password = passwordController.text.trim();
+    // String confirmPassword = confirmPasswordController.text.trim();
+    // String phoneNumber = phoneNumberController.text.trim();
 
-    final userBox = Hive.box<UserModel>('users');
+    // final userBox = Hive.box<UserModel>('users');
 
-    // Register a new user
-    AuthService authService = AuthService(userBox);
+    // // Register a new user
+    // AuthService authService = AuthService(userBox);
 
-    UserModel newUser = UserModel(
-      username,
-      email,
-      password,
-      confirmPassword,
-      phoneNumber,
-    );
+    // UserModel newUser = UserModel(
+    //   username,
+    //   email,
+    //   password,
+    //   confirmPassword,
+    //   phoneNumber,
+    // );
 
-    bool isRegistered = await authService.register(newUser);
+    // bool isRegistered = await authService.registerHiveBox(newUser);
 
-    if (isRegistered) {
-      usernameController.clear();
-      emailController.clear();
-      passwordController.clear();
-      confirmPasswordController.clear();
-      phoneNumberController.clear();
+    // if (isRegistered) {
+    //   usernameController.clear();
+    //   emailController.clear();
+    //   passwordController.clear();
+    //   confirmPasswordController.clear();
+    //   phoneNumberController.clear();
 
-      // Registration successful
-      _showDelayedToast('Registration successful', 'top');
-      onClickBtnSwitchToPageLogin();
-    } else {
-      // Username or email already exists
-      _showDelayedToast('Username or email already exists', 'top');
-    }
+    //   // Registration successful
+    //   _showDelayedToast('Registration successful', 'top');
+    //   onClickBtnSwitchToPageLogin();
+    // } else {
+    //   // Username or email already exists
+    //   _showDelayedToast('Username or email already exists', 'top');
+    // }
   }
 
   void _showDelayedToast(String text, String position) {

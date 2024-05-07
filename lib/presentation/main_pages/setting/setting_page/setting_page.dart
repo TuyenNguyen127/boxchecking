@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
@@ -422,10 +423,52 @@ class SettingPage extends StatelessWidget {
               ),
             ),
           ),
+          SizedBox(height: 10.v),
+          //
+          GestureDetector(
+            onTap: () {
+              onClickLogOut();
+            },
+            child: Container(
+              margin: EdgeInsets.only(left: 10.h),
+              child: Row(
+                children: [
+                  CustomIconButton(
+                    height: 30.adaptSize,
+                    width: 30.adaptSize,
+                    decoration: IconButtonStyleHelper.fillBlueGray,
+                    child: Icon(
+                      Icons.logout_rounded,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: 10.h,
+                    ),
+                    child: Text(
+                      "Đăng xuất",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.fSize,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           //
         ],
       ),
     );
+  }
+
+  void onClickLogOut() {
+    // popup a modal to ask user really want to log out
+
+    FirebaseAuth.instance.signOut();
   }
 
   void onClickEditInfo() {
