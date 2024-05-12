@@ -25,13 +25,13 @@ Future<void> main() async {
     ),
   );
 
-  // hive section
-  await Hive.initFlutter();
-  HiveHelper.registerAdapters();
+  // // hive section
+  // await Hive.initFlutter();
+  // HiveHelper.registerAdapters();
 
-  // open box
-  // box user accounts
-  await HiveHelper.openUserAccounts();
+  // // open box
+  // // box user accounts
+  // await HiveHelper.openUserAccounts();
 
   await dotenv.load(fileName: ".env", mergeWith: {
     'TEST_VAR': '5',
@@ -58,8 +58,10 @@ class _MyAppState extends State<MyApp> {
   //
   Future getUserInfo() async {
     await getUser();
+
     setState(() {});
-    // print(uid);
+
+    print("uid ${uid}");
   }
 
   @override

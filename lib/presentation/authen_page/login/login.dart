@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hive/hive.dart';
 import 'package:lastapp/core/app_export.dart';
-import 'package:lastapp/model/userModel.dart';
 import 'package:lastapp/presentation/authen_page/forgot_pass/forgot_pass.dart';
 import 'package:lastapp/presentation/authen_page/register/register.dart';
-import 'package:lastapp/presentation/home_container/home_container_screen.dart';
 
 import '../../../service/authen/auth_service.dart';
 
@@ -26,8 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final accountController = TextEditingController();
   final passwordController = TextEditingController();
 
-  final _controller = TextEditingController();
-
   String _accountErrMsg = '';
   String _passwordErrMsg = '';
 
@@ -36,47 +31,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool notifyBelowInputAcc = false;
   bool notifyBelowInputPass = false;
 
+  bool isProcessing = false;
+
   //=====================================================================================================
-  // void _submit() {
-  //   // if there is no error text
-  //   if (_errorText == null) {
-  //     // notify the parent widget via the onSubmit callback
-  //     widget.onSubmit(_controller.value.text);
-  //   }
-  // }
-
-  // void _validateEmail(String value) {
-  //   if (value.isEmpty) {
-  //     setState(() {
-  //       notifyBelowInputAcc = true;
-  //       _emailErrorText = 'Email is required';
-  //     });
-  //   } else if (!isEmailValid(value)) {
-  //     setState(() {
-  //       notifyBelowInputAcc = true;
-  //       _emailErrorText = 'Enter a valid email address';
-  //     });
-  //   } else {
-  //     setState(() {
-  //       notifyBelowInputAcc = false;
-  //       _emailErrorText = '';
-  //     });
-  //   }
-  // }
-
-  // bool isEmailValid(String email) {
-  //   // Basic email validation using regex
-  //   // You can implement more complex validation if needed
-  //   return RegExp(r'^[\w-\.]+@[a-zA-Z]+\.[a-zA-Z]{2,}$').hasMatch(email);
-  // }
-
-  // void _submitForm() {
-  //   if (_formKey.currentState!.validate()) {
-  //     // Form is valid, proceed with your logic here
-  //     // For this example, we will simply print the email
-  //     print('Email: ${accountController.text}');
-  //   }
-  // }
 
   //=====================================================================================================
 
@@ -86,15 +43,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     accountController.dispose();
     passwordController.dispose();
-
-    // _controller.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-
-    // userBox = Hive.box<UserModel>('users');
   }
 
   //=====================================================================================================
@@ -124,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Positioned(top: 50.v, child: _buildImageBackgr()),
                 //
                 Positioned(
-                  top: 300.v,
+                  top: 250.v,
                   child: _buildForm(),
                 ),
                 //
@@ -153,30 +106,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
-  // Widget _buildNewForm() {
-  //   return ValueListenableBuilder(
-  //     // Note: pass _controller to the animation argument
-  //     valueListenable: _controller,
-  //     builder: (context, TextEditingValue value, __) {
-  //       // this entire widget tree will rebuild every time
-  //       // the controller value changes
-  //       return Column(
-  //         mainAxisSize: MainAxisSize.min,
-  //         crossAxisAlignment: CrossAxisAlignment.stretch,
-  //         children: [
-  //           //
-  //           inputAccount(),
-  //           //
-  //           inputPassword(),
-  //           //
-  //           inputButton(),
-  //           //
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
 
   Widget _buildForm() {
     return Container(
@@ -265,6 +194,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   // inputButton
                   SizedBox(height: 20.v),
                   inputButton(),
+                  // sign in via google button
+                  SizedBox(height: 20.v),
+                  signInViaGoogleButton(),
                   // link switch to page Register
                   SizedBox(height: 20.v),
                   linkSwitchToPageRegister(),
@@ -382,6 +314,46 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget signInViaGoogleButton() {
+    return GestureDetector(
+      onTap: () async {
+        onClickGoogleBtnLogin();
+      },
+      child: Container(
+        height: 60.v,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black54,
+          ),
+          borderRadius: BorderRadius.circular(100),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            //
+            !isProcessing
+                ? Image.asset(
+                    ImageConstant.googleLogoImage,
+                    height: 40.v,
+                  )
+                : CircularProgressIndicator(color: Colors.black),
+            //
+            SizedBox(width: 10.h),
+            //
+            Text(
+              'Sign in via Google',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: 16.fSize,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget linkSwitchToPageForgotPassword() {
     return GestureDetector(
       onTap: () {
@@ -430,52 +402,68 @@ class _LoginScreenState extends State<LoginScreen> {
 
   //=====================================================================================================
 
-  String? validateEmail(String? email) {
-    if (email == null || email.isEmpty) {
-      return 'Please fill your email';
-    }
+  void onClickGoogleBtnLogin() async {
+    print('loading... sign in via google account');
 
-    return null;
+    setState(() {
+      isProcessing = true;
+    });
+
+    await signInWithGoogle().then((res) => print(res)).catchError((error) {
+      print("Something's wrong: ${error}");
+    });
+
+    setState(() {
+      isProcessing = false;
+    });
   }
 
-  String? validatePassword(String? password) {
-    if (password == null || password.isEmpty) {
-      return 'Please fill your password';
-    }
+  // String? validateEmail(String? email) {
+  //   if (email == null || email.isEmpty) {
+  //     return 'Please fill your email';
+  //   }
 
-    return null;
-  }
+  //   return null;
+  // }
 
-  bool checkValidateLogin(String email, String password) {
-    if (!notifyBelowInputPass && !notifyBelowInputAcc) {
-      return true;
-    }
+  // String? validatePassword(String? password) {
+  //   if (password == null || password.isEmpty) {
+  //     return 'Please fill your password';
+  //   }
 
-    return false;
-  }
+  //   return null;
+  // }
 
-  void onClickBtnLogin() async {
-    String account = accountController.text.trim();
-    String password = passwordController.text.trim();
+  // bool checkValidateLogin(String email, String password) {
+  //   if (!notifyBelowInputPass && !notifyBelowInputAcc) {
+  //     return true;
+  //   }
 
-    // if (_formKey.currentState!.validate()) {
-    if (checkValidateLogin(account, password)) {
-      // Login
-      // final userBox = Hive.box<UserModel>('users');
-      // AuthService authService = AuthService();
-      // await authService.loginFirebase(account, password);
+  //   return false;
+  // }
 
-      _showDelayedToast('Login successful', 'top');
+  // void onClickBtnLogin() async {
+  //   String account = accountController.text.trim();
+  //   String password = passwordController.text.trim();
 
-      // Reset error message
-      setState(() {
-        _accountErrMsg = '';
-        _passwordErrMsg = '';
-      });
-    } else {
-      _showDelayedToast('Please check your all information', 'top');
-    }
-  }
+  //   // if (_formKey.currentState!.validate()) {
+  //   if (checkValidateLogin(account, password)) {
+  //     // Login
+  //     // final userBox = Hive.box<UserModel>('users');
+  //     // AuthService authService = AuthService();
+  //     // await authService.loginFirebase(account, password);
+
+  //     _showDelayedToast('Login successful', 'top');
+
+  //     // Reset error message
+  //     setState(() {
+  //       _accountErrMsg = '';
+  //       _passwordErrMsg = '';
+  //     });
+  //   } else {
+  //     _showDelayedToast('Please check your all information', 'top');
+  //   }
+  // }
 
   void onClickBtnSwitchToPageForgotPassword() {
     Navigator.push(

@@ -1,66 +1,88 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:hive/hive.dart';
-import 'package:lastapp/model/userModel.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-// class AuthService {
-//   // final Box<UserModel> _userBox;
+final GoogleSignIn _googleSignIn = GoogleSignIn();
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final Stream<User?> _authGetStageChanges =
+    FirebaseAuth.instance.authStateChanges();
 
-//   // AuthService(this._userBox);
-//   AuthService();
-
-// // Hive box
-// Future<bool> registerHiveBox(UserModel user) async {
-//   // Check if username or email already exists
-//   if (_userBox.values
-//       .any((u) => u.username == user.username || u.email == user.email)) {
-//     return false; // Username or email already exists
-//   }
-
-//   // Save the user to the box
-//   await _userBox.add(user);
-
-//   print('users box length ${_userBox.length}');
-
-//   return true;
-// }
-
-// Future<bool> loginHiveBox(String username, String password) async {
-//   // check userbox is empty or not
-//   if (_userBox.isEmpty) {
-//     print('No users registered!');
-//     return false;
-//   }
-
-//   // Retrieve user from the box
-//   final user = _userBox.values.firstWhere(
-//     (user) => user.username == username && user.password == password,
-//     orElse: () => UserModel('', '', '', '', ''),
-//   );
-
-//   // Check if user exists and password matches
-//   if (user.username.isNotEmpty) {
-//     return true; // Login successful
-//   } else {
-//     return false; // Login failed
-//   }
-// }
-
-// Firebase
-// // login
-// Future loginFirebase(String email, String password) async {
-//   await FirebaseAuth.instance
-//       .signInWithEmailAndPassword(email: email, password: password);
-// }
-
-// // register
-// Future registerFirebase(String email, String password) async {
-//   await FirebaseAuth.instance
-//       .createUserWithEmailAndPassword(email: email, password: password);
-// }
+String? userEmail;
+String? imageUrl;
+String? uid;
+String? name;
 
 Future getUser() async {
   await Firebase.initializeApp();
+
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  bool authSignedIn = preferences.getBool('auth') ?? true;
+
+  final User? user = _auth.currentUser;
+
+  if (authSignedIn) {
+    if (user != null) {
+      uid = user.uid;
+      name = user.displayName;
+      userEmail = user.email;
+      imageUrl = user.photoURL;
+    }
+  }
 }
 
-// }
+Future<User?> signInWithGoogle() async {
+  await Firebase.initializeApp();
+
+  User? user;
+
+  try {
+    // GoogleAuthProvider authProvider = GoogleAuthProvider();
+    // final UserCredential userCredential =
+    //     await _auth.signInWithPopup(authProvider);
+
+    GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+    GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount!.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+
+    final UserCredential userCredential =
+        await _auth.signInWithCredential(credential);
+
+    user = userCredential.user;
+  } catch (err) {
+    print(err);
+  }
+
+  if (user != null) {
+    uid = user.uid;
+    name = user.displayName;
+    userEmail = user.email;
+    imageUrl = user.photoURL;
+
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setBool('auth', true);
+  }
+
+  return user;
+}
+
+void signOutGoogle() async {
+  await FirebaseAuth.instance.signOut();
+  await _googleSignIn.signOut();
+  await _auth.signOut();
+
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  preferences.setBool('auth', false);
+
+  uid = null;
+  name = null;
+  userEmail = null;
+  imageUrl = null;
+
+  print("User has successfully signed out of Google account!");
+}

@@ -4,6 +4,8 @@ class ImageConstant {
 
   static String authenBackgr = '$imagePath/authen_backgr_img.svg';
 
+  static String googleLogoImage = '$imagePath/google_logo.png';
+
   // Recived images
   static String imgLockBlueGray300 = '$imagePath/img_lock_blue_gray_300.svg';
 

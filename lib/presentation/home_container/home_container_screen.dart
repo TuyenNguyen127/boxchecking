@@ -1,5 +1,8 @@
+import 'dart:js_interop';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -15,6 +18,8 @@ import 'package:lastapp/presentation/main_pages/operate/operate_page.dart';
 import 'package:lastapp/presentation/main_pages/setting/setting_page/setting_page.dart';
 import 'package:lastapp/core/app_export.dart';
 
+import 'package:lastapp/service/authen/auth_service.dart';
+
 import 'controller/home_container_controller.dart';
 
 class HomeContainerScreen extends StatefulWidget {
@@ -26,10 +31,10 @@ class HomeContainerScreen extends StatefulWidget {
 
 class _HomeContainerScreenState extends State<HomeContainerScreen> {
   HomeContainerController dataController = Get.put(HomeContainerController());
+
   int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
-    // SettingPage(),
     HomePage(),
     ShipScreen(),
     OperatePage(),
@@ -40,15 +45,6 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
 
   @override
   void initState() {
-    if (listOrders.isEmpty || dataController.listOrderByUser.isEmpty) {
-      // requestOrder();
-      // print(listOrders.length);
-    } else {
-      // for (var element in dataController.listOrderByUser) {
-      //   listOrders.add(element);
-      // }
-    }
-
     super.initState();
   }
 
@@ -65,7 +61,19 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
         body: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else if (snapshot.hasData) {
+              //
+              if (dataController.users.isEmpty) {
+                dataController.users.add(snapshot.data!);
+                print("users' length ${dataController.users.length}");
+
+                _showDelayedToast("You've successfully signed in", 'top');
+              }
+
               return Scaffold(
                 backgroundColor: theme.colorScheme.onError,
                 //
@@ -81,7 +89,6 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
               );
             } else {
               return LoginScreen();
-              // return _widgetOptions[0];
             }
           },
         ),
@@ -120,5 +127,27 @@ class _HomeContainerScreenState extends State<HomeContainerScreen> {
         onTap: _onItemTapped,
       ),
     );
+  }
+
+  void _showDelayedToast(String text, String position) {
+    if (position.toLowerCase() == 'top') {
+      Fluttertoast.showToast(
+        msg: text,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    } else if (position.toLowerCase() == 'bottom') {
+      Fluttertoast.showToast(
+        msg: text,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    }
   }
 }

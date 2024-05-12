@@ -1,4 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lastapp/presentation/home_container/controller/home_container_controller.dart';
+import 'package:lastapp/service/authen/auth_service.dart';
 import 'package:lastapp/widgets/custom_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:lastapp/core/app_export.dart';
@@ -6,16 +9,25 @@ import 'controller/setting_controller.dart';
 import 'models/setting_model.dart';
 
 // ignore: must_be_immutable
-class SettingPage extends StatelessWidget {
+class SettingPage extends StatefulWidget {
   SettingPage({Key? key})
       : super(
           key: key,
         );
 
+  @override
+  State<SettingPage> createState() => _SettingPageState();
+}
+
+class _SettingPageState extends State<SettingPage> {
+  HomeContainerController dataController = Get.put(HomeContainerController());
+
   SettingController controller = Get.put(SettingController(SettingModel().obs));
 
   final FIRST_HEIGHT = 200.v;
+
   final SECOND_HEIGHT = 200.v;
+
   final THIRD_HEIGHT = SizeUtils.height - 200.v - 200.v;
 
   @override
@@ -130,7 +142,8 @@ class SettingPage extends StatelessWidget {
                     child: Text(
                       // "lbl_nguy_n_tuy_n2".tr,
                       // style: CustomTextStyles.titleLargeBlack900_1,
-                      "Nguyễn Tuyển",
+                      // "Nguyễn Tuyển",
+                      '${dataController.users.first.displayName}',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 20.fSize,
@@ -468,7 +481,14 @@ class SettingPage extends StatelessWidget {
   void onClickLogOut() {
     // popup a modal to ask user really want to log out
 
-    FirebaseAuth.instance.signOut();
+    // FirebaseAuth.instance.signOut();
+
+    signOutGoogle();
+
+    dataController.users.clear();
+    print("users' length ${dataController.users.length}");
+
+    _showDelayedToast("You've successfully logged out", 'top');
   }
 
   void onClickEditInfo() {
@@ -485,5 +505,27 @@ class SettingPage extends StatelessWidget {
 
   void onClickNotification() {
     print('Notification');
+  }
+
+  void _showDelayedToast(String text, String position) {
+    if (position.toLowerCase() == 'top') {
+      Fluttertoast.showToast(
+        msg: text,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    } else if (position.toLowerCase() == 'bottom') {
+      Fluttertoast.showToast(
+        msg: text,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.black26,
+        textColor: Colors.white,
+        fontSize: 14.fSize,
+      );
+    }
   }
 }

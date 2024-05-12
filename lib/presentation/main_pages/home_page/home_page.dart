@@ -225,7 +225,8 @@ class _HomePageState extends State<HomePage> {
         title: Container(
           margin: EdgeInsets.only(left: 15.h),
           child: Text(
-            "Nguyễn Tuyển",
+            '${dataController.users.first.displayName}',
+            // "Nguyễn Tuyển",
             overflow: TextOverflow.clip,
             style: TextStyle(
               color: Color(0XFF000000),
